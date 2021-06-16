@@ -1,1 +1,1 @@
-web: java  $JAVA_OPTS -Dserver.port=$PORT target/classes:target/dependency/* mg.itu.tolotra.javarest.HelloLauncher
+web: java -Dserver.port=$PORT target/java-0.0.1-SNAPSHOT.jar

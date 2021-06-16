@@ -83,7 +83,6 @@
        <archive>
           <manifest>
             <addClasspath>true</addClasspath>
-            <classpathPrefix>lib/</classpathPrefix>
             <mainClass>mg.itu.tolotra.javarest.HelloLauncher</mainClass>
           </manifest>
         </archive>

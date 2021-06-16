@@ -8,8 +8,9 @@ package mg.itu.tolotra.javarest;
 
 
 
-import java.lang.System.Logger.Level;
+
 import java.net.URI;
+import java.util.logging.Level;
 import javax.ws.rs.core.UriBuilder;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;

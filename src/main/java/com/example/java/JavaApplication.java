@@ -12,10 +12,16 @@ public class JavaApplication {
         @RequestMapping("/")
         @ResponseBody
         String home(){
-            return "V30 p*ry";
+            return "x";
+        }
+        
+        @RequestMapping("/hello")
+        @ResponseBody
+        String hello(){
+            return "Heelo man";
         }
 	public static void main(String[] args) {
 		SpringApplication.run(JavaApplication.class, args);
 	}
-
 }
+

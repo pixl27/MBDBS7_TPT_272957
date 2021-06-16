@@ -28,7 +28,7 @@
 			<scope>test</scope>
 		</dependency>
 	 <dependency>
-	  <groupId>com.oracle.jdbc</groupId>
+  <groupId>com.oracle.database.jdbc</groupId>
 	  <artifactId>ojdbc10</artifactId>
 	  <version>19.3.0.0</version>
 	  <type>jar</type>

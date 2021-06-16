@@ -31,7 +31,7 @@ public class HelloLauncher {
     
 
     private static URI getBaseURI() {
-        return UriBuilder.fromUri("http://localhost/api/").port(9991).build();
+        return UriBuilder.fromUri("https://backend-javaa-mbds272957.herokuapp.com/").port(9991).build();
     }
     
     public static final URI BASE_URI = getBaseURI();

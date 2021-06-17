@@ -50,7 +50,7 @@ public class JavaApplication {
             
             Statement statement = connection.createStatement();
            
-           ResultSet resultSet = statement.executeQuery("select * from Team");
+           ResultSet resultSet = statement.executeQuery("select * from Team order by IDTEAM FETCH FIRST 10 ROWS ONLY");
            ArrayList<Team> listeTeam = new ArrayList(); 
             while (resultSet.next()){
                 Team temp = new Team(resultSet.getInt(1),resultSet.getString(2),resultSet.getString(3));

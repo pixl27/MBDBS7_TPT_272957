@@ -15,6 +15,7 @@ import java.sql.Statement;
 import oracle.jdbc.OracleConnection;
 import java.sql.DatabaseMetaData;
 import java.util.ArrayList;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
 
 
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 
 @Controller
 @SpringBootApplication
+@EnableAutoConfiguration(exclude = {org.springframework.boot.autoconfigure.gson.GsonAutoConfiguration.class})
 public class JavaApplication {
      // The recommended format of a connection URL is the long format with the
     // connection descriptor.

@@ -41,9 +41,25 @@ public class JavaApplication {
             return "Heelo man";
         }
         
-        @RequestMapping("/getallteam")
+        
+        int findteambynom(String nom) throws SQLException{
+            OracleConnection connection = Connexion.getConnection();
+           
+            
+            Statement statement = connection.createStatement();
+           
+            ResultSet resultSet = statement.executeQuery("select IDTEAM from Team where nom='"+nom+"'");
+            int id = 0; 
+            while (resultSet.next())
+                id = resultSet.getInt(1);
+            
+            return id;
+        }
+        
+        
+        @GetMapping(path="/getallteam", produces = "application/json")
         @ResponseBody
-        String getAllTeam() throws SQLException{
+        ArrayList<Team> getAllTeam() throws SQLException{
             
            OracleConnection connection = Connexion.getConnection();
            
@@ -57,9 +73,8 @@ public class JavaApplication {
                 listeTeam.add(temp);
             }
                 
-            String json = new Gson().toJson(listeTeam);
             
-            return json;
+            return listeTeam;
         }
 	public static void main(String[] args) {
 		SpringApplication.run(JavaApplication.class, args);

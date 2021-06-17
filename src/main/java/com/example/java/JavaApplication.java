@@ -53,7 +53,7 @@ public class JavaApplication {
            ResultSet resultSet = statement.executeQuery("select * from Team");
            ArrayList<Team> listeTeam = new ArrayList(); 
             while (resultSet.next()){
-                Team temp = new Team(resultSet.getInt(0),resultSet.getString(1),resultSet.getString(2));
+                Team temp = new Team(resultSet.getInt(1),resultSet.getString(2),resultSet.getString(3));
                 listeTeam.add(temp);
             }
                 

@@ -131,8 +131,9 @@ private RestTemplate restTemplate;
         return new RestTemplate();
         }
         
-        @RequestMapping(name = "/parier", method = RequestMethod.POST)
-        int parier(@RequestParam int idUser){
+        @PostMapping(value = "/parier", consumes = "application/json", produces = "application/json")
+        @ResponseBody
+        int parier(@RequestBody int idUser){
             return idUser;
         }
         

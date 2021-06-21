@@ -131,7 +131,8 @@ private RestTemplate restTemplate;
         return new RestTemplate();
         }
         
-        @PostMapping(value = "/parier")
+        @PostMapping("/parier")
+                @RequestMapping
         String parier(@RequestBody String idUser){
             return "Hello " + idUser;
         }

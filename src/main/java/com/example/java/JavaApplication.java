@@ -133,7 +133,7 @@ private RestTemplate restTemplate;
         
         @PostMapping(value = "/parier", consumes = "application/json", produces = "application/json")
         @ResponseBody
-        int parier(int idUser){
+        int parier(@RequestBody int idUser){
             return idUser;
         }
         

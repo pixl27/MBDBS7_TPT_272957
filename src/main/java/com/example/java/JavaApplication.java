@@ -98,6 +98,8 @@ private RestTemplate restTemplate;
             
         }
         
+        
+        
         Match getMatch(int idMatchRivalry) throws SQLException{
             String url = "https://www.rivalry.com/api/v1/matches/"+idMatchRivalry;
             String response = restTemplate.getForObject(url, String.class);  
@@ -127,6 +129,12 @@ private RestTemplate restTemplate;
         @Bean
         public RestTemplate restTemplate() {
         return new RestTemplate();
+        }
+        
+        @PostMapping(value = "/parier", consumes = "application/json", produces = "application/json")
+        @ResponseBody
+        int parier(int idUser){
+            return idUser;
         }
         
         

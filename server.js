@@ -6,6 +6,8 @@ let assignment = require('./routes/assignments');
 let matiere = require('./routes/matieres');
 var banque = require('./routes/banques');
 var VerifyToken = require('./routes/VerifyToken');
+var user = require('./routes/users');
+var role = require('./routes/roles');
 
 let mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
@@ -48,14 +50,13 @@ let port = process.env.PORT || 8010;
 // les routes
 const prefix = '/api';
 
-app.route(prefix + '/assignments')
-  .get(VerifyToken,assignment.getAssignments)
-  .post(assignment.postAssignment)
-  .put(VerifyToken,assignment.updateAssignment);
+app.route(prefix + '/users')
+.post(user.inscription)
+.get(user.decode);
 
-app.route(prefix + '/assignments/:id')
-  .get(assignment.getAssignment)
-  .delete(assignment.deleteAssignment);
+app.route(prefix + '/user')
+.post(user.login)
+.get(user.logout)
 
   
   app.route(prefix + '/matieres')
@@ -66,6 +67,9 @@ app.route(prefix + '/assignments/:id')
 
   app.route(prefix + '/banques')
   .get(banque.getBanques);
+
+  app.route(prefix + '/roles')
+  .get(role.getRoles);
 
  // app.route(prefix + '/banque')
  // .post(user.login)

@@ -161,8 +161,8 @@ private RestTemplate restTemplate;
         @PostMapping(value = "/parier", consumes = "application/json", produces = "application/json")
         @ResponseBody
         String parier(@RequestParam int idUser,@RequestParam int idMatch,@RequestParam String type,@RequestParam String nomTeam,@RequestParam float montant,@RequestParam float odds) throws SQLException{
-            Match m = getMatch(idMatch);
-            /*
+            /*Match m = getMatch(idMatch);
+            
             OracleConnection oc = Connexion.getConnection();
             try{
                 insererMatch(oc,m.getIdTeam1(),m.getIdTeam2(),m.getDatematch());
@@ -177,7 +177,7 @@ private RestTemplate restTemplate;
                 }
             }*/
             
-            return "Match" +m.getIdTeam1()+","+idMatch;
+            return "Match" +idUser+","+idMatch;
         }
         
         

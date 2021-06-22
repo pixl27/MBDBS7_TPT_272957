@@ -162,6 +162,7 @@ private RestTemplate restTemplate;
         @ResponseBody
         String parier(@RequestParam int idUser,@RequestParam int idMatch,@RequestParam String type,@RequestParam String nomTeam,@RequestParam float montant,@RequestParam float odds) throws SQLException{
             Match m = getMatch(idMatch);
+            /*
             OracleConnection oc = Connexion.getConnection();
             try{
                 insererMatch(oc,m.getIdTeam1(),m.getIdTeam2(),m.getDatematch());
@@ -174,9 +175,9 @@ private RestTemplate restTemplate;
                  if(oc!=null){
                     oc.close();
                 }
-            }
+            }*/
             
-            return "Hello" +idUser+","+idMatch;
+            return "Match" +m.getIdTeam1()+","+idMatch;
         }
         
         

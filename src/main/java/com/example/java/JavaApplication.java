@@ -18,6 +18,7 @@ import oracle.jdbc.OracleConnection;
 import java.sql.DatabaseMetaData;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONObject;
@@ -64,6 +65,32 @@ private RestTemplate restTemplate;
                 id = resultSet.getInt(1);
             
             return id;
+        }
+        
+        int findteambynom(OracleConnection co,String nom) throws SQLException{
+           
+           
+            
+            Statement statement = co.createStatement();
+           
+            ResultSet resultSet = statement.executeQuery("select IDTEAM from Team where nom='"+nom+"'");
+            int id = 0; 
+            while (resultSet.next())
+                id = resultSet.getInt(1);
+            
+            return id;
+        }
+        
+        int getSequence(OracleConnection co,String nom) throws SQLException{
+            int val = 0;
+            Statement statement = co.createStatement();
+           
+           ResultSet resultSet = statement.executeQuery("select "+nom+".currval from DUAL;");
+           
+            while (resultSet.next()){
+                val = resultSet.getInt(1);
+            }
+            return val;
         }
         
         void insererMatch(OracleConnection connection,int idTeam1, int idTeam2, Date datematch) throws SQLException{
@@ -133,7 +160,22 @@ private RestTemplate restTemplate;
         
         @PostMapping(value = "/parier", consumes = "application/json", produces = "application/json")
         @ResponseBody
-        String parier(@RequestParam int idUser,@RequestParam int idMatch){
+        String parier(@RequestParam int idUser,@RequestParam int idMatch,@RequestParam String type,@RequestParam String nomTeam,@RequestParam float montant,@RequestParam float odds) throws SQLException{
+            Match m = getMatch(idMatch);
+            OracleConnection oc = Connexion.getConnection();
+            try{
+                insererMatch(oc,m.getIdTeam1(),m.getIdTeam2(),m.getDatematch());
+                int idMatchTemp = getSequence(oc,"MATCH_SEQ");
+                int idTeam = findteambynom(oc,nomTeam);
+                Date datenow = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+                insererParis(oc,idUser,idMatchTemp,idTeam,type,montant,odds,datenow,0);
+            }
+            finally{
+                 if(oc!=null){
+                    oc.close();
+                }
+            }
+            
             return "Hello" +idUser+","+idMatch;
         }
         

@@ -229,7 +229,9 @@ private RestTemplate restTemplate;
             HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
             
           ResponseEntity response = restTemplate.exchange(url, HttpMethod.GET,entity ,String.class);  
-          JSONObject json = new JSONObject(response.getBody());
+          JSONObject json = new JSONObject(response.getBody().toString());
+          System.out.println("ResponseByTolotra" +response.getBody().toString());
+          
           JSONArray array = json.getJSONArray("data");
           
           

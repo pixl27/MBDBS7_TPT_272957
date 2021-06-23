@@ -53,6 +53,8 @@ private RestTemplate restTemplate;
         }
         
         
+        
+        
         int findteambynom(String nom) throws SQLException{
             OracleConnection connection = Connexion.getConnection();
            
@@ -131,15 +133,22 @@ private RestTemplate restTemplate;
             String url = "https://www.rivalry.com/api/v1/matches/"+idMatchRivalry;
             String response = restTemplate.getForObject(url, String.class);  
             
+            
             JSONObject json = new JSONObject(response);
             JSONArray array = json.getJSONObject("data").getJSONArray("competitors");
             
             
             String nomTeam = array.getJSONObject(0).getString("name");
             int idTeam1 = findteambynom(nomTeam);
+            if(idTeam1 == 0){
+                return null;
+            }
             
             nomTeam = array.getJSONObject(1).getString("name");
             int idTeam2 = findteambynom(nomTeam);
+            if(idTeam2 == 0){
+                return null;
+            }
             
             String[] arrOfStr = json.getJSONObject("data").getString("scheduled_at").split("T");
             System.out.println("date"+arrOfStr[0]);
@@ -148,9 +157,6 @@ private RestTemplate restTemplate;
             
             Match val = new Match(idTeam1,idTeam2,datematch);
             return val;
-            
-            
-            
         }
         
         @Bean
@@ -200,6 +206,33 @@ private RestTemplate restTemplate;
             
             return listeTeam;
         }
+        
+        @GetMapping(path="/getallteam", produces = "application/json")
+        @ResponseBody
+        ArrayList<Match> getAllMatch() throws SQLException{
+            
+          ArrayList<Match> val = new ArrayList<Match>();
+          String url = "https://www.rivalry.com/api/v1/matches?game_id=3";
+          String response = restTemplate.getForObject(url, String.class);  
+          JSONObject json = new JSONObject(response);
+          JSONArray array = json.getJSONArray("data");
+          
+          Date datenow = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+          for(int i=0;i<array.length();i++){
+              int id = array.getJSONObject(i).getInt("id");
+              Match temp = getMatch(id);
+              //si tous les equipes sont presentent dans notre BD
+              if(temp!=null){
+                  if(temp.getDatematch()==datenow){
+                      val.add(temp);
+                  }
+              }
+          }
+          return val;
+          
+        }
+        
+        
 	public static void main(String[] args) {
 		SpringApplication.run(JavaApplication.class, args);
 	}

@@ -16,6 +16,10 @@ public class Match {
     int idTeam1;
     int idTeam2;
     int idMatchRivalry;
+
+    public void setIdMatchRivalry(int idMatchRivalry) {
+        this.idMatchRivalry = idMatchRivalry;
+    }
     
 
     public Match(int idTeam1, int idTeam2, int idMatchRivalry, Date datematch) {

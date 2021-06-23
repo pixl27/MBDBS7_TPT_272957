@@ -207,7 +207,7 @@ private RestTemplate restTemplate;
             return listeTeam;
         }
         
-        @GetMapping(path="/getallteam", produces = "application/json")
+        @GetMapping(path="/getallmatch", produces = "application/json")
         @ResponseBody
         ArrayList<Match> getAllMatch() throws SQLException{
             

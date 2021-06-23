@@ -70,7 +70,7 @@ private RestTemplate restTemplate;
             
             statement = connection.createStatement();
            
-             ResultSet resultSet = statement.executeQuery("select IDTEAM from Team where nom like '%"+nom+"%'");
+            ResultSet resultSet = statement.executeQuery("select IDTEAM from Team where nom like '%"+nom+"%'");
             
             
             while (resultSet.next())
@@ -186,7 +186,7 @@ private RestTemplate restTemplate;
         @PostMapping(value = "/parier", consumes = "application/json", produces = "application/json")
         @ResponseBody
         String parier(@RequestParam int idUser,@RequestParam int idMatch,@RequestParam String type,@RequestParam String nomTeam,@RequestParam float montant,@RequestParam float odds) throws SQLException{
-            /*Match m = getMatch(idMatch);
+            Match m = getMatch(idMatch);
             
             OracleConnection oc = Connexion.getConnection();
             try{
@@ -200,7 +200,7 @@ private RestTemplate restTemplate;
                  if(oc!=null){
                     oc.close();
                 }
-            }*/
+            }
             
             return "Match" +idUser+","+idMatch;
         }

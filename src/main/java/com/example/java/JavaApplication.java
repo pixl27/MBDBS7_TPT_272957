@@ -18,6 +18,7 @@ import oracle.jdbc.OracleConnection;
 import java.sql.DatabaseMetaData;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,6 +27,10 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.web.client.RestTemplate;
 
 
@@ -216,7 +221,13 @@ private RestTemplate restTemplate;
              
            ArrayList<Match> val = new ArrayList<>();
           String url = "https://www.rivalry.com/api/v1/matches?game_id=3";
-          String response = restTemplate.getForObject(url, String.class);  
+          
+          HttpHeaders headers = new HttpHeaders();
+            headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+            headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+            HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
+            
+          Object response = restTemplate.exchange(url, HttpMethod.GET,entity ,String.class);  
           JSONObject json = new JSONObject(response);
           JSONArray array = json.getJSONArray("data");
           

@@ -17,9 +17,13 @@ import java.sql.Statement;
 import oracle.jdbc.OracleConnection;
 import java.sql.DatabaseMetaData;
 import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONException;
@@ -128,6 +132,28 @@ private RestTemplate restTemplate;
                 }
             }
         }
+        
+         static void insererTest() throws SQLException{
+             
+            OracleConnection connection = Connexion.getConnection();
+           
+            PreparedStatement statement = null;
+            try{
+                String query = "insert into Match values('Tolotra est bg',?)";
+                statement = connection.prepareStatement(query);
+                statement.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
+                statement.executeQuery();
+            }
+            finally{
+                if(statement!=null){
+                    statement.close();
+                }
+                if(connection!=null){
+                    connection.close();
+                }
+            }
+        }
+        
         
         
         void insererParis(OracleConnection connection,int idUser,int idMatch,int idTeam,String type,float montant,float odds,Date dateparis,int statut) throws SQLException{
@@ -291,8 +317,25 @@ private RestTemplate restTemplate;
         }
         
         
+        
+        
 	public static void main(String[] args) {
 		SpringApplication.run(JavaApplication.class, args);
+                Timer timer = new Timer ();
+                TimerTask hourlyTask;
+       hourlyTask = new TimerTask () {
+           @Override
+           public void run () {
+               try {
+                   insererTest();
+               } catch (SQLException ex) {
+                   Logger.getLogger(JavaApplication.class.getName()).log(Level.SEVERE, null, ex);
+               }
+           }
+       };
+
+                // schedule the task to run starting now and then every hour...
+                timer.schedule (hourlyTask, 0l, 1000*60*60);
 	}
 }
 

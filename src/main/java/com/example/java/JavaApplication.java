@@ -64,14 +64,26 @@ private RestTemplate restTemplate;
         
         int findteambynom(String nom) throws SQLException{
             OracleConnection connection = Connexion.getConnection();
-           
+           Statement statement = null;
+           int id = 0; 
+            try{
             
-            Statement statement = connection.createStatement();
+            statement = connection.createStatement();
            
-            ResultSet resultSet = statement.executeQuery("select IDTEAM from Team where nom like '%"+nom+"%'");
-            int id = 0; 
+             ResultSet resultSet = statement.executeQuery("select IDTEAM from Team where nom like '%"+nom+"%'");
+            
+            
             while (resultSet.next())
                 id = resultSet.getInt(1);
+            }
+            finally{
+                if(statement!=null){
+                statement.close();
+            }
+                if(connection!=null){
+                    connection.close();
+                }
+            }
             
             return id;
         }

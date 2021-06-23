@@ -46,14 +46,26 @@ class JavaApplicationTests {
 
          int findteambynom(String nom) throws SQLException{
             OracleConnection connection = Connexion.getConnection();
-           
+           Statement statement = null;
+           int id = 0; 
+            try{
             
-            Statement statement = connection.createStatement();
+            statement = connection.createStatement();
            
              ResultSet resultSet = statement.executeQuery("select IDTEAM from Team where nom like '%"+nom+"%'");
-            int id = 0; 
+            
+            
             while (resultSet.next())
                 id = resultSet.getInt(1);
+            }
+            finally{
+                if(statement!=null){
+                statement.close();
+            }
+                if(connection!=null){
+                    connection.close();
+                }
+            }
             
             return id;
         }
@@ -91,58 +103,61 @@ class JavaApplicationTests {
             
             
              
-           ArrayList<Match> val = new ArrayList<>();
+        ArrayList<Match> val = new ArrayList<>();
           String url = "https://www.rivalry.com/api/v1/matches?game_id=3";
           
           HttpHeaders headers = new HttpHeaders();
             headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
             headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
-            HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
+            HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
             
-          ResponseEntity  response = restTemplate.exchange(url, HttpMethod.GET,entity ,Object.class);
-          System.out.println("response "+response.getBody());
+          ResponseEntity response = restTemplate.exchange(url, HttpMethod.GET,entity ,String.class);  
+          JSONObject json = new JSONObject(response.getBody().toString());
           
           
-          
-          JSONObject json = new JSONObject( (String) response.getBody().toString());
           JSONArray array = json.getJSONArray("data");
+          
           
           
           Date datenow = new java.sql.Date(Calendar.getInstance().getTime().getTime());
           for(int i=0;i<array.length();i++){
-              int id = array.getJSONObject(i).getInt("id");
+              int idRivalry = array.getJSONObject(i).getInt("id");
+              
               
               JSONArray arrayTeam = array.getJSONObject(i).getJSONArray("competitors");
             
             
-            String nomTeam = arrayTeam.getJSONObject(0).getString("name");
+            String nomTeam = arrayTeam.getJSONObject(1).getString("name");
             int idTeam1 = findteambynom(nomTeam);
             
             
             
-            nomTeam = arrayTeam.getJSONObject(1).getString("name");
+            nomTeam = arrayTeam.getJSONObject(0).getString("name");
+            System.out.println("nom team mbola mande"+nomTeam);
             int idTeam2 = findteambynom(nomTeam);
             
             String[] arrOfStr = array.getJSONObject(i).getString("scheduled_at").split("T");
             
             Date datematch = Date.valueOf(arrOfStr[0]);
             
-              System.out.println("id"+id);
-             
+              
               
               //si tous les equipes sont presentent dans notre BD
               if(idTeam1!=0 || idTeam2!=0){
-                  System.out.println("team anaty bd");
-                  System.out.println("Date match"+datematch);
+                 
                   if(datematch.compareTo(datenow)<=0){
-                      Match temp = new Match(idTeam1,idTeam2,id,datematch);
+                      
+                      Match temp = new Match(idTeam1,idTeam2,idRivalry,datematch);
+                     
                       val.add(temp);
-                      System.out.println("tafiditra ao anaty liste");
+                     
                   }
                   else{
                       break;
                   }
               }
+             
+          }
              
           }
           
@@ -151,4 +166,4 @@ class JavaApplicationTests {
             
 	}
 
-}
+

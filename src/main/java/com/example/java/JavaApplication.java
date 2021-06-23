@@ -263,7 +263,6 @@ private RestTemplate restTemplate;
                  
                   if(datematch.compareTo(datenow)<=0){
                       Match temp = new Match(idTeam1,idTeam2,idRivalry,datematch);
-                      temp.setIdMatchRivalry(idRivalry);
                       val.add(temp);
                      
                   }

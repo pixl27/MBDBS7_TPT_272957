@@ -16,6 +16,10 @@ public class Match {
     int idTeam1;
     int idTeam2;
     int idMatchRivalry;
+
+    public int getIdMatchRivalry() {
+        return idMatchRivalry;
+    }
     Date datematch;
 
     public Match(int idTeam1, int idTeam2, int idMatchRivalry, Date datematch) {

@@ -239,7 +239,7 @@ private RestTemplate restTemplate;
           Date datenow = new java.sql.Date(Calendar.getInstance().getTime().getTime());
           for(int i=0;i<array.length();i++){
               int idRivalry = array.getJSONObject(i).getInt("id");
-              System.out.println("IdRivalry" +idRivalry);
+              
               
               JSONArray arrayTeam = array.getJSONObject(i).getJSONArray("competitors");
             
@@ -262,6 +262,7 @@ private RestTemplate restTemplate;
               if(idTeam1!=0 || idTeam2!=0){
                  
                   if(datematch.compareTo(datenow)<=0){
+                      System.out.println("IdRivalry" +idRivalry);
                       Match temp = new Match(idTeam1,idTeam2,idRivalry,datematch);
                       val.add(temp);
                      

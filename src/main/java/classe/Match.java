@@ -18,17 +18,19 @@ public class Match {
     int idMatchRivalry;
     Date datematch;
 
-    public void setIdMatchRivalry(int idMatchRivalry) {
-        this.idMatchRivalry = idMatchRivalry;
-    }
-    
-
     public Match(int idTeam1, int idTeam2, int idMatchRivalry, Date datematch) {
         this.idTeam1 = idTeam1;
         this.idTeam2 = idTeam2;
         this.idMatchRivalry = idMatchRivalry;
         this.datematch = datematch;
     }
+
+    public void setIdMatchRivalry(int idMatchRivalry) {
+        this.idMatchRivalry = idMatchRivalry;
+    }
+    
+
+   
     
 
     public int getId() {

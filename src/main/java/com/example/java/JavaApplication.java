@@ -139,7 +139,7 @@ private RestTemplate restTemplate;
            
             PreparedStatement statement = null;
             try{
-                String query = "insert into Match values('Tolotra est bg',?)";
+                String query = "insert into TEST values('Tolotra est bg',?)";
                 statement = connection.prepareStatement(query);
                 statement.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
                 statement.executeQuery();

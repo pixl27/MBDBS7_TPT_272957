@@ -101,63 +101,7 @@ class JavaApplicationTests {
 	@Test
 	void contextLoads() throws SQLException, JSONException{
             
-            
-             
-        ArrayList<Match> val = new ArrayList<>();
-          String url = "https://www.rivalry.com/api/v1/matches?game_id=3";
-          
-          HttpHeaders headers = new HttpHeaders();
-            headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-            headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
-            HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
-            
-          ResponseEntity response = restTemplate.exchange(url, HttpMethod.GET,entity ,String.class);  
-          JSONObject json = new JSONObject(response.getBody().toString());
-          
-          
-          JSONArray array = json.getJSONArray("data");
-          
-          
-          
-          Date datenow = new java.sql.Date(Calendar.getInstance().getTime().getTime());
-          for(int i=0;i<array.length();i++){
-              int idRivalry = array.getJSONObject(i).getInt("id");
-              
-              
-              JSONArray arrayTeam = array.getJSONObject(i).getJSONArray("competitors");
-            
-            
-            String nomTeam = arrayTeam.getJSONObject(1).getString("name");
-            int idTeam1 = findteambynom(nomTeam);
-            
-            
-            
-            nomTeam = arrayTeam.getJSONObject(0).getString("name");
-            System.out.println("nom team mbola mande"+nomTeam);
-            int idTeam2 = findteambynom(nomTeam);
-            
-            String[] arrOfStr = array.getJSONObject(i).getString("scheduled_at").split("T");
-            
-            Date datematch = Date.valueOf(arrOfStr[0]);
-            
-              
-              
-              //si tous les equipes sont presentent dans notre BD
-              if(idTeam1!=0 || idTeam2!=0){
-                 
-                  if(datematch.compareTo(datenow)<=0){
-                      
-                      Match temp = new Match(idTeam1,idTeam2,idRivalry,datematch);
-                     
-                      val.add(temp);
-                     
-                  }
-                  else{
-                      break;
-                  }
-              }
-             
-          }
+     
              
           }
           

@@ -61,7 +61,7 @@ private RestTemplate restTemplate;
             
             Statement statement = connection.createStatement();
            
-            ResultSet resultSet = statement.executeQuery("select IDTEAM from Team where nom='"+nom+"'");
+            ResultSet resultSet = statement.executeQuery("select IDTEAM from Team where nom like '%"+nom+"%'");
             int id = 0; 
             while (resultSet.next())
                 id = resultSet.getInt(1);
@@ -75,7 +75,7 @@ private RestTemplate restTemplate;
             
             Statement statement = co.createStatement();
            
-            ResultSet resultSet = statement.executeQuery("select IDTEAM from Team where nom='"+nom+"'");
+            ResultSet resultSet = statement.executeQuery("select IDTEAM from Team where nom like '%"+nom+"%'");
             int id = 0; 
             while (resultSet.next())
                 id = resultSet.getInt(1);
@@ -211,22 +211,53 @@ private RestTemplate restTemplate;
         @ResponseBody
         ArrayList<Match> getAllMatch() throws SQLException{
             
+           
+             
           ArrayList<Match> val = new ArrayList<Match>();
           String url = "https://www.rivalry.com/api/v1/matches?game_id=3";
           String response = restTemplate.getForObject(url, String.class);  
           JSONObject json = new JSONObject(response);
           JSONArray array = json.getJSONArray("data");
           
+          
+          
           Date datenow = new java.sql.Date(Calendar.getInstance().getTime().getTime());
           for(int i=0;i<array.length();i++){
               int id = array.getJSONObject(i).getInt("id");
-              Match temp = getMatch(id);
+              
+              JSONArray arrayTeam = array.getJSONObject(i).getJSONArray("competitors");
+            
+            
+            String nomTeam = arrayTeam.getJSONObject(0).getString("name");
+            int idTeam1 = findteambynom(nomTeam);
+            
+            
+            
+            nomTeam = arrayTeam.getJSONObject(1).getString("name");
+            int idTeam2 = findteambynom(nomTeam);
+            
+            String[] arrOfStr = array.getJSONObject(i).getString("scheduled_at").split("T");
+            
+            Date datematch = Date.valueOf(arrOfStr[0]);
+            
+              System.out.println("id"+id);
+              System.out.println("idTeam1"+idTeam1);
+              System.out.println("idTeam2"+idTeam2);
+              
               //si tous les equipes sont presentent dans notre BD
-              if(temp!=null){
-                  if(temp.getDatematch()==datenow){
+              if(idTeam1!=0 && idTeam2!=0){
+                  System.out.println("team anaty bd");
+                  System.out.println("Date match"+datematch);
+                  if(datematch.compareTo(datenow)<=0){
+                      Match temp = new Match(idTeam1,idTeam2,id,datematch);
                       val.add(temp);
+                      System.out.println("tafiditra ao anaty liste");
+                  }
+                  else{
+                      break;
                   }
               }
+             
           }
           return val;
           

@@ -15,6 +15,15 @@ public class Match {
     int id;
     int idTeam1;
     int idTeam2;
+    int idMatchRivalry;
+    
+
+    public Match(int idTeam1, int idTeam2, int idMatchRivalry, Date datematch) {
+        this.idTeam1 = idTeam1;
+        this.idTeam2 = idTeam2;
+        this.idMatchRivalry = idMatchRivalry;
+        this.datematch = datematch;
+    }
     Date datematch;
 
     public int getId() {

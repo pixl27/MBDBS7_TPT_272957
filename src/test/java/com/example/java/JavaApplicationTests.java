@@ -45,7 +45,7 @@ class JavaApplicationTests {
             
             Statement statement = connection.createStatement();
            
-            ResultSet resultSet = statement.executeQuery("select IDTEAM from Team where nom='"+nom+"'");
+             ResultSet resultSet = statement.executeQuery("select IDTEAM from Team where nom like '%"+nom+"%'");
             int id = 0; 
             while (resultSet.next())
                 id = resultSet.getInt(1);
@@ -53,15 +53,9 @@ class JavaApplicationTests {
             return id;
         }
          
-	@Test
-	void contextLoads() throws SQLException, JSONException{
-            
-            
-             
-           String url = "https://www.rivalry.com/api/v1/matches/375189";
+            Match getMatch(int idMatchRivalry) throws SQLException, JSONException{
+            String url = "https://www.rivalry.com/api/v1/matches/"+idMatchRivalry;
             String response = restTemplate.getForObject(url, String.class);  
-            
-            
             
             
             JSONObject json = new JSONObject(response);
@@ -71,16 +65,74 @@ class JavaApplicationTests {
             String nomTeam = array.getJSONObject(0).getString("name");
             int idTeam1 = findteambynom(nomTeam);
             
+            
             nomTeam = array.getJSONObject(1).getString("name");
             int idTeam2 = findteambynom(nomTeam);
+            if(idTeam1==0 && idTeam2 == 0){
+                return null;
+            }
             
             String[] arrOfStr = json.getJSONObject("data").getString("scheduled_at").split("T");
-            System.out.println("date"+arrOfStr[0]);
+            
             Date datematch = Date.valueOf(arrOfStr[0]);
             
             
             Match val = new Match(idTeam1,idTeam2,datematch);
-            System.out.println("idTeam" + idTeam2);
+            return val;
+        }
+         
+	@Test
+	void contextLoads() throws SQLException, JSONException{
+            
+            
+             
+          ArrayList<Match> val = new ArrayList<Match>();
+          String url = "https://www.rivalry.com/api/v1/matches?game_id=3";
+          String response = restTemplate.getForObject(url, String.class);  
+          JSONObject json = new JSONObject(response);
+          JSONArray array = json.getJSONArray("data");
+          
+          
+          
+          Date datenow = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+          for(int i=0;i<array.length();i++){
+              int id = array.getJSONObject(i).getInt("id");
+              
+              JSONArray arrayTeam = array.getJSONObject(i).getJSONArray("competitors");
+            
+            
+            String nomTeam = arrayTeam.getJSONObject(0).getString("name");
+            int idTeam1 = findteambynom(nomTeam);
+            
+            
+            
+            nomTeam = arrayTeam.getJSONObject(1).getString("name");
+            int idTeam2 = findteambynom(nomTeam);
+            
+            String[] arrOfStr = array.getJSONObject(i).getString("scheduled_at").split("T");
+            
+            Date datematch = Date.valueOf(arrOfStr[0]);
+            
+              System.out.println("id"+id);
+              System.out.println("idTeam1"+idTeam1);
+              System.out.println("idTeam2"+idTeam2);
+              
+              //si tous les equipes sont presentent dans notre BD
+              if(idTeam1!=0 && idTeam2!=0){
+                  System.out.println("team anaty bd");
+                  System.out.println("Date match"+datematch);
+                  if(datematch.compareTo(datenow)<=0){
+                      Match temp = new Match(idTeam1,idTeam2,id,datematch);
+                      val.add(temp);
+                      System.out.println("tafiditra ao anaty liste");
+                  }
+                  else{
+                      break;
+                  }
+              }
+             
+          }
+          
             
             
             

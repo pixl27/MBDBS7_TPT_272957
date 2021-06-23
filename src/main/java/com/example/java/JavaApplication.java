@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -209,11 +210,11 @@ private RestTemplate restTemplate;
         
         @GetMapping(path="/getallmatch", produces = "application/json")
         @ResponseBody
-        ArrayList<Match> getAllMatch() throws SQLException{
+        ArrayList<Match> getAllMatch() throws SQLException, JSONException{
             
            
              
-          ArrayList<Match> val = new ArrayList<Match>();
+           ArrayList<Match> val = new ArrayList<>();
           String url = "https://www.rivalry.com/api/v1/matches?game_id=3";
           String response = restTemplate.getForObject(url, String.class);  
           JSONObject json = new JSONObject(response);
@@ -245,7 +246,7 @@ private RestTemplate restTemplate;
               System.out.println("idTeam2"+idTeam2);
               
               //si tous les equipes sont presentent dans notre BD
-              if(idTeam1!=0 && idTeam2!=0){
+              if(idTeam1!=0 || idTeam2!=0){
                   System.out.println("team anaty bd");
                   System.out.println("Date match"+datematch);
                   if(datematch.compareTo(datenow)<=0){

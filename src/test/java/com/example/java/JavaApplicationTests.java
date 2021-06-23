@@ -114,11 +114,10 @@ class JavaApplicationTests {
             Date datematch = Date.valueOf(arrOfStr[0]);
             
               System.out.println("id"+id);
-              System.out.println("idTeam1"+idTeam1);
-              System.out.println("idTeam2"+idTeam2);
+             
               
               //si tous les equipes sont presentent dans notre BD
-              if(idTeam1!=0 && idTeam2!=0){
+              if(idTeam1!=0 || idTeam2!=0){
                   System.out.println("team anaty bd");
                   System.out.println("Date match"+datematch);
                   if(datematch.compareTo(datenow)<=0){

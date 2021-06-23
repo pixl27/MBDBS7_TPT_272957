@@ -26,6 +26,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 
@@ -86,12 +91,21 @@ class JavaApplicationTests {
             
             
              
-          ArrayList<Match> val = new ArrayList<Match>();
+           ArrayList<Match> val = new ArrayList<>();
           String url = "https://www.rivalry.com/api/v1/matches?game_id=3";
-          String response = restTemplate.getForObject(url, String.class);  
-          JSONObject json = new JSONObject(response);
-          JSONArray array = json.getJSONArray("data");
           
+          HttpHeaders headers = new HttpHeaders();
+            headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+            headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+            HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
+            
+          ResponseEntity  response = restTemplate.exchange(url, HttpMethod.GET,entity ,Object.class);
+          System.out.println("response "+response.getBody());
+          
+          
+          
+          JSONObject json = new JSONObject( (String) response.getBody().toString());
+          JSONArray array = json.getJSONArray("data");
           
           
           Date datenow = new java.sql.Date(Calendar.getInstance().getTime().getTime());

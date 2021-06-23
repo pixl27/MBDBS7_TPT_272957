@@ -230,7 +230,7 @@ private RestTemplate restTemplate;
             
           ResponseEntity response = restTemplate.exchange(url, HttpMethod.GET,entity ,String.class);  
           JSONObject json = new JSONObject(response.getBody().toString());
-          System.out.println("ResponseByTolotra" +response.getBody().toString());
+          
           
           JSONArray array = json.getJSONArray("data");
           
@@ -238,7 +238,8 @@ private RestTemplate restTemplate;
           
           Date datenow = new java.sql.Date(Calendar.getInstance().getTime().getTime());
           for(int i=0;i<array.length();i++){
-              int id = array.getJSONObject(i).getInt("id");
+              int idRivalry = array.getJSONObject(i).getInt("id");
+              System.out.println("IdRivalry" +idRivalry);
               
               JSONArray arrayTeam = array.getJSONObject(i).getJSONArray("competitors");
             
@@ -261,8 +262,8 @@ private RestTemplate restTemplate;
               if(idTeam1!=0 || idTeam2!=0){
                  
                   if(datematch.compareTo(datenow)<=0){
-                      Match temp = new Match(idTeam1,idTeam2,id,datematch);
-                      temp.setIdMatchRivalry(id);
+                      Match temp = new Match(idTeam1,idTeam2,idRivalry,datematch);
+                      temp.setIdMatchRivalry(idRivalry);
                       val.add(temp);
                      
                   }

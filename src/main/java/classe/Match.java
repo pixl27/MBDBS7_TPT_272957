@@ -16,6 +16,7 @@ public class Match {
     int idTeam1;
     int idTeam2;
     int idMatchRivalry;
+    Date datematch;
 
     public void setIdMatchRivalry(int idMatchRivalry) {
         this.idMatchRivalry = idMatchRivalry;
@@ -28,7 +29,7 @@ public class Match {
         this.idMatchRivalry = idMatchRivalry;
         this.datematch = datematch;
     }
-    Date datematch;
+    
 
     public int getId() {
         return id;

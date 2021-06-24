@@ -10,6 +10,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+
+import org.quartz.*;
+import org.quartz.impl.StdSchedulerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import static org.quartz.JobBuilder.newJob;
+import static org.quartz.SimpleScheduleBuilder.repeatSecondlyForever;
+import static org.quartz.TriggerBuilder.newTrigger;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -25,7 +34,7 @@ import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -318,24 +327,31 @@ private RestTemplate restTemplate;
         
         
         
-        
-	public static void main(String[] args) {
+        final static Logger logger = LoggerFactory.getLogger(JavaApplication.class);
+	public static void main(String[] args) throws SchedulerException {
 		SpringApplication.run(JavaApplication.class, args);
-                Timer timer = new Timer ();
-                TimerTask hourlyTask;
-       hourlyTask = new TimerTask () {
-           @Override
-           public void run () {
-               try {
-                   insererTest();
-               } catch (SQLException ex) {
-                   Logger.getLogger(JavaApplication.class.getName()).log(Level.SEVERE, null, ex);
-               }
-           }
-       };
+                
+                Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
 
-                // schedule the task to run starting now and then every hour...
-                timer.schedule (hourlyTask, 0l, 1000*60*60);
+        scheduler.start();
+
+        JobDetail jobDetail = newJob(HelloJob.class).build();
+
+        Trigger trigger = newTrigger()
+                .startNow()
+                .withSchedule(repeatSecondlyForever(2))
+                .build();
+
+        scheduler.scheduleJob(jobDetail, trigger);
+              
 	}
+        
+        public static class HelloJob implements Job {
+
+            @Override
+            public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+                logger.info("HelloJob executed");
+            }
+        }
 }
 

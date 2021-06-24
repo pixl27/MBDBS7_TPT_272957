@@ -179,7 +179,7 @@ private RestTemplate restTemplate;
            
             PreparedStatement statement = null;
             try{
-                String query = "insert into TEST values('Tolotra est bg',?)";
+                String query = "insert into TEST values('tous les 3 HEURES',?)";
                 statement = connection.prepareStatement(query);
                 statement.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
                 statement.executeQuery();
@@ -403,7 +403,7 @@ private RestTemplate restTemplate;
 
         Trigger trigger = newTrigger()
                 .startNow()
-                .withSchedule(repeatSecondlyForever(60))
+                .withSchedule(repeatSecondlyForever(10800))
                 .build();
 
         scheduler.scheduleJob(jobDetail, trigger);
@@ -414,13 +414,13 @@ private RestTemplate restTemplate;
 
             @Override
             public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-                /*
+                
                 try {
                     insererTest();
                 } catch (SQLException ex) {
                     java.util.logging.Logger.getLogger(JavaApplication.class.getName()).log(Level.SEVERE, null, ex);
                 }
-*/
+
             }
         }
 }

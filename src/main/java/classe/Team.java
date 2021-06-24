@@ -24,6 +24,7 @@ public class Team {
     
     String logo;
 
+    public Team(){}
     public Team(int idTeam, String logo) {
         this.idTeam = idTeam;
         this.logo = logo;

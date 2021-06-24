@@ -79,8 +79,8 @@ private RestTemplate restTemplate;
         Team findteambynom(String nom) throws SQLException{
             OracleConnection connection = Connexion.getConnection();
            Statement statement = null;
-           Team val = null;
-           int id = 0; 
+           Team val = new Team();
+           
             try{
             
             statement = connection.createStatement();
@@ -88,9 +88,9 @@ private RestTemplate restTemplate;
             ResultSet resultSet = statement.executeQuery("select IDTEAM,LOGO from Team where nom like '%"+nom+"%'");
             
             
-            while (resultSet.next())
+            while (resultSet.next()){
                 val.setIdTeam(resultSet.getInt(1));
-                val.setLogo(resultSet.getString(2));
+                val.setLogo(resultSet.getString(2));}
             }
             finally{
                 if(statement!=null){
@@ -113,7 +113,7 @@ private RestTemplate restTemplate;
             
             statement = connection.createStatement();
            
-            ResultSet resultSet = statement.executeQuery("select IDTEAM,LOGO from Team where nom like '%"+nom+"%'");
+            ResultSet resultSet = statement.executeQuery("select IDTEAM from Team where nom like '%"+nom+"%'");
             
             
             while (resultSet.next())

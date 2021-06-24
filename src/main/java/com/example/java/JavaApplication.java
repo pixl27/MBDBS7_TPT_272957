@@ -292,8 +292,13 @@ private RestTemplate restTemplate;
               JSONArray arrayTeam = array.getJSONObject(i).getJSONArray("competitors");
               
               JSONArray arrayOdds = array.getJSONObject(i).getJSONArray("markets").getJSONObject(0).getJSONArray("outcomes");
-              float odds1 = arrayOdds.getJSONObject(0).getFloat("odds");
-              float odds2 = arrayOdds.getJSONObject(1).getFloat("odds");
+              float odds1 = 0;
+              float odds2 = 0;
+              if(arrayOdds.length()>0){
+                  odds1 = (float) arrayOdds.getJSONObject(0).getDouble("odds");
+                  odds2 = (float) arrayOdds.getJSONObject(1).getDouble("odds");
+              }
+              
               
             
             

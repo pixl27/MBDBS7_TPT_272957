@@ -287,7 +287,7 @@ private RestTemplate restTemplate;
           Date datenow = new java.sql.Date(Calendar.getInstance().getTime().getTime());
           for(int i=0;i<array.length();i++){
               int idRivalry = array.getJSONObject(i).getInt("id");
-              String tournois = array.getJSONObject(i).getString("tournament");
+              String tournois = array.getJSONObject(i).getJSONObject("tournament").getString("name");
               
               JSONArray arrayTeam = array.getJSONObject(i).getJSONArray("competitors");
               

@@ -350,11 +350,13 @@ private RestTemplate restTemplate;
 
             @Override
             public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+                /*
                 try {
                     insererTest();
                 } catch (SQLException ex) {
                     java.util.logging.Logger.getLogger(JavaApplication.class.getName()).log(Level.SEVERE, null, ex);
                 }
+*/
             }
         }
 }

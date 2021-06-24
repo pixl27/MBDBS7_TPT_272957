@@ -42,6 +42,14 @@ public class MatchAPI {
     String tournois;
     int nbrMap;
 
+    public int getNbrMap() {
+        return nbrMap;
+    }
+
+    public void setNbrMap(int nbrMap) {
+        this.nbrMap = nbrMap;
+    }
+
     public MatchAPI(int idTeam1, int idTeam2, int idMatchRivalry, Date datematch, String nomTeam1, String nomTeam2, float odds1, float odds2, String logo1, String logo2, String time, String tournois, int nbrMap) {
         this.idTeam1 = idTeam1;
         this.idTeam2 = idTeam2;

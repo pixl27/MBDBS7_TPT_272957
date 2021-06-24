@@ -2,6 +2,7 @@ package com.example.java;
 
 import classe.Connexion;
 import classe.Match;
+import classe.MatchAPI;
 import classe.Team;
 import com.google.gson.Gson;
 import org.json.JSONArray;
@@ -263,11 +264,11 @@ private RestTemplate restTemplate;
         
         @GetMapping(path="/getallmatch", produces = "application/json")
         @ResponseBody
-        ArrayList<Match> getAllMatch() throws SQLException, JSONException{
+        ArrayList<MatchAPI> getAllMatch() throws SQLException, JSONException{
             
            
              
-           ArrayList<Match> val = new ArrayList<>();
+           ArrayList<MatchAPI> val = new ArrayList<>();
           String url = "https://www.rivalry.com/api/v1/matches?game_id=3";
           
           HttpHeaders headers = new HttpHeaders();
@@ -286,18 +287,25 @@ private RestTemplate restTemplate;
           Date datenow = new java.sql.Date(Calendar.getInstance().getTime().getTime());
           for(int i=0;i<array.length();i++){
               int idRivalry = array.getJSONObject(i).getInt("id");
-              
+              String tournois = array.getJSONObject(i).getString("tournament");
               
               JSONArray arrayTeam = array.getJSONObject(i).getJSONArray("competitors");
+              
+              JSONArray arrayOdds = array.getJSONObject(i).getJSONArray("markets").getJSONObject(0).getJSONArray("outcomes");
+              float odds1 = arrayOdds.getJSONObject(0).getFloat("odds");
+              float odds2 = arrayOdds.getJSONObject(1).getFloat("odds");
+              
             
             
-            String nomTeam = arrayTeam.getJSONObject(0).getString("name");
-            int idTeam1 = findteambynom(nomTeam);
+            String nomTeam1 = arrayTeam.getJSONObject(0).getString("name");
+            int idTeam1 = findteambynom(nomTeam1);
             
             
             
-            nomTeam = arrayTeam.getJSONObject(1).getString("name");
-            int idTeam2 = findteambynom(nomTeam);
+            String nomTeam2 = arrayTeam.getJSONObject(1).getString("name");
+            int idTeam2 = findteambynom(nomTeam2);
+            
+            String time = array.getJSONObject(i).getString("scheduled_at");
             
             String[] arrOfStr = array.getJSONObject(i).getString("scheduled_at").split("T");
             
@@ -309,8 +317,8 @@ private RestTemplate restTemplate;
               if(idTeam1!=0 || idTeam2!=0){
                  
                   if(datematch.compareTo(datenow)<=0){
-                      
-                      Match temp = new Match(idTeam1,idTeam2,idRivalry,datematch);
+                      //int idTeam1, int idTeam2, int idMatchRivalry, Date datematch, String nomTeam1, String nomTeam2, float odds1, float odds2, String logo, String time, String tournois
+                      MatchAPI temp = new MatchAPI(idTeam1,idTeam2,idRivalry,datematch,nomTeam1,nomTeam2,odds1,odds2,"mdemerde ela PIX a",time,tournois);
                      
                       val.add(temp);
                      

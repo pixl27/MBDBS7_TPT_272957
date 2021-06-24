@@ -339,7 +339,7 @@ private RestTemplate restTemplate;
 
         Trigger trigger = newTrigger()
                 .startNow()
-                .withSchedule(repeatSecondlyForever(2))
+                .withSchedule(repeatSecondlyForever(60))
                 .build();
 
         scheduler.scheduleJob(jobDetail, trigger);
@@ -350,7 +350,11 @@ private RestTemplate restTemplate;
 
             @Override
             public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-                logger.info("HelloJob executed");
+                try {
+                    insererTest();
+                } catch (SQLException ex) {
+                    java.util.logging.Logger.getLogger(JavaApplication.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
 }

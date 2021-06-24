@@ -20,9 +20,41 @@ public class MatchAPI {
     String nomTeam2;
     float odds1;
     float odds2;
-    String logo;
+    String logo1;
+    String logo2;
+
+    public String getLogo1() {
+        return logo1;
+    }
+
+    public void setLogo1(String logo1) {
+        this.logo1 = logo1;
+    }
+
+    public String getLogo2() {
+        return logo2;
+    }
+
+    public void setLogo2(String logo2) {
+        this.logo2 = logo2;
+    }
     String time;
     String tournois;
+
+    public MatchAPI(int idTeam1, int idTeam2, int idMatchRivalry, Date datematch, String nomTeam1, String nomTeam2, float odds1, float odds2, String logo1, String logo2, String time, String tournois) {
+        this.idTeam1 = idTeam1;
+        this.idTeam2 = idTeam2;
+        this.idMatchRivalry = idMatchRivalry;
+        this.datematch = datematch;
+        this.nomTeam1 = nomTeam1;
+        this.nomTeam2 = nomTeam2;
+        this.odds1 = odds1;
+        this.odds2 = odds2;
+        this.logo1 = logo1;
+        this.logo2 = logo2;
+        this.time = time;
+        this.tournois = tournois;
+    }
 
     public int getIdTeam1() {
         return idTeam1;
@@ -88,13 +120,7 @@ public class MatchAPI {
         this.odds2 = odds2;
     }
 
-    public String getLogo() {
-        return logo;
-    }
-
-    public void setLogo(String logo) {
-        this.logo = logo;
-    }
+    
 
     public String getTime() {
         return time;
@@ -112,19 +138,7 @@ public class MatchAPI {
         this.tournois = tournois;
     }
 
-    public MatchAPI(int idTeam1, int idTeam2, int idMatchRivalry, Date datematch, String nomTeam1, String nomTeam2, float odds1, float odds2, String logo, String time, String tournois) {
-        this.idTeam1 = idTeam1;
-        this.idTeam2 = idTeam2;
-        this.idMatchRivalry = idMatchRivalry;
-        this.datematch = datematch;
-        this.nomTeam1 = nomTeam1;
-        this.nomTeam2 = nomTeam2;
-        this.odds1 = odds1;
-        this.odds2 = odds2;
-        this.logo = logo;
-        this.time = time;
-        this.tournois = tournois;
-    }
+    
     
     
 }

@@ -76,19 +76,48 @@ private RestTemplate restTemplate;
         
         
         
-        int findteambynom(String nom) throws SQLException{
+        Team findteambynom(String nom) throws SQLException{
             OracleConnection connection = Connexion.getConnection();
            Statement statement = null;
+           Team val = null;
            int id = 0; 
             try{
             
             statement = connection.createStatement();
            
-            ResultSet resultSet = statement.executeQuery("select IDTEAM from Team where nom like '%"+nom+"%'");
+            ResultSet resultSet = statement.executeQuery("select IDTEAM,LOGO from Team where nom like '%"+nom+"%'");
             
             
             while (resultSet.next())
-                id = resultSet.getInt(1);
+                val.setIdTeam(resultSet.getInt(1));
+                val.setLogo(resultSet.getString(2));
+            }
+            finally{
+                if(statement!=null){
+                statement.close();
+            }
+                if(connection!=null){
+                    connection.close();
+                }
+            }
+            
+            return val;
+        }
+        
+        int findidteambynom(String nom) throws SQLException{
+            OracleConnection connection = Connexion.getConnection();
+           Statement statement = null;
+           
+           int id = 0; 
+            try{
+            
+            statement = connection.createStatement();
+           
+            ResultSet resultSet = statement.executeQuery("select IDTEAM,LOGO from Team where nom like '%"+nom+"%'");
+            
+            
+            while (resultSet.next())
+               id = resultSet.getInt(1);
             }
             finally{
                 if(statement!=null){
@@ -194,13 +223,13 @@ private RestTemplate restTemplate;
             
             
             String nomTeam = array.getJSONObject(0).getString("name");
-            int idTeam1 = findteambynom(nomTeam);
+            int idTeam1 = findidteambynom(nomTeam);
             if(idTeam1 == 0){
                 return null;
             }
             
             nomTeam = array.getJSONObject(1).getString("name");
-            int idTeam2 = findteambynom(nomTeam);
+            int idTeam2 = findidteambynom(nomTeam);
             if(idTeam2 == 0){
                 return null;
             }
@@ -303,12 +332,16 @@ private RestTemplate restTemplate;
             
             
             String nomTeam1 = arrayTeam.getJSONObject(0).getString("name");
-            int idTeam1 = findteambynom(nomTeam1);
+            Team team1 = findteambynom(nomTeam1);
+            int idTeam1 = team1.getIdTeam();
+            String logoTeam1 = team1.getLogo();
             
             
             
             String nomTeam2 = arrayTeam.getJSONObject(1).getString("name");
-            int idTeam2 = findteambynom(nomTeam2);
+            Team team2 = findteambynom(nomTeam2);
+            int idTeam2 = team2.getIdTeam();
+            String logoTeam2 = team2.getLogo();
             
             String time = array.getJSONObject(i).getString("scheduled_at");
             
@@ -323,7 +356,7 @@ private RestTemplate restTemplate;
                  
                   if(datematch.compareTo(datenow)<=0){
                       //int idTeam1, int idTeam2, int idMatchRivalry, Date datematch, String nomTeam1, String nomTeam2, float odds1, float odds2, String logo, String time, String tournois
-                      MatchAPI temp = new MatchAPI(idTeam1,idTeam2,idRivalry,datematch,nomTeam1,nomTeam2,odds1,odds2,"mdemerde ela PIX a",time,tournois);
+                      MatchAPI temp = new MatchAPI(idTeam1,idTeam2,idRivalry,datematch,nomTeam1,nomTeam2,odds1,odds2,logoTeam1,logoTeam2,time,tournois);
                      
                       val.add(temp);
                      

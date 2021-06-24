@@ -14,6 +14,21 @@ public class Team {
     String nom;
     String tag;
 
+    public String getLogo() {
+        return logo;
+    }
+
+    public void setLogo(String logo) {
+        this.logo = logo;
+    }
+    
+    String logo;
+
+    public Team(int idTeam, String logo) {
+        this.idTeam = idTeam;
+        this.logo = logo;
+    }
+
     public int getIdTeam() {
         return idTeam;
     }

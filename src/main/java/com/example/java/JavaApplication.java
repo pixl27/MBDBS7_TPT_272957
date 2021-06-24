@@ -370,6 +370,7 @@ private RestTemplate restTemplate;
               if(idTeam1!=0 || idTeam2!=0){
                  
                   if(datematch.compareTo(datenow)<=0){
+                      System.out.println("NbrMap:"+nbrMap);
                       //int idTeam1, int idTeam2, int idMatchRivalry, Date datematch, String nomTeam1, String nomTeam2, float odds1, float odds2, String logo, String time, String tournois
                       MatchAPI temp = new MatchAPI(idTeam1,idTeam2,idRivalry,datematch,nomTeam1,nomTeam2,odds1,odds2,logoTeam1,logoTeam2,time,tournois,nbrMap);
                      

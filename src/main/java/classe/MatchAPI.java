@@ -40,8 +40,9 @@ public class MatchAPI {
     }
     String time;
     String tournois;
+    int nbrMap;
 
-    public MatchAPI(int idTeam1, int idTeam2, int idMatchRivalry, Date datematch, String nomTeam1, String nomTeam2, float odds1, float odds2, String logo1, String logo2, String time, String tournois) {
+    public MatchAPI(int idTeam1, int idTeam2, int idMatchRivalry, Date datematch, String nomTeam1, String nomTeam2, float odds1, float odds2, String logo1, String logo2, String time, String tournois, int nbrMap) {
         this.idTeam1 = idTeam1;
         this.idTeam2 = idTeam2;
         this.idMatchRivalry = idMatchRivalry;
@@ -54,6 +55,7 @@ public class MatchAPI {
         this.logo2 = logo2;
         this.time = time;
         this.tournois = tournois;
+        this.nbrMap = nbrMap;
     }
 
     public int getIdTeam1() {

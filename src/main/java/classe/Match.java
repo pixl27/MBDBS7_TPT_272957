@@ -16,6 +16,7 @@ public class Match {
     int idTeam1;
     int idTeam2;
     int idMatchRivalry;
+    
 
     public int getIdMatchRivalry() {
         return idMatchRivalry;

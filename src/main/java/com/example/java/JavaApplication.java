@@ -90,7 +90,8 @@ private RestTemplate restTemplate;
             
             while (resultSet.next()){
                 val.setIdTeam(resultSet.getInt(1));
-                val.setLogo(resultSet.getString(2));}
+                val.setLogo(resultSet.getString(2));
+            }
             }
             finally{
                 if(statement!=null){
@@ -172,7 +173,7 @@ private RestTemplate restTemplate;
             }
         }
         
-         static void insererTest() throws SQLException{
+        static void insererTest() throws SQLException{
              
             OracleConnection connection = Connexion.getConnection();
            
@@ -321,6 +322,20 @@ private RestTemplate restTemplate;
               JSONArray arrayTeam = array.getJSONObject(i).getJSONArray("competitors");
               
               JSONArray arrayOdds = array.getJSONObject(i).getJSONArray("markets").getJSONObject(0).getJSONArray("outcomes");
+              
+              int nbrMap = 1;
+              while(nbrMap<=100){
+                  String temp = "Map "+nbrMap+" - Winner";
+                  int indice = nbrMap-1;
+                  String name = array.getJSONObject(i).getJSONArray("markets").getJSONObject(indice).getString("name");
+                  if(temp.equals(name)){
+                      nbrMap++;
+                  }
+                  else{
+                      break;
+                  }
+              }
+              
               float odds1 = 0;
               float odds2 = 0;
               if(arrayOdds.length()>0){
@@ -356,7 +371,7 @@ private RestTemplate restTemplate;
                  
                   if(datematch.compareTo(datenow)<=0){
                       //int idTeam1, int idTeam2, int idMatchRivalry, Date datematch, String nomTeam1, String nomTeam2, float odds1, float odds2, String logo, String time, String tournois
-                      MatchAPI temp = new MatchAPI(idTeam1,idTeam2,idRivalry,datematch,nomTeam1,nomTeam2,odds1,odds2,logoTeam1,logoTeam2,time,tournois);
+                      MatchAPI temp = new MatchAPI(idTeam1,idTeam2,idRivalry,datematch,nomTeam1,nomTeam2,odds1,odds2,logoTeam1,logoTeam2,time,tournois,nbrMap);
                      
                       val.add(temp);
                      

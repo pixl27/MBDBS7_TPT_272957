@@ -18,7 +18,11 @@ function transaction(req,res) {
 
   }
   else {
-    User.update({id:0}, {solde:0});
+    User.updateOne({id: 0}, {
+      $inc : {solde : -req.body.solde}
+  }, function(err, affected, resp) {
+     console.log(resp);
+  })
 
   }
   res.json({ message: "updated" });

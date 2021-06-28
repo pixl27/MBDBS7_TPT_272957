@@ -93,14 +93,18 @@ private RestTemplate restTemplate;
         return 0;
     }
     
-    /*
-    int getVraiTeam(ArrayList<Team> list){
-        int val = 0;
-        for(int i =0;i<list.size();i++){
-            
-        }
-        return 0;
-    }*/
+     int getVraiTeam(ArrayList<Team> list){
+            int val = 0;
+            int timeMax = 0;
+            for(int i =0;i<list.size();i++){
+                 int startTimeTemp = list.get(i).getIdTeam();
+                 if(startTimeTemp>timeMax){
+                     val = i;
+                     timeMax = startTimeTemp;
+                 }
+            }
+            return val;
+    }
     
     JSONObject getJSONAPI(String url){
          HttpHeaders headers = new HttpHeaders();
@@ -132,18 +136,19 @@ private RestTemplate restTemplate;
           return val;
     }
         
-        Team findteambynomV2(String nom) throws SQLException{
+     Team findTeambynomV2(String nom) throws SQLException{
             OracleConnection connection = Connexion.getConnection();
            Statement statement = null;
            Team val = new Team();
            
             try{
             
-                statement = connection.createStatement();
+                statement = connection.createStatement( ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
 
                 ResultSet resultSet = statement.executeQuery("select IDTEAM,LOGO from Team where nom like '%"+nom+"%'");
 
                 int nbrRow = getRowCount(resultSet);
+                System.out.println("nbrRow:"+nbrRow);
                 if(nbrRow==1){
                     while (resultSet.next()){
                         val.setIdTeam(resultSet.getInt(1));
@@ -151,6 +156,7 @@ private RestTemplate restTemplate;
                     }
                 }
                 if(nbrRow>1){
+                    System.out.println("Team de ce nom bobaka");
                     ArrayList<Team> arrayTeamTemp = new ArrayList();
                     while (resultSet.next()){
                         Team temp = new Team();
@@ -158,7 +164,8 @@ private RestTemplate restTemplate;
                         temp.setLogo(resultSet.getString(2));
                         arrayTeamTemp.add(temp);
                     }
-                    
+                    int indiceVrai = getVraiTeam(arrayTeamTemp);
+                    val = arrayTeamTemp.get(indiceVrai);
                 }
             }
             finally{
@@ -450,14 +457,14 @@ private RestTemplate restTemplate;
             
             
             String nomTeam1 = arrayTeam.getJSONObject(0).getString("name");
-            Team team1 = findteambynom(nomTeam1);
+            Team team1 = findTeambynomV2(nomTeam1);
             int idTeam1 = team1.getIdTeam();
             String logoTeam1 = team1.getLogo();
             
             
             
             String nomTeam2 = arrayTeam.getJSONObject(1).getString("name");
-            Team team2 = findteambynom(nomTeam2);
+            Team team2 = findTeambynomV2(nomTeam2);
             int idTeam2 = team2.getIdTeam();
             String logoTeam2 = team2.getLogo();
             
@@ -513,7 +520,7 @@ private RestTemplate restTemplate;
           
           
           Date datenow = new java.sql.Date(Calendar.getInstance().getTime().getTime());
-          for(int i=0;i<array.length();i++){
+          for(int i=0;i<10;i++){
               int idRivalry = array.getJSONObject(i).getInt("id");
               String tournois = array.getJSONObject(i).getJSONObject("tournament").getString("name");
               
@@ -547,14 +554,14 @@ private RestTemplate restTemplate;
             
             
             String nomTeam1 = arrayTeam.getJSONObject(0).getString("name");
-            Team team1 = findteambynom(nomTeam1);
+            Team team1 = findTeambynomV2(nomTeam1);
             int idTeam1 = team1.getIdTeam();
             String logoTeam1 = team1.getLogo();
             
             
             
             String nomTeam2 = arrayTeam.getJSONObject(1).getString("name");
-            Team team2 = findteambynom(nomTeam2);
+            Team team2 = findTeambynomV2(nomTeam2);
             int idTeam2 = team2.getIdTeam();
             String logoTeam2 = team2.getLogo();
             

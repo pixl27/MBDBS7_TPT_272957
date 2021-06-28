@@ -70,22 +70,27 @@ class JavaApplicationTests {
             int timeMax = 0;
             for(int i =0;i<list.size();i++){
                  int startTimeTemp = list.get(i).getIdTeam();
+                 if(startTimeTemp>timeMax){
+                     val = i;
+                     timeMax = startTimeTemp;
+                 }
             }
-            return 0;
+            return val;
         }
     
-        Team findTeambynom(String nom) throws SQLException{
+        Team findTeambynomV2(String nom) throws SQLException{
             OracleConnection connection = Connexion.getConnection();
            Statement statement = null;
            Team val = new Team();
            
             try{
             
-                statement = connection.createStatement();
+                statement = connection.createStatement( ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
 
                 ResultSet resultSet = statement.executeQuery("select IDTEAM,LOGO from Team where nom like '%"+nom+"%'");
 
                 int nbrRow = getRowCount(resultSet);
+                System.out.println("nbrRow:"+nbrRow);
                 if(nbrRow==1){
                     while (resultSet.next()){
                         val.setIdTeam(resultSet.getInt(1));
@@ -93,6 +98,7 @@ class JavaApplicationTests {
                     }
                 }
                 if(nbrRow>1){
+                    System.out.println("Team de ce nom bobaka");
                     ArrayList<Team> arrayTeamTemp = new ArrayList();
                     while (resultSet.next()){
                         Team temp = new Team();
@@ -100,7 +106,8 @@ class JavaApplicationTests {
                         temp.setLogo(resultSet.getString(2));
                         arrayTeamTemp.add(temp);
                     }
-                    
+                    int indiceVrai = getVraiTeam(arrayTeamTemp);
+                    val = arrayTeamTemp.get(indiceVrai);
                 }
             }
             finally{
@@ -230,9 +237,10 @@ class JavaApplicationTests {
             
             System.out.println("Team:"+val);
 
-*/
-            int startTime = getStartTime(7391077);
-            System.out.println("Start:"+startTime);
+*/          
+            Team team = findTeambynomV2("TNC Predator");
+            
+            System.out.println("Team Id:"+team.getIdTeam());
              
           }
           

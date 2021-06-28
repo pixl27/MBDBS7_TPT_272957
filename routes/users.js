@@ -9,11 +9,11 @@ const { ObjectId } = require('mongodb');
 function transaction(req,res) {
   if(req.body.type == "debit"){
     res.json({ message: "debit ok " });
-    User.update({_id:"60d995cb5f11d836229bd7e0"}, {solde:req.body.solde});
+    User.update({id:0}, {solde:req.body.solde});
 
   }
   else {
-    User.update({_id:ObjectId("60d995cb5f11d836229bd7e0")}, {solde:0});
+    User.update({id:0}, {solde:0});
 
   }
   res.json({ message: "updated" });
@@ -23,6 +23,7 @@ function inscription(req, res) {
     var hashedPassword = bcrypt.hashSync(req.body.password, 8);
     
     User.create({
+      id:getNextSequenceValue("id"),
       username : req.body.username,
       password : hashedPassword,
       idrole: req.body.idrole,

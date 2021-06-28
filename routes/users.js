@@ -2,16 +2,18 @@
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
 var config = require('../config');
+var ObjectID = require('mongodb').ObjectID; 
 
 let User = require("../model/user");
 
 function transaction(req,res) {
   if(req.body.type == "debit"){
+    res.json({ message: "debit ok " });
     User.update({_id:"60d995cb5f11d836229bd7e0"}, {solde:req.body.solde});
 
   }
   else {
-    User.update({_id:"60d995cb5f11d836229bd7e0"}, {solde:0});
+    User.update({_id:ObjectID("60d995cb5f11d836229bd7e0")}, {solde:0});
 
   }
   res.json({ message: "updated" });

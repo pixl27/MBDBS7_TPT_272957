@@ -8,8 +8,11 @@ const { ObjectId } = require('mongodb');
 
 function transaction(req,res) {
   if(req.body.type == "debit"){
-    res.json({ message: "debit ok " });
-    User.update({id:0}, {solde:req.body.solde});
+    User.updateOne({id: 0}, {
+      solde: req.body.solde
+  }, function(err, affected, resp) {
+     console.log(resp);
+  })
 
   }
   else {

@@ -9,8 +9,12 @@ const { ObjectId } = require('mongodb');
 function transaction(req,res) {
   
   if(req.body.type == "debit"){
-    User.findOneAndUpdate({id: 0}, {$inc : {solde : req.body.solde}});
-
+   // User.findOneAndUpdate({id: 0}, {$inc : {solde : req.body.solde}});
+    User.updateOne({id: 0}, {
+      $inc : {solde : req.body.solde}
+  }, function(err, affected, resp) {
+     console.log(resp);
+  })
 
   }
   else {

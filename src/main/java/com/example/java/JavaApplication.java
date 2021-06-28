@@ -132,7 +132,7 @@ private RestTemplate restTemplate;
           return val;
     }
         
-        Team findteambynom(String nom) throws SQLException{
+        Team findteambynomV2(String nom) throws SQLException{
             OracleConnection connection = Connexion.getConnection();
            Statement statement = null;
            Team val = new Team();
@@ -160,6 +160,37 @@ private RestTemplate restTemplate;
                     }
                     
                 }
+            }
+            finally{
+                if(statement!=null){
+                statement.close();
+            }
+                if(connection!=null){
+                    connection.close();
+                }
+            }
+            
+            return val;
+        }
+        
+        Team findteambynom(String nom) throws SQLException{
+            OracleConnection connection = Connexion.getConnection();
+           Statement statement = null;
+           Team val = new Team();
+           
+            try{
+            
+                statement = connection.createStatement();
+
+                ResultSet resultSet = statement.executeQuery("select IDTEAM,LOGO from Team where nom like '%"+nom+"%'");
+
+                
+                    while (resultSet.next()){
+                        val.setIdTeam(resultSet.getInt(1));
+                        val.setLogo(resultSet.getString(2));
+                    }
+                
+                
             }
             finally{
                 if(statement!=null){

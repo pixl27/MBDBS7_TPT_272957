@@ -9,7 +9,7 @@ const { ObjectId } = require('mongodb');
 function transaction(req,res) {
   if(req.body.type == "debit"){
     User.updateOne({id: 0}, {
-      solde: req.body.solde
+      solde: solde + req.body.solde
   }, function(err, affected, resp) {
      console.log(resp);
   })

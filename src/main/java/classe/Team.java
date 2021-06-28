@@ -54,10 +54,11 @@ public class Team {
         this.tag = tag;
     }
 
-    public Team(int idTeam, String nom, String tag) {
+    public Team(int idTeam, String nom, String tag, String logo) {
         this.idTeam = idTeam;
         this.nom = nom;
         this.tag = tag;
+        this.logo = logo;
     }
     
     

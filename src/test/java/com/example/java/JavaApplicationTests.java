@@ -209,43 +209,96 @@ class JavaApplicationTests {
      
 	@Test
 	void contextLoads() throws SQLException, JSONException{
-            /*
+            ArrayList<MatchAPI> val = new ArrayList<>();
+          String url = "https://www.rivalry.com/api/v1/matches?game_id=3";
+          
+          HttpHeaders headers = new HttpHeaders();
+            headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+            headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+            HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
             
-         OracleConnection connection = Connexion.getConnection();
-           Statement statement = null;
-           Team val = new Team();
-           
-            try{
+          ResponseEntity response = restTemplate.exchange(url, HttpMethod.GET,entity ,String.class);  
+          JSONObject json = new JSONObject(response.getBody().toString());
+          
+          
+          JSONArray array = json.getJSONArray("data");
+          
+          
+          
+          Calendar c = Calendar.getInstance(); 
+             c.add(Calendar.DATE, 14);
+            Date datenow = new java.sql.Date(c.getTimeInMillis());
+          for(int i=0;i<10;i++){
+              int idRivalry = array.getJSONObject(i).getInt("id");
+              String tournois = array.getJSONObject(i).getJSONObject("tournament").getString("name");
+              
+              JSONArray arrayTeam = array.getJSONObject(i).getJSONArray("competitors");
+              
+              JSONArray arrayOdds = array.getJSONObject(i).getJSONArray("markets").getJSONObject(0).getJSONArray("outcomes");
+              
+              int nbrMap = 1;
+              while(nbrMap<=100){
+                  String temp = "Map "+nbrMap+" - Winner";
+                  int indice = nbrMap-1;
+                  String name = array.getJSONObject(i).getJSONArray("markets").getJSONObject(indice).getString("name");
+                  if(temp.equals(name)){
+                      nbrMap++;
+                  }
+                  else{
+                      
+                      break;
+                  }
+              }
+              nbrMap = nbrMap-1;
+              
+              float odds1 = 0;
+              float odds2 = 0;
+              if(arrayOdds.length()>0){
+                  odds1 = (float) arrayOdds.getJSONObject(0).getDouble("odds");
+                  odds2 = (float) arrayOdds.getJSONObject(1).getDouble("odds");
+              }
+              
+              
             
-            statement = connection.createStatement();
-           
-            ResultSet resultSet = statement.executeQuery("select IDTEAM,LOGO from Team where nom like '%Natus Vincere%'");
+            
+            String nomTeam1 = arrayTeam.getJSONObject(0).getString("name");
+            Team team1 = findTeambynomV2(nomTeam1);
+            int idTeam1 = team1.getIdTeam();
+            String logoTeam1 = team1.getLogo();
             
             
-            while (resultSet.next()){
-                val.setIdTeam(resultSet.getInt(1));
-                val.setLogo(resultSet.getString(2));}
-                
-            }
-            finally{
-                if(statement!=null){
-                statement.close();
-            }
-                if(connection!=null){
-                    connection.close();
-                }
-            }
             
-            System.out.println("Team:"+val);*/  
+            String nomTeam2 = arrayTeam.getJSONObject(1).getString("name");
+            Team team2 = findTeambynomV2(nomTeam2);
+            int idTeam2 = team2.getIdTeam();
+            String logoTeam2 = team2.getLogo();
             
-             Calendar c = Calendar.getInstance(); 
-             c.add(Calendar.DATE, 7);
-            Date dateafter = new java.sql.Date(c.getTimeInMillis());
-           Date datenow = new java.sql.Date(Calendar.getInstance().getTime().getTime());
-            System.out.println("date apres une semaine"+datenow);
-            System.out.println("compare 1"+datenow.compareTo(dateafter));
-            System.out.println("compare 2"+dateafter.compareTo(datenow));
+            String time = array.getJSONObject(i).getString("scheduled_at");
             
+            String[] arrOfStr = array.getJSONObject(i).getString("scheduled_at").split("T");
+            
+            Date datematch = Date.valueOf(arrOfStr[0]);
+            
+              
+              
+              //si tous les equipes sont presentent dans notre BD
+              if(idTeam1!=0 || idTeam2!=0){
+                 
+                  
+                     if(datematch.compareTo(datenow)<=0){
+                      //int idTeam1, int idTeam2, int idMatchRivalry, Date datematch, String nomTeam1, String nomTeam2, float odds1, float odds2, String logo, String time, String tournois
+                      MatchAPI temp = new MatchAPI(idTeam1,idTeam2,idRivalry,datematch,nomTeam1,nomTeam2,odds1,odds2,logoTeam1,logoTeam2,time,tournois,nbrMap);
+                      
+                      val.add(temp);
+                     }
+                     else{
+                         break;
+                     }
+                  
+              }
+             
+          }
+          System.out.println(val);
           }
           
             

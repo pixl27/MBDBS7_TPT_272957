@@ -74,7 +74,63 @@ private RestTemplate restTemplate;
         }
         
         
-        
+    private int getRowCount(ResultSet resultSet) {
+        if (resultSet == null) {
+            return 0;
+        }
+
+        try {
+            resultSet.last();
+            return resultSet.getRow();
+        } catch (SQLException exp) {
+        } finally {
+            try {
+                resultSet.beforeFirst();
+            } catch (SQLException exp) {
+            }
+        }
+
+        return 0;
+    }
+    
+    /*
+    int getVraiTeam(ArrayList<Team> list){
+        int val = 0;
+        for(int i =0;i<list.size();i++){
+            
+        }
+        return 0;
+    }*/
+    
+    JSONObject getJSONAPI(String url){
+         HttpHeaders headers = new HttpHeaders();
+            headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+            headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+            HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
+            
+          ResponseEntity response = restTemplate.exchange(url, HttpMethod.GET,entity ,String.class);  
+          JSONObject json = new JSONObject(response.getBody().toString());
+          return json;
+    }
+    
+    JSONArray getJSONArrayAPI(String url){
+         HttpHeaders headers = new HttpHeaders();
+            headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+            headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+            HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
+            
+          ResponseEntity response = restTemplate.exchange(url, HttpMethod.GET,entity ,String.class);  
+          
+          JSONArray jsonarray = new JSONArray(response.getBody().toString());
+          return jsonarray;
+    }
+    
+    int getStartTime(int idTeam){
+          String url = "https://api.opendota.com/api/teams/"+idTeam+"/matches";
+          JSONArray array = getJSONArrayAPI(url);
+          int val = array.getJSONObject(0).getInt("start_time");
+          return val;
+    }
         
         Team findteambynom(String nom) throws SQLException{
             OracleConnection connection = Connexion.getConnection();
@@ -83,15 +139,27 @@ private RestTemplate restTemplate;
            
             try{
             
-            statement = connection.createStatement();
-           
-            ResultSet resultSet = statement.executeQuery("select IDTEAM,LOGO from Team where nom like '%"+nom+"%'");
-            
-            
-            while (resultSet.next()){
-                val.setIdTeam(resultSet.getInt(1));
-                val.setLogo(resultSet.getString(2));
-            }
+                statement = connection.createStatement();
+
+                ResultSet resultSet = statement.executeQuery("select IDTEAM,LOGO from Team where nom like '%"+nom+"%'");
+
+                int nbrRow = getRowCount(resultSet);
+                if(nbrRow==1){
+                    while (resultSet.next()){
+                        val.setIdTeam(resultSet.getInt(1));
+                        val.setLogo(resultSet.getString(2));
+                    }
+                }
+                if(nbrRow>1){
+                    ArrayList<Team> arrayTeamTemp = new ArrayList();
+                    while (resultSet.next()){
+                        Team temp = new Team();
+                        temp.setIdTeam(resultSet.getInt(1));
+                        temp.setLogo(resultSet.getString(2));
+                        arrayTeamTemp.add(temp);
+                    }
+                    
+                }
             }
             finally{
                 if(statement!=null){
@@ -249,6 +317,8 @@ private RestTemplate restTemplate;
         return new RestTemplate();
         }
         
+        
+        
         @PostMapping(value = "/parier", consumes = "application/json", produces = "application/json")
         @ResponseBody
         String parier(@RequestParam int idUser,@RequestParam int idMatch,@RequestParam String type,@RequestParam String nomTeam,@RequestParam float montant,@RequestParam float odds) throws SQLException{
@@ -382,6 +452,100 @@ private RestTemplate restTemplate;
                   else{
                       break;
                   }
+              }
+             
+          }
+          return val;
+          
+        }
+        
+        @GetMapping(path="/getallmatchtest", produces = "application/json")
+        @ResponseBody
+        ArrayList<MatchAPI> getAllMatchTest() throws SQLException, JSONException{
+            
+           
+             
+           ArrayList<MatchAPI> val = new ArrayList<>();
+          String url = "https://www.rivalry.com/api/v1/matches?game_id=3";
+          
+          HttpHeaders headers = new HttpHeaders();
+            headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+            headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+            HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
+            
+          ResponseEntity response = restTemplate.exchange(url, HttpMethod.GET,entity ,String.class);  
+          JSONObject json = new JSONObject(response.getBody().toString());
+          
+          
+          JSONArray array = json.getJSONArray("data");
+          
+          
+          
+          Date datenow = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+          for(int i=0;i<array.length();i++){
+              int idRivalry = array.getJSONObject(i).getInt("id");
+              String tournois = array.getJSONObject(i).getJSONObject("tournament").getString("name");
+              
+              JSONArray arrayTeam = array.getJSONObject(i).getJSONArray("competitors");
+              
+              JSONArray arrayOdds = array.getJSONObject(i).getJSONArray("markets").getJSONObject(0).getJSONArray("outcomes");
+              
+              int nbrMap = 1;
+              while(nbrMap<=100){
+                  String temp = "Map "+nbrMap+" - Winner";
+                  int indice = nbrMap-1;
+                  String name = array.getJSONObject(i).getJSONArray("markets").getJSONObject(indice).getString("name");
+                  if(temp.equals(name)){
+                      nbrMap++;
+                  }
+                  else{
+                      
+                      break;
+                  }
+              }
+              nbrMap = nbrMap-1;
+              
+              float odds1 = 0;
+              float odds2 = 0;
+              if(arrayOdds.length()>0){
+                  odds1 = (float) arrayOdds.getJSONObject(0).getDouble("odds");
+                  odds2 = (float) arrayOdds.getJSONObject(1).getDouble("odds");
+              }
+              
+              
+            
+            
+            String nomTeam1 = arrayTeam.getJSONObject(0).getString("name");
+            Team team1 = findteambynom(nomTeam1);
+            int idTeam1 = team1.getIdTeam();
+            String logoTeam1 = team1.getLogo();
+            
+            
+            
+            String nomTeam2 = arrayTeam.getJSONObject(1).getString("name");
+            Team team2 = findteambynom(nomTeam2);
+            int idTeam2 = team2.getIdTeam();
+            String logoTeam2 = team2.getLogo();
+            
+            String time = array.getJSONObject(i).getString("scheduled_at");
+            
+            String[] arrOfStr = array.getJSONObject(i).getString("scheduled_at").split("T");
+            
+            Date datematch = Date.valueOf(arrOfStr[0]);
+            
+              
+              
+              //si tous les equipes sont presentent dans notre BD
+              if(idTeam1!=0 || idTeam2!=0){
+                 
+                  
+                     
+                      //int idTeam1, int idTeam2, int idMatchRivalry, Date datematch, String nomTeam1, String nomTeam2, float odds1, float odds2, String logo, String time, String tournois
+                      MatchAPI temp = new MatchAPI(idTeam1,idTeam2,idRivalry,datematch,nomTeam1,nomTeam2,odds1,odds2,logoTeam1,logoTeam2,time,tournois,nbrMap);
+                      
+                      val.add(temp);
+                     
+                  
               }
              
           }

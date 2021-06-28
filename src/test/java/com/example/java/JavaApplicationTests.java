@@ -237,16 +237,14 @@ class JavaApplicationTests {
             }
             
             System.out.println("Team:"+val);*/  
-       
-            long semaine = 604800;
-            long test = Calendar.getInstance().getTime().getTime();
-            long nowAndOneWeek = test+semaine;
-            Date datenow = new java.sql.Date(test);
-            Date dateAfterOneWeek = new java.sql.Date(nowAndOneWeek);
-            System.out.println("date now Unix version "+test);
-            System.out.println("date apres une semaine Unix version "+nowAndOneWeek);
-            System.out.println("date now "+datenow);
-            System.out.println("date apres une semaine "+dateAfterOneWeek);
+            
+             Calendar c = Calendar.getInstance(); 
+             c.add(Calendar.DATE, 7);
+            Date dateafter = new java.sql.Date(c.getTimeInMillis());
+           Date datenow = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+            System.out.println("date apres une semaine"+datenow);
+            System.out.println("compare 1"+datenow.compareTo(dateafter));
+            System.out.println("compare 2"+dateafter.compareTo(datenow));
             
           }
           

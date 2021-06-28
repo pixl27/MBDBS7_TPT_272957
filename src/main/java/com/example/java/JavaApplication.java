@@ -54,6 +54,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Controller
 @SpringBootApplication
+@CrossOrigin
 @EnableAutoConfiguration(exclude = {org.springframework.boot.autoconfigure.gson.GsonAutoConfiguration.class})
 public class JavaApplication {
      // The recommended format of a connection URL is the long format with the

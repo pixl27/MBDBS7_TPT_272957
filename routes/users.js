@@ -7,12 +7,10 @@ let User = require("../model/user");
 const { ObjectId } = require('mongodb');
 
 function transaction(req,res) {
+  
   if(req.body.type == "debit"){
-    User.updateOne({id: 0}, {
-      solde: solde + req.body.solde
-  }, function(err, affected, resp) {
-     console.log(resp);
-  })
+    User.findOneAndUpdate({id: 0}, {$inc : {'solde' : req.body.solde}});
+
 
   }
   else {

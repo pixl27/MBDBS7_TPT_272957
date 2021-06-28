@@ -279,7 +279,7 @@ private RestTemplate restTemplate;
            OracleConnection connection = Connexion.getConnection();
            
             
-            Statement statement = connection.createStatement();
+           Statement statement = connection.createStatement();
            
            ResultSet resultSet = statement.executeQuery("select * from Team");
            ArrayList<Team> listeTeam = new ArrayList(); 
@@ -403,7 +403,7 @@ private RestTemplate restTemplate;
 
         Trigger trigger = newTrigger()
                 .startNow()
-                .withSchedule(repeatSecondlyForever(10800))
+                .withSchedule(repeatSecondlyForever(1800))
                 .build();
 
         scheduler.scheduleJob(jobDetail, trigger);

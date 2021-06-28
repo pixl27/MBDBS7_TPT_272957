@@ -386,16 +386,26 @@ private RestTemplate restTemplate;
         ArrayList<Team> getAllTeam() throws SQLException{
             
            OracleConnection connection = Connexion.getConnection();
-           
-            
-           Statement statement = connection.createStatement();
+           Statement statement = null;
+           ArrayList<Team> listeTeam = new ArrayList(); 
+            try{
+                statement = connection.createStatement();
            
            ResultSet resultSet = statement.executeQuery("select * from Team");
-           ArrayList<Team> listeTeam = new ArrayList(); 
+           
             while (resultSet.next()){
                 Team temp = new Team(resultSet.getInt(1),resultSet.getString(2),resultSet.getString(3),resultSet.getString(4));
                 listeTeam.add(temp);
             }
+            }finally{
+                if(statement!=null){
+                    statement.close();
+                }
+                if(connection!=null){
+                    connection.close();
+                }
+            }
+           
                 
             
             return listeTeam;

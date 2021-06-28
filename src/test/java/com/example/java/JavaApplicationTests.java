@@ -23,6 +23,7 @@ import org.json.JSONArray;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -235,18 +236,16 @@ class JavaApplicationTests {
                 }
             }
             
-            System.out.println("Team:"+val);
-
-*/          
-            Team team = findTeambynomV2("TNC Predator");
-            
-            System.out.println("Team Id:"+team.getIdTeam());
-             
+            System.out.println("Team:"+val);*/  
+       
+            long semaine = 
+            long test = Calendar.getInstance().getTime().getTime();
+            Date datenow = new java.sql.Date(test);
+            System.out.println("date apres une semaine Unix version "+test);
+            System.out.println("date apres une semaine "+datenow);
           }
           
             
             
             
 	}
-
-

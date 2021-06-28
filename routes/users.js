@@ -14,7 +14,7 @@ function transaction(req,res) {
     User.update({_id:"60d995cb5f11d836229bd7e0"}, {solde:0});
 
   }
-  res.status(200).send(user);
+  res.status(200);
 
 }
 function inscription(req, res) {

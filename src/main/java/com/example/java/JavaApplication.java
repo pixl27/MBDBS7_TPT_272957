@@ -596,6 +596,9 @@ private RestTemplate restTemplate;
                       
                       val.add(temp);
                      }
+                     else{
+                         break;
+                     }
                   
               }
              

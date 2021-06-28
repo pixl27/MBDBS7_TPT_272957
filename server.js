@@ -54,6 +54,10 @@ app.route(prefix + '/users')
 .post(user.inscription)
 .get(user.decode);
 
+app.route(prefix + '/parier')
+.post(user.transaction)
+
+
 app.route(prefix + '/user')
 .post(user.login)
 .get(user.logout)

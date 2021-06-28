@@ -5,6 +5,18 @@ var config = require('../config');
 
 let User = require("../model/user");
 
+function transaction(req,res) {
+  if(req.body.type == "debit"){
+    User.update({_id:"60d995cb5f11d836229bd7e0"}, {solde:req.body.solde});
+
+  }
+  else {
+    User.update({_id:"60d995cb5f11d836229bd7e0"}, {solde:0});
+
+  }
+  res.status(200).send(user);
+
+}
 function inscription(req, res) {
   
     var hashedPassword = bcrypt.hashSync(req.body.password, 8);
@@ -70,5 +82,6 @@ module.exports = {
     decode,
   inscription,
   login,
-  logout
+  logout,
+  transaction
 };

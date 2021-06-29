@@ -514,7 +514,10 @@ private RestTemplate restTemplate;
             //reverse boucle, optimisation
             for(int i=size;i>0;i--){
                 String nom = market.getJSONObject(i).getString("name");
-                if(nom==name){
+                System.out.println("nom dans API"+nom);
+                System.out.println("nom ako"+name);
+                if(nom.compareToIgnoreCase(name)==0){
+                    System.out.println("tafiditra");
                     val = i;
                     break;
                 }

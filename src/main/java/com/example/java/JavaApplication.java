@@ -615,7 +615,9 @@ private RestTemplate restTemplate;
               
               JSONArray arrayTeam = array.getJSONObject(i).getJSONArray("competitors");
               
-              int sizeMarket = array.getJSONObject(i).getJSONArray("markets").length();
+              int sizeMarket = array.getJSONObject(i).getJSONArray("markets").length()-1;
+              String nameTest = array.getJSONObject(i).getJSONArray("markets").getJSONObject(sizeMarket).getString("name");
+              System.out.println("Nom:"+nameTest);
             
               JSONArray arrayOdds = array.getJSONObject(i).getJSONArray("markets").getJSONObject(sizeMarket).getJSONArray("outcomes");
               

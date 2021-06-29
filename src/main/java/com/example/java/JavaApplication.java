@@ -508,6 +508,20 @@ private RestTemplate restTemplate;
           
         }
         
+        int getIndiceMarketByName(JSONArray market,String name){
+            int val = 0;
+            int size = market.length()-1;
+            //reverse boucle, optimisation
+            for(int i=size;i>0;i--){
+                String nom = market.getJSONObject(i).getString("name");
+                if(nom==name){
+                    val = i;
+                    break;
+                }
+            }
+            return val;
+        }
+        
         @GetMapping(path="/getmatchbyIdRivalry", produces = "application/json")
         @ResponseBody
         MatchAPI getmatchbyIdRivalry(@RequestParam int idRivalry) throws SQLException{
@@ -547,7 +561,7 @@ private RestTemplate restTemplate;
             int nbrMap = getNbrMap(data);
             
             //Odds
-            int sizeMarket = data.getJSONArray("markets").length();
+            int sizeMarket = data.getJSONArray("markets").length()-1;
             JSONArray outcomes = data.getJSONArray("markets").getJSONObject(sizeMarket).getJSONArray("outcomes");
             float odds1 = 0;
             float odds2 = 0;
@@ -558,11 +572,152 @@ private RestTemplate restTemplate;
             
             
             //Odds MAP 1
+            JSONArray outcomesMap1 = data.getJSONArray("markets").getJSONObject(0).getJSONArray("outcomes");
+            float odd1_map1 = 0;
+            float odd2_map1 = 0;
+            if(outcomesMap1.length()>0){
+                odd1_map1 = (float) outcomesMap1.getJSONObject(0).getDouble("odds");
+                odd2_map1 = (float) outcomesMap1.getJSONObject(1).getDouble("odds");
+            }
             
+            //Odds MAP 2
+            float odd1_map2 = 0;
+            float odd2_map2 = 0;
+            if(nbrMap>1){
+                JSONArray outcomesMap2 = data.getJSONArray("markets").getJSONObject(1).getJSONArray("outcomes");
+                if(outcomesMap2.length()>0){
+                    odd1_map2 = (float) outcomesMap2.getJSONObject(0).getDouble("odds");
+                    odd2_map2 = (float) outcomesMap2.getJSONObject(1).getDouble("odds");
+                }
+            }
+
+            //Odds MAP 3
+            float odd1_map3 = 0;
+            float odd2_map3 = 0;
+            if(nbrMap>2){
+                JSONArray outcomesMap3 = data.getJSONArray("markets").getJSONObject(2).getJSONArray("outcomes");
+                if(outcomesMap3.length()>0){
+                    odd1_map3 = (float) outcomesMap3.getJSONObject(0).getDouble("odds");
+                    odd2_map3 = (float) outcomesMap3.getJSONObject(1).getDouble("odds");
+                }
+            }
+            
+            //Odds MAP 4
+            float odd1_map4 = 0;
+            float odd2_map4 = 0;
+            if(nbrMap>3){
+                JSONArray outcomesMap4 = data.getJSONArray("markets").getJSONObject(3).getJSONArray("outcomes");
+                if(outcomesMap4.length()>0){
+                    odd1_map4 = (float) outcomesMap4.getJSONObject(0).getDouble("odds");
+                    odd2_map4 = (float) outcomesMap4.getJSONObject(1).getDouble("odds");
+                }
+            }
+            
+            //Odds MAP 5
+            float odd1_map5 = 0;
+            float odd2_map5 = 0;
+            if(nbrMap>4){
+                JSONArray outcomesMap5 = data.getJSONArray("markets").getJSONObject(4).getJSONArray("outcomes");
+                if(outcomesMap5.length()>0){
+                    odd1_map5 = (float) outcomesMap5.getJSONObject(0).getDouble("odds");
+                    odd2_map5 = (float) outcomesMap5.getJSONObject(1).getDouble("odds");
+                }
+            }
+            
+            //odds fb map1
+            String nameinAPI_map1 = "Map 1 Team to Draw First Blood";
+            int indice_fb_map1 = getIndiceMarketByName(data.getJSONArray("markets"),nameinAPI_map1);
+            float odd1_fb_map1 = 0;
+            float odd2_fb_map1 = 0;
+            if(indice_fb_map1!=0){
+                JSONArray outcomesTemp = data.getJSONArray("markets").getJSONObject(indice_fb_map1).getJSONArray("outcomes");
+                if(outcomesTemp.length()>0){
+                    odd1_fb_map1 = (float) outcomesTemp.getJSONObject(0).getDouble("odds");
+                    odd2_fb_map1 = (float) outcomesTemp.getJSONObject(1).getDouble("odds");
+                }
+            }
+            
+            
+            //odds fb map2
+            String nameinAPI_map2 = "Map 2 Team to Draw First Blood";
+            int indice_fb_map2 = getIndiceMarketByName(data.getJSONArray("markets"),nameinAPI_map2);
+            float odd1_fb_map2 = 0;
+            float odd2_fb_map2 = 0;
+            if(indice_fb_map1!=0){
+                JSONArray outcomesTemp = data.getJSONArray("markets").getJSONObject(indice_fb_map2).getJSONArray("outcomes");
+                if(outcomesTemp.length()>0){
+                    odd1_fb_map2 = (float) outcomesTemp.getJSONObject(0).getDouble("odds");
+                    odd2_fb_map2 = (float) outcomesTemp.getJSONObject(1).getDouble("odds");
+                }
+            }
+            
+            //odds fb map3
+            String nameinAPI_map3 = "Map 3 Team to Draw First Blood";
+            int indice_fb_map3 = getIndiceMarketByName(data.getJSONArray("markets"),nameinAPI_map3);
+            float odd1_fb_map3 = 0;
+            float odd2_fb_map3 = 0;
+            if(indice_fb_map1!=0){
+                JSONArray outcomesTemp = data.getJSONArray("markets").getJSONObject(indice_fb_map3).getJSONArray("outcomes");
+                if(outcomesTemp.length()>0){
+                    odd1_fb_map3 = (float) outcomesTemp.getJSONObject(0).getDouble("odds");
+                    odd2_fb_map3 = (float) outcomesTemp.getJSONObject(1).getDouble("odds");
+                }
+            }
+            
+            //odds fb map4
+            String nameinAPI_map4 = "Map 4 Team to Draw First Blood";
+            int indice_fb_map4 = getIndiceMarketByName(data.getJSONArray("markets"),nameinAPI_map4);
+            float odd1_fb_map4 = 0;
+            float odd2_fb_map4 = 0;
+            if(indice_fb_map1!=0){
+                JSONArray outcomesTemp = data.getJSONArray("markets").getJSONObject(indice_fb_map4).getJSONArray("outcomes");
+                if(outcomesTemp.length()>0){
+                    odd1_fb_map4 = (float) outcomesTemp.getJSONObject(0).getDouble("odds");
+                    odd2_fb_map4 = (float) outcomesTemp.getJSONObject(1).getDouble("odds");
+                }
+            }
+            
+            //odds fb map5
+            String nameinAPI_map5 = "Map 5 Team to Draw First Blood";
+            int indice_fb_map5 = getIndiceMarketByName(data.getJSONArray("markets"),nameinAPI_map5);
+            float odd1_fb_map5 = 0;
+            float odd2_fb_map5 = 0;
+            if(indice_fb_map1!=0){
+                JSONArray outcomesTemp = data.getJSONArray("markets").getJSONObject(indice_fb_map5).getJSONArray("outcomes");
+                if(outcomesTemp.length()>0){
+                    odd1_fb_map5 = (float) outcomesTemp.getJSONObject(0).getDouble("odds");
+                    odd2_fb_map5 = (float) outcomesTemp.getJSONObject(1).getDouble("odds");
+                }
+            }
             
             
             
             val = new MatchAPI(idTeam1,idTeam2,id,datematch,nomTeam1,nomTeam2,odds1,odds2,logoTeam1,logoTeam2,time,tournois,nbrMap);
+            
+            val.setOdd1_map1(odd1_map1);
+            val.setOdd1_map2(odd1_map2);
+            val.setOdd1_map3(odd1_map3);
+            val.setOdd1_map4(odd1_map4);
+            val.setOdd1_map5(odd1_map5);
+            
+            val.setOdd2_map1(odd2_map1);
+            val.setOdd2_map2(odd2_map2);
+            val.setOdd2_map3(odd2_map3);
+            val.setOdd2_map4(odd2_map4);
+            val.setOdd2_map5(odd2_map5);
+            
+            val.setOdd1_fb_map1(odd1_fb_map1);
+            val.setOdd1_fb_map2(odd1_fb_map2);
+            val.setOdd1_fb_map3(odd1_fb_map3);
+            val.setOdd1_fb_map4(odd1_fb_map4);
+            val.setOdd1_fb_map5(odd1_fb_map5);
+            
+            val.setOdd2_fb_map1(odd2_fb_map1);
+            val.setOdd2_fb_map2(odd2_fb_map2);
+            val.setOdd2_fb_map3(odd2_fb_map3);
+            val.setOdd2_fb_map4(odd2_fb_map4);
+            val.setOdd2_fb_map5(odd2_fb_map5);
+            
             return val;
         }
         
@@ -617,7 +772,7 @@ private RestTemplate restTemplate;
               
               int sizeMarket = array.getJSONObject(i).getJSONArray("markets").length()-1;
               String nameTest = array.getJSONObject(i).getJSONArray("markets").getJSONObject(sizeMarket).getString("name");
-              System.out.println("Nom:"+nameTest);
+             
             
               JSONArray arrayOdds = array.getJSONObject(i).getJSONArray("markets").getJSONObject(sizeMarket).getJSONArray("outcomes");
               

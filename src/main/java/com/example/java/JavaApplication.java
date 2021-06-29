@@ -646,7 +646,7 @@ private RestTemplate restTemplate;
             int indice_fb_map2 = getIndiceMarketByName(data.getJSONArray("markets"),nameinAPI_map2);
             float odd1_fb_map2 = 0;
             float odd2_fb_map2 = 0;
-            if(indice_fb_map1!=0){
+            if(indice_fb_map2!=0){
                 JSONArray outcomesTemp = data.getJSONArray("markets").getJSONObject(indice_fb_map2).getJSONArray("outcomes");
                 if(outcomesTemp.length()>0){
                     odd1_fb_map2 = (float) outcomesTemp.getJSONObject(0).getDouble("odds");
@@ -659,7 +659,7 @@ private RestTemplate restTemplate;
             int indice_fb_map3 = getIndiceMarketByName(data.getJSONArray("markets"),nameinAPI_map3);
             float odd1_fb_map3 = 0;
             float odd2_fb_map3 = 0;
-            if(indice_fb_map1!=0){
+            if(indice_fb_map3!=0){
                 JSONArray outcomesTemp = data.getJSONArray("markets").getJSONObject(indice_fb_map3).getJSONArray("outcomes");
                 if(outcomesTemp.length()>0){
                     odd1_fb_map3 = (float) outcomesTemp.getJSONObject(0).getDouble("odds");
@@ -672,7 +672,7 @@ private RestTemplate restTemplate;
             int indice_fb_map4 = getIndiceMarketByName(data.getJSONArray("markets"),nameinAPI_map4);
             float odd1_fb_map4 = 0;
             float odd2_fb_map4 = 0;
-            if(indice_fb_map1!=0){
+            if(indice_fb_map4!=0){
                 JSONArray outcomesTemp = data.getJSONArray("markets").getJSONObject(indice_fb_map4).getJSONArray("outcomes");
                 if(outcomesTemp.length()>0){
                     odd1_fb_map4 = (float) outcomesTemp.getJSONObject(0).getDouble("odds");
@@ -685,7 +685,7 @@ private RestTemplate restTemplate;
             int indice_fb_map5 = getIndiceMarketByName(data.getJSONArray("markets"),nameinAPI_map5);
             float odd1_fb_map5 = 0;
             float odd2_fb_map5 = 0;
-            if(indice_fb_map1!=0){
+            if(indice_fb_map5!=0){
                 JSONArray outcomesTemp = data.getJSONArray("markets").getJSONObject(indice_fb_map5).getJSONArray("outcomes");
                 if(outcomesTemp.length()>0){
                     odd1_fb_map5 = (float) outcomesTemp.getJSONObject(0).getDouble("odds");

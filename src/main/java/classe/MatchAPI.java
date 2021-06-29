@@ -22,6 +22,201 @@ public class MatchAPI {
     float odds2;
     String logo1;
     String logo2;
+    
+    
+    //odd1 map
+    float odd1_map1;
+    float odd1_map2;
+    float odd1_map3;
+    float odd1_map4;
+    float odd1_map5;
+    
+     //odd1 fb
+    float odd1_fb_map1;
+    float odd1_fb_map2;
+    float odd1_fb_map3;
+    float odd1_fb_map4;
+    float odd1_fb_map5;
+    
+    
+    
+    //odd2 map
+    float odd2_map1;
+    float odd2_map2;
+    float odd2_map3;
+    float odd2_map4;
+    float odd2_map5;
+    
+     //odd2 fb
+    float odd2_fb_map1;
+    float odd2_fb_map2;
+    float odd2_fb_map3;
+    float odd2_fb_map4;
+    float odd2_fb_map5;
+    
+    public MatchAPI(){
+        
+    }
+
+    public float getOdd1_map1() {
+        return odd1_map1;
+    }
+
+    public void setOdd1_map1(float odd1_map1) {
+        this.odd1_map1 = odd1_map1;
+    }
+
+    public float getOdd1_map2() {
+        return odd1_map2;
+    }
+
+    public void setOdd1_map2(float odd1_map2) {
+        this.odd1_map2 = odd1_map2;
+    }
+
+    public float getOdd1_map3() {
+        return odd1_map3;
+    }
+
+    public void setOdd1_map3(float odd1_map3) {
+        this.odd1_map3 = odd1_map3;
+    }
+
+    public float getOdd1_map4() {
+        return odd1_map4;
+    }
+
+    public void setOdd1_map4(float odd1_map4) {
+        this.odd1_map4 = odd1_map4;
+    }
+
+    public float getOdd1_map5() {
+        return odd1_map5;
+    }
+
+    public void setOdd1_map5(float odd1_map5) {
+        this.odd1_map5 = odd1_map5;
+    }
+
+    public float getOdd1_fb_map1() {
+        return odd1_fb_map1;
+    }
+
+    public void setOdd1_fb_map1(float odd1_fb_map1) {
+        this.odd1_fb_map1 = odd1_fb_map1;
+    }
+
+    public float getOdd1_fb_map2() {
+        return odd1_fb_map2;
+    }
+
+    public void setOdd1_fb_map2(float odd1_fb_map2) {
+        this.odd1_fb_map2 = odd1_fb_map2;
+    }
+
+    public float getOdd1_fb_map3() {
+        return odd1_fb_map3;
+    }
+
+    public void setOdd1_fb_map3(float odd1_fb_map3) {
+        this.odd1_fb_map3 = odd1_fb_map3;
+    }
+
+    public float getOdd1_fb_map4() {
+        return odd1_fb_map4;
+    }
+
+    public void setOdd1_fb_map4(float odd1_fb_map4) {
+        this.odd1_fb_map4 = odd1_fb_map4;
+    }
+
+    public float getOdd1_fb_map5() {
+        return odd1_fb_map5;
+    }
+
+    public void setOdd1_fb_map5(float odd1_fb_map5) {
+        this.odd1_fb_map5 = odd1_fb_map5;
+    }
+
+    public float getOdd2_map1() {
+        return odd2_map1;
+    }
+
+    public void setOdd2_map1(float odd2_map1) {
+        this.odd2_map1 = odd2_map1;
+    }
+
+    public float getOdd2_map2() {
+        return odd2_map2;
+    }
+
+    public void setOdd2_map2(float odd2_map2) {
+        this.odd2_map2 = odd2_map2;
+    }
+
+    public float getOdd2_map3() {
+        return odd2_map3;
+    }
+
+    public void setOdd2_map3(float odd2_map3) {
+        this.odd2_map3 = odd2_map3;
+    }
+
+    public float getOdd2_map4() {
+        return odd2_map4;
+    }
+
+    public void setOdd2_map4(float odd2_map4) {
+        this.odd2_map4 = odd2_map4;
+    }
+
+    public float getOdd2_map5() {
+        return odd2_map5;
+    }
+
+    public void setOdd2_map5(float odd2_map5) {
+        this.odd2_map5 = odd2_map5;
+    }
+
+    public float getOdd2_fb_map1() {
+        return odd2_fb_map1;
+    }
+
+    public void setOdd2_fb_map1(float odd2_fb_map1) {
+        this.odd2_fb_map1 = odd2_fb_map1;
+    }
+
+    public float getOdd2_fb_map2() {
+        return odd2_fb_map2;
+    }
+
+    public void setOdd2_fb_map2(float odd2_fb_map2) {
+        this.odd2_fb_map2 = odd2_fb_map2;
+    }
+
+    public float getOdd2_fb_map3() {
+        return odd2_fb_map3;
+    }
+
+    public void setOdd2_fb_map3(float odd2_fb_map3) {
+        this.odd2_fb_map3 = odd2_fb_map3;
+    }
+
+    public float getOdd2_fb_map4() {
+        return odd2_fb_map4;
+    }
+
+    public void setOdd2_fb_map4(float odd2_fb_map4) {
+        this.odd2_fb_map4 = odd2_fb_map4;
+    }
+
+    public float getOdd2_fb_map5() {
+        return odd2_fb_map5;
+    }
+
+    public void setOdd2_fb_map5(float odd2_fb_map5) {
+        this.odd2_fb_map5 = odd2_fb_map5;
+    }
 
     public String getLogo1() {
         return logo1;

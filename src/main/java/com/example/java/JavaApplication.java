@@ -508,6 +508,82 @@ private RestTemplate restTemplate;
           
         }
         
+        @GetMapping(path="/getmatchbyIdRivalry", produces = "application/json")
+        @ResponseBody
+        MatchAPI getmatchbyIdRivalry(@RequestParam int idRivalry) throws SQLException{
+            MatchAPI val = new MatchAPI();
+            String url = "https://www.rivalry.com/api/v1/matches/"+idRivalry;
+            JSONObject json =  getJSONAPI(url);
+            JSONObject data = json.getJSONObject("data");
+            //ID
+            int id = data.getInt("id");
+            
+            //NOM
+            String nomTeam1 = data.getJSONArray("competitors").getJSONObject(0).getString("name");
+            String nomTeam2 = data.getJSONArray("competitors").getJSONObject(1).getString("name");
+            
+            //ID
+            Team team1 = findTeambynomV2(nomTeam1);
+            int idTeam1 = team1.getIdTeam();
+            Team team2 = findTeambynomV2(nomTeam2);
+            int idTeam2 = team1.getIdTeam();
+            
+            //Date
+            String[] arrOfStr = data.getString("scheduled_at").split("T");
+            Date datematch = Date.valueOf(arrOfStr[0]);
+            
+            //Logo
+            String logoTeam1 = team1.getLogo();
+            String logoTeam2 = team2.getLogo();
+            
+            //Time
+            String time = data.getString("scheduled_at");
+            
+            //Tournois 
+            String tournois = data.getJSONObject("tournament").getString("name");
+            
+            
+            //NbrMap
+            int nbrMap = getNbrMap(data);
+            
+            //Odds
+            int sizeMarket = data.getJSONArray("markets").length();
+            JSONArray outcomes = data.getJSONArray("markets").getJSONObject(sizeMarket).getJSONArray("outcomes");
+            float odds1 = 0;
+            float odds2 = 0;
+            if(outcomes.length()>0){
+                odds1 = (float) outcomes.getJSONObject(0).getDouble("odds");
+                odds2 = (float) outcomes.getJSONObject(1).getDouble("odds");
+            }
+            
+            
+            //Odds MAP 1
+            
+            
+            
+            
+            val = new MatchAPI(idTeam1,idTeam2,id,datematch,nomTeam1,nomTeam2,odds1,odds2,logoTeam1,logoTeam2,time,tournois,nbrMap);
+            return val;
+        }
+        
+        public int getNbrMap(JSONObject data){
+            int nbrMap = 1;
+              while(nbrMap<=100){
+                  String temp = "Map "+nbrMap+" - Winner";
+                  int indice = nbrMap-1;
+                  String name = data.getJSONArray("markets").getJSONObject(indice).getString("name");
+                  if(temp.equals(name)){
+                      nbrMap++;
+                  }
+                  else{
+                      
+                      break;
+                  }
+              }
+              nbrMap = nbrMap-1;
+              return nbrMap;
+        }
+        
         @GetMapping(path="/getallmatchtest", produces = "application/json")
         @ResponseBody
         ArrayList<MatchAPI> getAllMatchTest() throws SQLException, JSONException{
@@ -539,7 +615,9 @@ private RestTemplate restTemplate;
               
               JSONArray arrayTeam = array.getJSONObject(i).getJSONArray("competitors");
               
-              JSONArray arrayOdds = array.getJSONObject(i).getJSONArray("markets").getJSONObject(0).getJSONArray("outcomes");
+              int sizeMarket = array.getJSONObject(i).getJSONArray("markets").length();
+            
+              JSONArray arrayOdds = array.getJSONObject(i).getJSONArray("markets").getJSONObject(sizeMarket).getJSONArray("outcomes");
               
               int nbrMap = 1;
               while(nbrMap<=100){

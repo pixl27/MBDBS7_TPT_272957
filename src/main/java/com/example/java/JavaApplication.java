@@ -543,7 +543,7 @@ private RestTemplate restTemplate;
             Team team1 = findTeambynomV2(nomTeam1);
             int idTeam1 = team1.getIdTeam();
             Team team2 = findTeambynomV2(nomTeam2);
-            int idTeam2 = team1.getIdTeam();
+            int idTeam2 = team2.getIdTeam();
             
             //Date
             String[] arrOfStr = data.getString("scheduled_at").split("T");

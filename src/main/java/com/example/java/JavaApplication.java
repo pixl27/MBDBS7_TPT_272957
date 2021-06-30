@@ -257,7 +257,7 @@ private RestTemplate restTemplate;
             int val = 0;
             Statement statement = co.createStatement();
            
-           ResultSet resultSet = statement.executeQuery("select "+nom+".currval from DUAL;");
+           ResultSet resultSet = statement.executeQuery("select "+nom+".currval from DUAL");
            
             while (resultSet.next()){
                 val = resultSet.getInt(1);
@@ -271,7 +271,7 @@ private RestTemplate restTemplate;
             try{
                 statement = connection.createStatement();
            
-                statement.executeQuery("insert into Match values(MATCH_SEQ.NEXTVAL,"+match.getIdTeam1()+","+match.getIdTeam2()+",TO_DATE('"+match.getDatematch()+"','YYYY-MM-DD'),"+match.getNbrMap()+","+match.getNomTeam1()+","+match.getNomTeam2()+")");
+                statement.executeQuery("insert into Match values(MATCH_SEQ.NEXTVAL,"+match.getIdTeam1()+","+match.getIdTeam2()+",TO_DATE('"+match.getDatematch()+"','YYYY-MM-DD'),"+match.getNbrMap()+",'"+match.getNomTeam1()+"','"+match.getNomTeam2()+"')");
             }
             finally{
                 if(statement!=null){
@@ -366,10 +366,16 @@ private RestTemplate restTemplate;
             
             OracleConnection oc = Connexion.getConnection();
             try{
-                insererMatch(oc,m);
-                int idMatchTemp = getSequence(oc,"MATCH_SEQ");
+                int idDoublon = getDoublonMatch(oc,m);
                 Date datenow = new java.sql.Date(Calendar.getInstance().getTime().getTime());
-                insererParis(oc,idUser,idMatchTemp,idTeamParier,type,montant,odds,datenow,0);
+                if(idDoublon==0){
+                    insererMatch(oc,m);
+                    int idMatchTemp = getSequence(oc,"MATCH_SEQ");
+                    insererParis(oc,idUser,idMatchTemp,idTeamParier,type,montant,odds,datenow,0);
+                }
+                else{
+                    insererParis(oc,idUser,idDoublon,idTeamParier,type,montant,odds,datenow,0);
+                }
             }
             finally{
                  if(oc!=null){
@@ -409,6 +415,18 @@ private RestTemplate restTemplate;
                 
             
             return listeTeam;
+        }
+        
+        int getDoublonMatch(OracleConnection co,MatchAPI match) throws SQLException{
+            int val = 0;
+            Statement statement = co.createStatement();
+           
+            ResultSet resultSet = statement.executeQuery("select IDMATCH from MATCH where IDTEAMRADIANT="+match.getIdTeam1()+" and IDTEAMDIRE="+match.getIdTeam2()+" and DATEMATCH=TO_DATE('"+match.getDatematch()+"','YYYY-MM-DD') and BO="+match.getNbrMap()+" ");
+           
+            while (resultSet.next()){
+                val = resultSet.getInt(1);
+            }
+            return val;
         }
         
         @GetMapping(path="/getallmatch", produces = "application/json")
@@ -522,6 +540,63 @@ private RestTemplate restTemplate;
                     break;
                 }
             }
+            return val;
+        }
+        
+        MatchAPI getmatchbyIdRivalryWithOutOdds(int idRivalry) throws SQLException{
+            MatchAPI val = new MatchAPI();
+            String url = "https://www.rivalry.com/api/v1/matches/"+idRivalry;
+            JSONObject json =  getJSONAPI(url);
+            JSONObject data = json.getJSONObject("data");
+            //ID
+            int id = data.getInt("id");
+            
+            //NOM
+            String nomTeam1 = data.getJSONArray("competitors").getJSONObject(0).getString("name");
+            String nomTeam2 = data.getJSONArray("competitors").getJSONObject(1).getString("name");
+            
+            //ID
+            Team team1 = findTeambynomV2(nomTeam1);
+            int idTeam1 = team1.getIdTeam();
+            Team team2 = findTeambynomV2(nomTeam2);
+            int idTeam2 = team2.getIdTeam();
+            
+            //Date
+            String[] arrOfStr = data.getString("scheduled_at").split("T");
+            Date datematch = Date.valueOf(arrOfStr[0]);
+            
+            //Logo
+            String logoTeam1 = team1.getLogo();
+            String logoTeam2 = team2.getLogo();
+            
+            //Time
+            String time = data.getString("scheduled_at");
+            
+            //Tournois 
+            String tournois = data.getJSONObject("tournament").getString("name");
+            
+            
+            //NbrMap
+            int nbrMap = getNbrMap(data);
+            
+            //Odds
+            int sizeMarket = data.getJSONArray("markets").length()-1;
+            JSONArray outcomes = data.getJSONArray("markets").getJSONObject(sizeMarket).getJSONArray("outcomes");
+            float odds1 = 0;
+            float odds2 = 0;
+            if(outcomes.length()>0){
+                odds1 = (float) outcomes.getJSONObject(0).getDouble("odds");
+                odds2 = (float) outcomes.getJSONObject(1).getDouble("odds");
+            }
+            
+            
+            
+            
+            
+            val = new MatchAPI(idTeam1,idTeam2,id,datematch,nomTeam1,nomTeam2,odds1,odds2,logoTeam1,logoTeam2,time,tournois,nbrMap);
+            
+            
+            
             return val;
         }
         

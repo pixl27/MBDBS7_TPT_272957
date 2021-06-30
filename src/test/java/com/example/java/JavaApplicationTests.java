@@ -199,6 +199,24 @@ class JavaApplicationTests {
           JSONArray jsonarray = new JSONArray(response.getBody().toString());
           return jsonarray;
     }
+    
+    
+    
+     void insererParis(OracleConnection connection,int idUser,int idMatch,int idTeam,String type,float montant,float odds,Date dateparis,int statut) throws SQLException{
+            
+            Statement statement = null;
+            try{
+                statement = connection.createStatement();
+           
+                statement.executeQuery("insert into PARIS values(PARIS_SEQ.NEXTVAL,"+idUser+","+idMatch+","+idTeam+",'"+type+"',"+montant+","+odds+",TO_DATE('"+dateparis+"','YYYY-MM-DD'),"+statut+")");
+            }
+            finally{
+                if(statement!=null){
+                    statement.close();
+                }
+            }
+            
+        }
          
      int getStartTime(int idTeam) throws JSONException{
           String url = "https://api.opendota.com/api/teams/"+idTeam+"/matches";
@@ -207,9 +225,145 @@ class JavaApplicationTests {
           return val;
     }
      
+      int getSequence(OracleConnection co,String nom) throws SQLException{
+            int val = 0;
+            Statement statement = co.createStatement();
+           
+           ResultSet resultSet = statement.executeQuery("select "+nom+".currval from DUAL");
+           
+            while (resultSet.next()){
+                val = resultSet.getInt(1);
+            }
+            return val;
+        }
+      
+      void insererMatch(OracleConnection connection,MatchAPI match) throws SQLException{
+           
+            Statement statement = null;
+            try{
+                statement = connection.createStatement();
+           
+                statement.executeQuery("insert into Match values(MATCH_SEQ.NEXTVAL,"+match.getIdTeam1()+","+match.getIdTeam2()+",TO_DATE('"+match.getDatematch()+"','YYYY-MM-DD'),"+match.getNbrMap()+",'"+match.getNomTeam1()+"','"+match.getNomTeam2()+"')");
+            }
+            finally{
+                if(statement!=null){
+                    statement.close();
+                }
+            }
+    }
+      
+        int getDoublonMatch(OracleConnection co,MatchAPI match) throws SQLException{
+            int val = 0;
+            Statement statement = co.createStatement();
+           
+            ResultSet resultSet = statement.executeQuery("select IDMATCH from MATCH where IDTEAMRADIANT="+match.getIdTeam1()+" and IDTEAMDIRE="+match.getIdTeam2()+" and DATEMATCH=TO_DATE('"+match.getDatematch()+"','YYYY-MM-DD') and BO="+match.getNbrMap()+" ");
+           
+            while (resultSet.next()){
+                val = resultSet.getInt(1);
+            }
+            return val;
+        }
+      
+        MatchAPI getmatchbyIdRivalryWithOutOdds(int idRivalry) throws SQLException, JSONException{
+            MatchAPI val = new MatchAPI();
+            String url = "https://www.rivalry.com/api/v1/matches/"+idRivalry;
+            JSONObject json =  getJSONAPI(url);
+            JSONObject data = json.getJSONObject("data");
+            //ID
+            int id = data.getInt("id");
+            
+            //NOM
+            String nomTeam1 = data.getJSONArray("competitors").getJSONObject(0).getString("name");
+            String nomTeam2 = data.getJSONArray("competitors").getJSONObject(1).getString("name");
+            
+            //ID
+            Team team1 = findTeambynomV2(nomTeam1);
+            int idTeam1 = team1.getIdTeam();
+            Team team2 = findTeambynomV2(nomTeam2);
+            int idTeam2 = team2.getIdTeam();
+            
+            //Date
+            String[] arrOfStr = data.getString("scheduled_at").split("T");
+            Date datematch = Date.valueOf(arrOfStr[0]);
+            
+            //Logo
+            String logoTeam1 = team1.getLogo();
+            String logoTeam2 = team2.getLogo();
+            
+            //Time
+            String time = data.getString("scheduled_at");
+            
+            //Tournois 
+            String tournois = data.getJSONObject("tournament").getString("name");
+            
+            
+            //NbrMap
+            int nbrMap = getNbrMap(data);
+            
+            //Odds
+            int sizeMarket = data.getJSONArray("markets").length()-1;
+            JSONArray outcomes = data.getJSONArray("markets").getJSONObject(sizeMarket).getJSONArray("outcomes");
+            float odds1 = 0;
+            float odds2 = 0;
+            if(outcomes.length()>0){
+                odds1 = (float) outcomes.getJSONObject(0).getDouble("odds");
+                odds2 = (float) outcomes.getJSONObject(1).getDouble("odds");
+            }
+            
+            
+            
+            
+            
+            val = new MatchAPI(idTeam1,idTeam2,id,datematch,nomTeam1,nomTeam2,odds1,odds2,logoTeam1,logoTeam2,time,tournois,nbrMap);
+            
+            
+            
+            return val;
+        }
+        
+         public int getNbrMap(JSONObject data) throws JSONException{
+            int nbrMap = 1;
+              while(nbrMap<=100){
+                  String temp = "Map "+nbrMap+" - Winner";
+                  int indice = nbrMap-1;
+                  String name = data.getJSONArray("markets").getJSONObject(indice).getString("name");
+                  if(temp.equals(name)){
+                      nbrMap++;
+                  }
+                  else{
+                      
+                      break;
+                  }
+              }
+              nbrMap = nbrMap-1;
+              return nbrMap;
+        }
+        
+      
 	@Test
 	void contextLoads() throws SQLException, JSONException{
-           
+            
+         int   idUser=7;
+            int idMatch=379277;
+            String type="map_1";
+            int idTeamParier=7121518;
+            float montant=1000;
+            float odds=(float)4.50;
+
+            
+           MatchAPI m = getmatchbyIdRivalryWithOutOdds(idMatch);
+            
+            int val =0 ;
+            OracleConnection oc = Connexion.getConnection();
+            try{
+                val = getDoublonMatch(oc,m);
+            }
+            finally{
+                 if(oc!=null){
+                    oc.close();
+                }
+            }
+            System.out.println("Valiny = "+val);
             
         }
             

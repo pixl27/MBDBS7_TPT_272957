@@ -362,6 +362,7 @@ private RestTemplate restTemplate;
         @ResponseBody
         String parier(@RequestParam int idUser,@RequestParam int idMatch,@RequestParam String type,@RequestParam int idTeamParier,@RequestParam float montant,@RequestParam float odds) throws SQLException{
             MatchAPI m = getmatchbyIdRivalry(idMatch);
+            System.out.println("Matchh logg"+m.getIdTeam1());
             
             OracleConnection oc = Connexion.getConnection();
             try{

@@ -265,13 +265,13 @@ private RestTemplate restTemplate;
             return val;
         }
         
-        void insererMatch(OracleConnection connection,int idTeam1, int idTeam2, Date datematch) throws SQLException{
+        void insererMatch(OracleConnection connection,MatchAPI match) throws SQLException{
            
             Statement statement = null;
             try{
                 statement = connection.createStatement();
            
-                statement.executeQuery("insert into Match values(MATCH_SEQ.NEXTVAL,"+idTeam1+","+idTeam2+",TO_DATE('"+datematch+"','YYYY-MM-DD'))");
+                statement.executeQuery("insert into Match values(MATCH_SEQ.NEXTVAL,"+match.getIdTeam1()+","+match.getIdTeam2()+",TO_DATE('"+match.getDatematch()+"','YYYY-MM-DD'),"+match.getNbrMap()+","+match.getNomTeam1()+","+match.getNomTeam2()+")");
             }
             finally{
                 if(statement!=null){
@@ -360,16 +360,15 @@ private RestTemplate restTemplate;
         
         @PostMapping(value = "/parier", consumes = "application/json", produces = "application/json")
         @ResponseBody
-        String parier(@RequestParam int idUser,@RequestParam int idMatch,@RequestParam String type,@RequestParam String nomTeam,@RequestParam float montant,@RequestParam float odds) throws SQLException{
-            Match m = getMatch(idMatch);
+        String parier(@RequestParam int idUser,@RequestParam int idMatch,@RequestParam String type,@RequestParam int idTeamParier,@RequestParam float montant,@RequestParam float odds) throws SQLException{
+            MatchAPI m = getmatchbyIdRivalry(idMatch);
             
             OracleConnection oc = Connexion.getConnection();
             try{
-                insererMatch(oc,m.getIdTeam1(),m.getIdTeam2(),m.getDatematch());
+                insererMatch(oc,m);
                 int idMatchTemp = getSequence(oc,"MATCH_SEQ");
-                int idTeam = findteambynom(oc,nomTeam);
                 Date datenow = new java.sql.Date(Calendar.getInstance().getTime().getTime());
-                insererParis(oc,idUser,idMatchTemp,idTeam,type,montant,odds,datenow,0);
+                insererParis(oc,idUser,idMatchTemp,idTeamParier,type,montant,odds,datenow,0);
             }
             finally{
                  if(oc!=null){

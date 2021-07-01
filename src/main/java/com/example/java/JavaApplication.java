@@ -356,6 +356,12 @@ private RestTemplate restTemplate;
         return new RestTemplate();
         }
         
+        @PostMapping(value = "/test", consumes = "application/json", produces = "application/json")
+        @ResponseBody
+        String testPost(@RequestBody int idUser,@RequestBody int idMatch){
+            String val="valiny "+idUser+" et "+idMatch;
+            return val;
+        }
         
         
         @PostMapping(value = "/parier", consumes = "application/json", produces = "application/json")

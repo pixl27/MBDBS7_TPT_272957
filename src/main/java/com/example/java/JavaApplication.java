@@ -3,6 +3,7 @@ package com.example.java;
 import classe.Connexion;
 import classe.Match;
 import classe.MatchAPI;
+import classe.ParisArg;
 import classe.Team;
 import com.google.gson.Gson;
 import org.json.JSONArray;
@@ -358,9 +359,9 @@ private RestTemplate restTemplate;
         
         @PostMapping(value = "/test", consumes = "application/json", produces = "application/json")
         @ResponseBody
-        void testPost(@RequestBody int idUser,@RequestBody int idMatch){
-            System.out.println("idUser "+idUser);
-            System.out.println("idMatch "+idMatch);
+        void testPost(@RequestBody ParisArg test){
+            System.out.println("idUser "+test.getIdUser());
+            System.out.println("idMatch "+test.getIdMatch());
         }
         
         

@@ -358,9 +358,9 @@ private RestTemplate restTemplate;
         
         @PostMapping(value = "/test", consumes = "application/json", produces = "application/json")
         @ResponseBody
-        String testPost(@RequestBody int idUser,@RequestBody int idMatch){
-            String val="valiny "+idUser+" et "+idMatch;
-            return val;
+        void testPost(@RequestBody int idUser,@RequestBody int idMatch){
+            System.out.println("idUser "+idUser);
+            System.out.println("idMatch "+idMatch);
         }
         
         

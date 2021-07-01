@@ -357,18 +357,14 @@ private RestTemplate restTemplate;
         return new RestTemplate();
         }
         
-        @PostMapping(value = "/test", consumes = "application/json", produces = "application/json")
-        @ResponseBody
-        void testPost(@RequestBody ParisArg test){
-            System.out.println("idUser "+test.getIdUser());
-            System.out.println("idMatch "+test.getIdMatch());
-        }
+      
+        
         
         
         @PostMapping(value = "/parier", consumes = "application/json", produces = "application/json")
         @ResponseBody
-        String parier(@RequestParam int idUser,@RequestParam int idMatch,@RequestParam String type,@RequestParam int idTeamParier,@RequestParam float montant,@RequestParam float odds) throws SQLException{
-            MatchAPI m = getmatchbyIdRivalry(idMatch);
+        void parier(@RequestBody ParisArg p) throws SQLException{
+            MatchAPI m = getmatchbyIdRivalry(p.getIdMatch());
             System.out.println("Matchh logg"+m.getIdTeam1());
             
             OracleConnection oc = Connexion.getConnection();
@@ -378,10 +374,10 @@ private RestTemplate restTemplate;
                 if(idDoublon==0){
                     insererMatch(oc,m);
                     int idMatchTemp = getSequence(oc,"MATCH_SEQ");
-                    insererParis(oc,idUser,idMatchTemp,idTeamParier,type,montant,odds,datenow,0);
+                    insererParis(oc,p.getIdUser(),idMatchTemp,p.getIdTeamParier(),p.getType(),p.getMontant(),p.getOdds(),datenow,0);
                 }
                 else{
-                    insererParis(oc,idUser,idDoublon,idTeamParier,type,montant,odds,datenow,0);
+                    insererParis(oc,p.getIdUser(),idDoublon,p.getIdTeamParier(),p.getType(),p.getMontant(),p.getOdds(),datenow,0);
                 }
             }
             finally{
@@ -389,8 +385,6 @@ private RestTemplate restTemplate;
                     oc.close();
                 }
             }
-            
-            return "Match" +idUser+","+idMatch;
         }
         
         

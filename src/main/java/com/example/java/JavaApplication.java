@@ -47,6 +47,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 
@@ -117,6 +119,25 @@ private RestTemplate restTemplate;
           ResponseEntity response = restTemplate.exchange(url, HttpMethod.GET,entity ,String.class);  
           JSONObject json = new JSONObject(response.getBody().toString());
           return json;
+    }
+    
+    String transaction(String type,float montant){
+            String url = "https://backend-node-mbds272957.herokuapp.com/api/parier";
+            HttpHeaders headers = new HttpHeaders();
+            headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+            
+            MultiValueMap<String, String> body = new LinkedMultiValueMap<String, String>();     
+            body.add("type", type);
+            body.add("solde",String. valueOf(montant));
+            
+            headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+            
+            HttpEntity<?> httpEntity = new HttpEntity<Object>(body, headers);
+
+            ResponseEntity response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
+            JSONObject json = new JSONObject(response.getBody().toString());
+            String val = json.getString("message");
+            return val;
     }
     
     JSONArray getJSONArrayAPI(String url){
@@ -363,11 +384,12 @@ private RestTemplate restTemplate;
         
         @PostMapping(value = "/parier", consumes = "application/json", produces = "application/json")
         @ResponseBody
-        void parier(@RequestBody ParisArg p) throws SQLException{
+        String parier(@RequestBody ParisArg p) throws SQLException{
             MatchAPI m = getmatchbyIdRivalry(p.getIdMatch());
-            System.out.println("Matchh logg"+m.getIdTeam1());
+            String message = "";
             
             OracleConnection oc = Connexion.getConnection();
+            oc.setAutoCommit(false);
             try{
                 int idDoublon = getDoublonMatch(oc,m);
                 Date datenow = new java.sql.Date(Calendar.getInstance().getTime().getTime());
@@ -379,12 +401,22 @@ private RestTemplate restTemplate;
                 else{
                     insererParis(oc,p.getIdUser(),idDoublon,p.getIdTeamParier(),p.getType(),p.getMontant(),p.getOdds(),datenow,0);
                 }
+                String val = transaction("credit",p.getMontant());
+                if(val.compareToIgnoreCase("updated")==0){
+                    oc.commit();
+                }
+                else{
+                    message = "erreur de payement";
+                }
             }
             finally{
                  if(oc!=null){
                     oc.close();
                 }
+                 
             }
+            message = "updated";
+            return message;
         }
         
         

@@ -33,6 +33,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 
@@ -263,6 +265,25 @@ class JavaApplicationTests {
             }
             return val;
         }
+        
+           String transaction(String type,float montant) throws JSONException{
+            String url = "https://backend-node-mbds272957.herokuapp.com/api/parier";
+            HttpHeaders headers = new HttpHeaders();
+            headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+            
+            MultiValueMap<String, String> body = new LinkedMultiValueMap<String, String>();     
+            body.add("type", type);
+            body.add("solde",String. valueOf(montant));
+            
+            headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+            
+            HttpEntity<?> httpEntity = new HttpEntity<Object>(body, headers);
+
+            ResponseEntity response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
+            JSONObject json = new JSONObject(response.getBody().toString());
+            String val = json.getString("message");
+            return val;
+        }
       
         MatchAPI getmatchbyIdRivalryWithOutOdds(int idRivalry) throws SQLException, JSONException{
             MatchAPI val = new MatchAPI();
@@ -342,29 +363,8 @@ class JavaApplicationTests {
       
 	@Test
 	void contextLoads() throws SQLException, JSONException{
-            
-         int   idUser=7;
-            int idMatch=379277;
-            String type="map_1";
-            int idTeamParier=7121518;
-            float montant=1000;
-            float odds=(float)4.50;
-
-            
-           MatchAPI m = getmatchbyIdRivalryWithOutOdds(idMatch);
-            
-            int val =0 ;
-            OracleConnection oc = Connexion.getConnection();
-            try{
-                val = getDoublonMatch(oc,m);
-            }
-            finally{
-                 if(oc!=null){
-                    oc.close();
-                }
-            }
-            System.out.println("Valiny = "+val);
-            
+                    float nbr = (float) 10.5;
+                    String test = transaction("debit",nbr);
+                    System.out.println("Message "+test);
         }
-            
 	}

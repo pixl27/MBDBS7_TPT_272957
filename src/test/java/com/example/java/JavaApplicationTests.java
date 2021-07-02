@@ -406,6 +406,8 @@ class JavaApplicationTests {
             return val;
         }
           
+        
+          
           ArrayList<JSONObject> getAllMatchQuiConcorde(int idOpposingteam,Date datematch,JSONArray arrayMatch) throws JSONException{
             ArrayList<JSONObject> val = new ArrayList();
             int size = arrayMatch.length()-1;
@@ -487,6 +489,35 @@ class JavaApplicationTests {
                         if(!listeMatch.isEmpty()){
                                 if(listeParis.get(i).getType().compareTo("map_overall")==0){
                                     //traitement pour winner overall
+                                    int nbrWinNeeded = (m.getNbrMap()/2)+1;
+                                    int nbrWinTeam1 = 0;
+                                    int nbrWinTeam2 = 0;
+                                    for(int y=0;y<listeMatch.size();y++){
+                                        if(listeMatch.get(y).getBoolean("radiant_win")==listeMatch.get(y).getBoolean("radiant")){
+                                            if(m.getIdTeam1()!=0)
+                                                nbrWinTeam1++;
+                                            else
+                                                nbrWinTeam2++;
+                                        }
+                                        else{
+                                            if(m.getIdTeam1()!=0)
+                                                nbrWinTeam2++;
+                                            else
+                                                nbrWinTeam1++;
+                                        }
+                                    }
+                                    
+                                    System.out.println("nbrWinNeeded "+nbrWinNeeded);
+                                    System.out.println("nbrWinTeam1 "+nbrWinTeam1);
+                                    System.out.println("nbrWinTeam2 "+nbrWinTeam2);
+                                    
+                                    if(nbrWinTeam1==nbrWinNeeded)
+                                            System.out.println(m.getNomTeam1() +"Winner");
+                                    else if(nbrWinTeam2==nbrWinNeeded)
+                                            System.out.println(m.getNomTeam2() +"Winner");
+                                    else
+                                            System.out.println("En attente.....");
+                                    
                                     System.out.println("overall");
                                 }
                                 else{

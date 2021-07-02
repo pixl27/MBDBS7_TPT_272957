@@ -23,7 +23,7 @@ function transaction(req,res) {
 
   }
   else {
-    User.updateOne({_id: "60d995cb5f11d836229bd7e0"}, {
+    User.updateOne({username: "root"}, {
       $inc : {solde : -req.body.solde}
   }, function(err, affected, resp) {
      console.log(resp);

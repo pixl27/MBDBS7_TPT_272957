@@ -9,7 +9,7 @@ let Historiquesolde = require("../model/historiquesolde");
 // Récupérer tous les assignments (GET), AVEC PAGINATION
 function getHistoriqueSoldeById(req,res) {
 
-    Historiquesolde.find({"iduser":req.params.id}, (error, seq) => {
+    Historiquesolde.find({"iduser":req.body.id}, (error, seq) => {
       if (error) {
         res.send(error);
       }

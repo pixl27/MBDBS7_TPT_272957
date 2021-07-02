@@ -1,8 +1,9 @@
 package com.example.java;
 
 import classe.Connexion;
-import classe.Match;
+
 import classe.MatchAPI;
+import classe.Paris;
 import classe.ParisArg;
 import classe.Team;
 import com.google.gson.Gson;
@@ -161,14 +162,20 @@ private RestTemplate restTemplate;
         
      Team findTeambynomV2(String nom) throws SQLException{
             OracleConnection connection = Connexion.getConnection();
-           Statement statement = null;
+            
+            
+           PreparedStatement statement = null;
            Team val = new Team();
            
             try{
             
-                statement = connection.createStatement( ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
-
-                ResultSet resultSet = statement.executeQuery("select IDTEAM,LOGO from Team where nom like '%"+nom+"%'");
+                String req ="select IDTEAM,LOGO from Team where nom like ? ";
+                
+                statement = connection.prepareStatement(req,ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+                
+                statement.setString(1,"%" + nom + "%");
+                
+                ResultSet resultSet = statement.executeQuery();
 
                 int nbrRow = getRowCount(resultSet);
                 System.out.println("nbrRow:"+nbrRow);
@@ -343,35 +350,7 @@ private RestTemplate restTemplate;
         
         
         
-        Match getMatch(int idMatchRivalry) throws SQLException{
-            String url = "https://www.rivalry.com/api/v1/matches/"+idMatchRivalry;
-            String response = restTemplate.getForObject(url, String.class);  
-            
-            
-            JSONObject json = new JSONObject(response);
-            JSONArray array = json.getJSONObject("data").getJSONArray("competitors");
-            
-            
-            String nomTeam = array.getJSONObject(0).getString("name");
-            int idTeam1 = findidteambynom(nomTeam);
-            if(idTeam1 == 0){
-                return null;
-            }
-            
-            nomTeam = array.getJSONObject(1).getString("name");
-            int idTeam2 = findidteambynom(nomTeam);
-            if(idTeam2 == 0){
-                return null;
-            }
-            
-            String[] arrOfStr = json.getJSONObject("data").getString("scheduled_at").split("T");
-            System.out.println("date"+arrOfStr[0]);
-            Date datematch = Date.valueOf(arrOfStr[0]);
-            
-            
-            Match val = new Match(idTeam1,idTeam2,datematch);
-            return val;
-        }
+       
         
         @Bean
         public RestTemplate restTemplate() {
@@ -449,6 +428,45 @@ private RestTemplate restTemplate;
             
             return listeTeam;
         }
+        
+        
+        ArrayList<Paris> getAllParisNonFinie(OracleConnection co) throws SQLException{
+            ArrayList<Paris> val = new ArrayList();
+            Statement statement = co.createStatement();
+            String req = "select * from Paris where statut=0";
+            
+             ResultSet res = statement.executeQuery(req);
+             while (res.next()){
+                 //int idParis, int idUser, int idMatch, int idTeam, String type, float montant, float odds, Date dateparis, int statut
+                Paris temp = new Paris(res.getInt(1),res.getInt(2),res.getInt(3),res.getInt(4),res.getString(5),res.getFloat(6),res.getFloat(7),res.getDate(8),res.getInt(9));
+                val.add(temp);
+            }
+            return val;
+        }
+        
+        void finaliser() throws SQLException{
+            
+            OracleConnection co = Connexion.getConnection();
+            Date datenow = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+            try{
+                ArrayList<Paris> listeParis = getAllParisNonFinie(co);
+                for(int i=0;i<listeParis.size();i++){
+                    MatchAPI match = getmatchbyIdRivalryWithOutOdds(listeParis.get(i).getIdMatch());
+                    if(match.getDatematch().compareTo(datenow)<=0){
+                        
+                    }
+                }
+            }
+            finally{
+                if(co!=null){
+                    co.close();
+                }
+            }
+            
+            
+        }
+        
+        
         
         int getDoublonMatch(OracleConnection co,MatchAPI match) throws SQLException{
             int val = 0;

@@ -18,7 +18,7 @@ function getSequences(req,res) {
 
 function updateSequence(req, res) {
     Sequence.updateOne({id: 0}, {
-        $inc : {next : req.body.next}
+        $inc : {next : 1}
     }, function(err, affected, resp) {
        console.log(resp);
     })

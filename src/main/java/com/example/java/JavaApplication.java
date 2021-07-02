@@ -296,11 +296,21 @@ private RestTemplate restTemplate;
         
         void insererMatch(OracleConnection connection,MatchAPI match) throws SQLException{
            
-            Statement statement = null;
+            PreparedStatement statement = null;
             try{
-                statement = connection.createStatement();
+                
+                String req = "insert into Match values(MATCH_SEQ.NEXTVAL,?,?,?,?,?,?)";
+                
+                
+                statement = connection.prepareStatement(req);
+                statement.setInt(1, match.getIdTeam1());
+                statement.setInt(2, match.getIdTeam2());
+                statement.setDate(3, match.getDatematch());
+                statement.setInt(4, match.getNbrMap());
+                statement.setString(5,match.getNomTeam1());
+                statement.setString(6,match.getNomTeam2());
            
-                statement.executeQuery("insert into Match values(MATCH_SEQ.NEXTVAL,"+match.getIdTeam1()+","+match.getIdTeam2()+",TO_DATE('"+match.getDatematch()+"','YYYY-MM-DD'),"+match.getNbrMap()+",'"+match.getNomTeam1()+"','"+match.getNomTeam2()+"')");
+                statement.executeQuery();
             }
             finally{
                 if(statement!=null){

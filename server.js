@@ -60,7 +60,7 @@ app.route(prefix + '/users')
 app.route(prefix + '/historiques')
 .post(historique.postHistoriqueSolde)
 
-app.route(prefix + '/historique').get("/:id",historique.getHistoriqueSoldeById)
+app.route(prefix + '/historique/:id"').get(historique.getHistoriqueSoldeById)
 
 app.route(prefix + '/parier')
 .post(user.transaction)

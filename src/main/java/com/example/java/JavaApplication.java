@@ -1,6 +1,7 @@
 package com.example.java;
 
 import classe.Connexion;
+import classe.Match;
 
 import classe.MatchAPI;
 import classe.Paris;
@@ -31,11 +32,16 @@ import java.sql.DatabaseMetaData;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import org.json.JSONException;
@@ -443,7 +449,7 @@ private RestTemplate restTemplate;
         ArrayList<Paris> getAllParisNonFinie(OracleConnection co) throws SQLException{
             ArrayList<Paris> val = new ArrayList();
             Statement statement = co.createStatement();
-            String req = "select * from Paris where statut=0";
+            String req = "select * from Paris where statut=0 order by dateparis";
             
              ResultSet res = statement.executeQuery(req);
              while (res.next()){
@@ -454,25 +460,176 @@ private RestTemplate restTemplate;
             return val;
         }
         
-        void finaliser() throws SQLException{
+        Match getMatchById(OracleConnection co,int id) throws SQLException{
+            Match val = new Match();
+            Statement statement = null;
+            
+            try{
+                statement = co.createStatement();
+           
+                 ResultSet resultSet = statement.executeQuery("select * from Match where idMatch ="+id);
+                    while (resultSet.next()){
+                        //int idMatch, int idTeam1, int idTeam2, Date datematch, int nbrMap, String nomTeam1, String nomTeam2
+                        val = new Match(resultSet.getInt(1),resultSet.getInt(2),resultSet.getInt(3),resultSet.getDate(4),resultSet.getInt(5),resultSet.getString(6),resultSet.getString(7));
+                    }
+            }
+            finally{
+                if(statement!=null){
+                    statement.close();
+                }
+            }
+             
+            
+            return val;
+            
+            
+        }
+        
+      ArrayList<JSONObject> getAllMatchQuiConcorde(int idOpposingteam,Date datematch,JSONArray arrayMatch) throws JSONException{
+            ArrayList<JSONObject> val = new ArrayList();
+            int size = arrayMatch.length()-1;
+            for(int i= 0;i<size;i++){
+                int unixTimestamp = arrayMatch.getJSONObject(i).getInt("start_time");
+                System.out.println("unix timestamp "+unixTimestamp);
+                Date datematchAPI = new Date(unixTimestamp*1000L);
+                System.out.println("Start time match :"+datematchAPI);
+                System.out.println("Date match base "+datematch);
+                int idOpposingteamAPI = arrayMatch.getJSONObject(i).getInt("opposing_team_id");
+                if(datematch.compareTo(datematchAPI)<=0){
+                    System.out.println("Date concorde");
+                    if(idOpposingteam==idOpposingteamAPI){
+                     System.out.println("adversaire concorde");
+                    val.add(arrayMatch.getJSONObject(i));
+                    }
+                }
+                else{
+                    System.out.println("Date passé, Break");
+                    break;
+                }
+            }
+            return val;
+        }
+        
+         ArrayList<JSONObject> getAllMatchQuiConcorde(String nomOpposingteam,Date datematch,JSONArray arrayMatch) throws JSONException{
+            ArrayList<JSONObject> val = new ArrayList();
+            int size = arrayMatch.length()-1;
+            for(int i= 0;i<size;i++){
+                int unixTimestamp = arrayMatch.getJSONObject(i).getInt("start_time");
+                Date datematchAPI = new Date(unixTimestamp*1000L);
+                System.out.println("Start time match :"+datematchAPI);
+                System.out.println("Date match base "+datematch);
+                String nameOpposingteamAPI = arrayMatch.getJSONObject(i).getString("opposing_team_name");
+                System.out.println("Nom adversaire "+nameOpposingteamAPI);
+                System.out.println("Nom normal "+nomOpposingteam);
+                if(datematch.compareTo(datematchAPI)<=0){
+                    System.out.println("Date concorde");
+                    if(comparerNom(nomOpposingteam,nameOpposingteamAPI)){
+                     System.out.println("adversaire concorde");
+                    val.add(arrayMatch.getJSONObject(i));
+                    }
+                }
+                else{
+                    System.out.println("Date passé, Break");
+                    break;
+                }
+            }
+            return val;
+        }
+        
+        Boolean comparerNom(String nom1,String nom2){
+            int taille1 = nom1.length();
+            int taille2 = nom2.length();
+
+             if(taille1>taille2){
+                   return nom1.contains(nom2);
+              }
+              else{
+                   return nom2.contains(nom1);
+              }
+        }
+        
+        
+        
+        
+        
+      ArrayList<JSONObject> getMatchOpenDota(Match m) throws JSONException{
+            JSONArray arrayMatch = null;
+            ArrayList<JSONObject> val = new ArrayList();
+            if(m.getIdTeam1()!=0){
+                String url = "https://api.opendota.com/api/teams/"+m.getIdTeam1()+"/matches";
+                arrayMatch = getJSONArrayAPI(url);
+                if(m.getIdTeam2()!=0){
+                    val = getAllMatchQuiConcorde(m.getIdTeam2(),m.getDatematch(),arrayMatch);
+                }
+                else{
+                    System.out.println("ATTOOOOO");
+                    val = getAllMatchQuiConcorde(m.getNomTeam2(),m.getDatematch(),arrayMatch);
+                }
+            }
+            else{
+                System.out.println("ATTOOOOO 2");
+                String url = "https://api.opendota.com/api/teams/"+m.getIdTeam2()+"/matches";
+                arrayMatch = getJSONArrayAPI(url);
+                val = getAllMatchQuiConcorde(m.getNomTeam1(),m.getDatematch(),arrayMatch);
+            }
+            return val;
+        }
+        
+        void finaliser() throws SQLException, JSONException{
             
             OracleConnection co = Connexion.getConnection();
             Date datenow = new java.sql.Date(Calendar.getInstance().getTime().getTime());
             try{
                 ArrayList<Paris> listeParis = getAllParisNonFinie(co);
                 for(int i=0;i<listeParis.size();i++){
-                    MatchAPI match = getmatchbyIdRivalryWithOutOdds(listeParis.get(i).getIdMatch());
-                    if(match.getDatematch().compareTo(datenow)<=0){
-                        
+                    System.out.println("idParis "+listeParis.get(i).getIdParis());
+                    Match m = getMatchById(co,listeParis.get(i).getIdMatch());
+                    System.out.println("idMatch "+listeParis.get(i).getIdMatch());
+                    //si date est passée
+                    if(m.getDatematch().compareTo(datenow)<=0){
+                        ArrayList<JSONObject> listeMatch =  getMatchOpenDota(m);
+                        System.out.println("Match hita "+listeMatch.size());
+                        if(!listeMatch.isEmpty()){
+                                if(listeParis.get(i).getType().compareTo("map_overall")==0){
+                                    //traitement pour winner overall
+                                    System.out.println("overall");
+                                }
+                                else{
+                                    String[] array = listeParis.get(i).getType().split("_");
+                                    int mapParier = Integer.parseInt(array[1]);
+                                    if(listeMatch.size()>=mapParier){
+                                        System.out.println("Type Paris "+listeParis.get(i).getType());
+                                        if(listeParis.get(i).getType().contains("fb")){
+                                            //MANEMANY ETO FA TSY AIKO MIJERY OE IZA FIRST BLOOD
+                                            System.out.println("map "+mapParier+" firstblood");
+                                        }
+                                        else{
+                                            //traitement  pour winner map ?
+                                            System.out.println("map "+mapParier);
+                                        }
+                                    }
+                                }
+                        }
+                        else{
+                            long diffInMillies = Math.abs(m.getDatematch().getTime() - datenow.getTime());
+                            long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+                            System.out.println("difference de jour "+diff);
+                            if(diff>1){
+                                //Envoie mail
+                                System.out.println("mila mihetsika fa tsy hita paris an'olona");
+                            }
+                             System.out.println("empty");
+                             
+                        }
                     }
+                    System.out.println("#################################################################################");
                 }
             }
             finally{
                 if(co!=null){
                     co.close();
                 }
-            }
-            
+            } 
             
         }
         

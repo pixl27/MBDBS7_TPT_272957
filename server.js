@@ -5,6 +5,8 @@ let bodyParser = require('body-parser');
 let assignment = require('./routes/assignments');
 let matiere = require('./routes/matieres');
 var banque = require('./routes/banques');
+var sequence = require('./routes/sequences');
+
 var VerifyToken = require('./routes/VerifyToken');
 var user = require('./routes/users');
 var role = require('./routes/roles');
@@ -71,6 +73,11 @@ app.route(prefix + '/user')
 
   app.route(prefix + '/banques')
   .get(banque.getBanques);
+
+  app.route(prefix + '/sequences')
+  .get(sequence.getSequences)
+  .post(sequence.updateSequence)
+
 
   app.route(prefix + '/roles')
   .get(role.getRoles);

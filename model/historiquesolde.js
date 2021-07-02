@@ -4,11 +4,11 @@ var aggregatePaginate = require("mongoose-aggregate-paginate-v2");
 let Schema = mongoose.Schema;
 
 let HistoriquesoldeSchema = Schema({
-    iduser!:String,
+    iduser:String,
     montant:Number,
-    type!:String,
-    idparis!:Number,
-    datehistorique!:Date
+    type:String,
+    idparis:Number,
+    datehistorique:Date
 });
 
 HistoriquesoldeSchema.plugin(aggregatePaginate);

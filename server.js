@@ -10,6 +10,7 @@ var sequence = require('./routes/sequences');
 var VerifyToken = require('./routes/VerifyToken');
 var user = require('./routes/users');
 var role = require('./routes/roles');
+var historique = require('./routes/historiquesoldes');
 
 let mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
@@ -55,6 +56,10 @@ const prefix = '/api';
 app.route(prefix + '/users')
 .post(user.inscription)
 .get(user.decode);
+
+app.route(prefix + '/historiques')
+.post(historique.postHistoriqueSolde)
+.get(historique.getHistoriqueSoldeById);
 
 app.route(prefix + '/parier')
 .post(user.transaction)

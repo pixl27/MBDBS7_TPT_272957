@@ -38,7 +38,7 @@ function inscription(req, res) {
       idrole: 1,
       nom: req.body.nom,
       prenom: req.body.prenom,
-      solde: req.body.solde
+      solde: 5000
     },
     function (err, user) {
       if (err) return res.status(500).send("There was a problem registering the user.")

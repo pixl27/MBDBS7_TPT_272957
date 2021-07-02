@@ -32,10 +32,10 @@ function inscription(req, res) {
     var hashedPassword = bcrypt.hashSync(req.body.password, 8);
     
     User.create({
-      id:1,
+      id:req.body.sequence,
       username : req.body.username,
       password : hashedPassword,
-      idrole: req.body.idrole,
+      idrole: 1,
       nom: req.body.nom,
       prenom: req.body.prenom,
       solde: req.body.solde

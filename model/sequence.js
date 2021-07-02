@@ -8,7 +8,7 @@ let SequenceSchema = Schema({
     next: Number,
 });
 
-UserSchema.plugin(aggregatePaginate);
+SequenceSchema.plugin(aggregatePaginate);
 
 
 // C'est à travers ce modèle Mongoose qu'on pourra faire le CRUD

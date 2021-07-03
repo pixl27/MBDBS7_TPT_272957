@@ -16,7 +16,7 @@ function transaction(req,res) {
   
   if(req.body.type == "debit"){
     User.updateOne({_id: ObjectId(req.body.iduser)}, {
-      $inc : {solde : req.body.solde}
+      $inc : {solde : req.body.montant}
   }, function(err, affected, resp) {
      console.log(resp);
   })
@@ -25,6 +25,7 @@ function transaction(req,res) {
   historique.montant = req.body.montant;
   historique.type = req.body.type;
   historique.idparis = req.body.idparis;
+  historique.description = req.body.description;
   historique.datehistorique = req.body.datehistorique;
 
   historique.save((err) => {

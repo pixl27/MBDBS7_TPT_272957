@@ -8,6 +8,7 @@ let HistoriquesoldeSchema = Schema({
     montant:Number,
     type:String,
     idparis:Number,
+    description:String,
     datehistorique:Date
 });
 

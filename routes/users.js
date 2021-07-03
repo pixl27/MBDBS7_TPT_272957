@@ -37,12 +37,25 @@ function transaction(req,res) {
 
   }
   else {
-    User.updateOne({"id":0}, {
+    User.updateOne({_id: ObjectId(req.body.iduser)}, {
       $inc : {solde : -req.body.solde}
   }, function(err, affected, resp) {
      console.log(resp);
   })
+  let historique = new Historiquesolde();
+  historique.iduser =  ObjectId(req.body.iduser);
+  historique.montant = req.body.montant;
+  historique.type = req.body.type;
+  historique.idparis = req.body.idparis;
+  historique.description = req.body.description;
+  historique.datehistorique = req.body.datehistorique;
 
+  historique.save((err) => {
+    if (err) {
+      res.send("cant post assignment ", err);
+    }
+    res.json({ message: `historique saved!` });
+  });
   }
   res.json({ message: "updated" });
 }

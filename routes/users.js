@@ -16,14 +16,14 @@ const { ObjectId } = require('mongodb');
 function transaction(req,res) {
   
   if(req.body.type == "debit"){
-    User.updateOne({_id: ObjectId("req.body.iduser")}, {
+    User.updateOne({_id: ObjectId(req.body.iduser)}, {
       $inc : {solde : req.body.montant}
   }, function(err, affected, resp) {
      console.log(resp);
   })
 
   Banque.updateOne({_id: ObjectId("60c315e614982b5375e5a537")}, {
-    $inc : {montant : req.body.montant}
+    $inc : {montant : -req.body.montant}
 }, function(err, affected, resp) {
    console.log(resp);
 })
@@ -51,7 +51,7 @@ function transaction(req,res) {
      console.log(resp);
   })
   Banque.updateOne({_id: ObjectId("60c315e614982b5375e5a537")}, {
-    $inc : {montant : -req.body.montant}
+    $inc : {montant : req.body.montant}
 }, function(err, affected, resp) {
    console.log(resp);
 })

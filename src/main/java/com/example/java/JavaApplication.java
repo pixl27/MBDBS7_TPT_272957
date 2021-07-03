@@ -562,7 +562,7 @@ private RestTemplate restTemplate;
         
         
         
-      ArrayList<JSONObject> getMatchOpenDota(Match m) throws JSONException{
+    ArrayList<JSONObject> getMatchOpenDota(Match m) throws JSONException, SQLException{
             JSONArray arrayMatch = null;
             ArrayList<JSONObject> val = new ArrayList();
             if(m.getIdTeam1()!=0){

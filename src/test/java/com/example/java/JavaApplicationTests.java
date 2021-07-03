@@ -252,7 +252,7 @@ class JavaApplicationTests {
             return val;
         }
         //"type":"debit","iduser":"60d995cb5f11d836229bd7e0","montant":100000,"idparis":81,"description":"cadeau admin","datehistorique":"2021-07-03T21:00:00.000+00:00"
-          String transaction(String idUser,String type,float montant,int idParis,String description) throws JSONException{
+         String transaction(String idUser,String type,float montant,int idParis,String description) throws JSONException{
             String url = "https://backend-node-mbds272957.herokuapp.com/api/parier";
             HttpHeaders headers = new HttpHeaders();
             headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
@@ -265,7 +265,7 @@ class JavaApplicationTests {
             body.add("datehistorique", dateFormat.format(datenow));
             body.add("description", description);
             body.add("type", type);
-            body.add("solde",String.valueOf(montant));
+            body.add("montant",String.valueOf(montant));
             
             headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
             
@@ -710,9 +710,13 @@ class JavaApplicationTests {
                                                         System.out.println(m.getNomTeam1()+ " do the first blood");
                                                         if(m.getIdTeam1()==listeParis.get(i).getIdTeam()){
                                                             //paris gagnant 
+                                                            String description = "Felicitation, Votre équipe a fait le first blood sur map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                                                            traitementParis(listeParis.get(i),"debit",description);
                                                         }
                                                         else{
                                                             //paris perdant 
+                                                            String description = "Malheuresement, Votre équipe n'a pas fait le first blood sur map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                                                            traitementParis(listeParis.get(i),"credit",description);
                                                         }
                                                     }
                                                     else{
@@ -720,9 +724,13 @@ class JavaApplicationTests {
                                                         System.out.println(m.getNomTeam2()+ " do the first blood");
                                                         if(m.getIdTeam2()==listeParis.get(i).getIdTeam()){
                                                                 //paris gagnant 
+                                                                String description = "Felicitation, Votre équipe a fait le first blood sur map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                                                                traitementParis(listeParis.get(i),"debit",description);
                                                         }
                                                         else{
                                                                 //paris perdant 
+                                                                String description = "Malheuresement, Votre équipe n'a pas fait le first blood sur map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                                                                traitementParis(listeParis.get(i),"credit",description);
                                                         }
                                                     }
                                                 }
@@ -732,9 +740,13 @@ class JavaApplicationTests {
                                                         System.out.println(m.getNomTeam2()+ " do the first blood");
                                                         if(m.getIdTeam2()==listeParis.get(i).getIdTeam()){
                                                                 //paris gagnant 
+                                                                String description = "Felicitation, Votre équipe a fait le first blood sur map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                                                                traitementParis(listeParis.get(i),"debit",description);
                                                         }
                                                         else{
                                                                 //paris perdant 
+                                                                String description = "Malheuresement, Votre équipe n'a pas fait le first blood sur map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                                                                traitementParis(listeParis.get(i),"credit",description);
                                                         }
                                                     }
                                                     else{
@@ -742,9 +754,13 @@ class JavaApplicationTests {
                                                         System.out.println(m.getNomTeam1()+ " do the first blood");
                                                         if(m.getIdTeam1()==listeParis.get(i).getIdTeam()){
                                                             //paris gagnant 
+                                                            String description = "Felicitation, Votre équipe a fait le first blood sur map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                                                                traitementParis(listeParis.get(i),"debit",description);
                                                         }
                                                         else{
                                                             //paris perdant 
+                                                            String description = "Malheuresement, Votre équipe n'a pas fait le first blood sur map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                                                                traitementParis(listeParis.get(i),"credit",description);
                                                         }
                                                     }
                                                 }
@@ -762,9 +778,13 @@ class JavaApplicationTests {
                                                         //Traitement pour team 1 Winner
                                                         if(m.getIdTeam1()==listeParis.get(i).getIdTeam()){
                                                             //paris gagnant 
+                                                            String description = "Felicitation, Votre équipe a gagné sur la map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                                                            traitementParis(listeParis.get(i),"debit",description);
                                                         }
                                                         else{
                                                             //paris perdant 
+                                                            String description = "Malheuresement, Votre équipe a perdu sur la map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                                                             traitementParis(listeParis.get(i),"credit",description);
                                                         }
                                                     }
                                                     else{
@@ -772,9 +792,13 @@ class JavaApplicationTests {
                                                         //Traitement pour team 2 Winnner 
                                                         if(m.getIdTeam2()==listeParis.get(i).getIdTeam()){
                                                             //paris gagnant 
+                                                            String description = "Felicitation, Votre équipe a gagné sur la map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                                                            traitementParis(listeParis.get(i),"debit",description);
                                                         }
                                                         else{
                                                             //paris perdant 
+                                                            String description = "Malheuresement, Votre équipe a perdu sur la map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                                                             traitementParis(listeParis.get(i),"credit",description);
                                                         }
                                                     }
                                                         
@@ -785,9 +809,13 @@ class JavaApplicationTests {
                                                         //Traitement pour team 2 Winner
                                                         if(m.getIdTeam2()==listeParis.get(i).getIdTeam()){
                                                                 //paris gagnant 
+                                                                 String description = "Felicitation, Votre équipe a gagné sur la map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                                                            traitementParis(listeParis.get(i),"debit",description);
                                                             }
                                                             else{
                                                                 //paris perdant 
+                                                                 String description = "Malheuresement, Votre équipe a perdu sur la map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                                                             traitementParis(listeParis.get(i),"credit",description);
                                                             }
                                                     }
                                                     else{
@@ -795,9 +823,13 @@ class JavaApplicationTests {
                                                         //Traitement pour team 1 Winnner 
                                                         if(m.getIdTeam1()==listeParis.get(i).getIdTeam()){
                                                                 //paris gagnant 
+                                                                 String description = "Felicitation, Votre équipe a gagné sur la map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                                                            traitementParis(listeParis.get(i),"debit",description);
                                                             }
                                                             else{
                                                                 //paris perdant 
+                                                                   String description = "Malheuresement, Votre équipe a perdu sur la map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                                                             traitementParis(listeParis.get(i),"credit",description);
                                                         }
                                                     }
                                                         
@@ -826,6 +858,8 @@ class JavaApplicationTests {
                                                 //ra efa vita le match
                                                 if(nbrWinTeam1==nbrWinNeeded || nbrWinTeam2==nbrWinNeeded){
                                                     //Paris perdu par le parieur
+                                                    String description = "Malheuresement, le map "+mapParier+" n'a pas eu lieu pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                                                    traitementParis(listeParis.get(i),"credit",description);
                                                 }
                                             }
                                         }

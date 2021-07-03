@@ -339,7 +339,7 @@ private RestTemplate restTemplate;
            
             PreparedStatement statement = null;
             try{
-                String query = "insert into TEST values('tous les 3 HEURES',?)";
+                String query = "insert into TEST values('Finaliser est appelé',?)";
                 statement = connection.prepareStatement(query);
                 statement.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
                 statement.executeQuery();
@@ -584,8 +584,67 @@ private RestTemplate restTemplate;
             }
             return val;
         }
+      
+        void traitementParis(Paris p,String type,String description) throws SQLException, JSONException{
+             OracleConnection co = Connexion.getConnection();
+             co.setAutoCommit(false);
+             try{
+                 float montant = p.getOdds()*p.getMontant();
+                 if("credit".equals(type)){
+                     montant = 0;
+                 }
+                 transaction(p.getIdUser(),type,montant,p.getIdParis(),description);
+                 setStatusParis(co,p.getIdParis());
+                 co.commit();
+             }
+             finally{
+                     co.close();
+             }
+         }
         
-        void finaliser() throws SQLException, JSONException{
+         void setStatusParis(OracleConnection co,int idParis) throws SQLException{
+             Statement statement = null;
+            try{
+                statement = co.createStatement();
+           
+                statement.executeUpdate("update PARIS set STATUT=1 where IDPARIS="+idParis);
+            }
+            finally{
+                if(statement!=null){
+                    statement.close();
+                }
+            }
+         }
+         
+         int getWhoDoTheFB(long idMatch) throws JSONException{
+              int val = 0;
+              String url = "https://api.opendota.com/api/matches/"+idMatch;
+              System.out.println("url get Match Open Dota "+url);
+              JSONObject match = getJSONAPI(url);
+              JSONArray listeOfPlayer = match.getJSONArray("players");
+              Boolean isRadiant = false;
+              for(int i=0;i<listeOfPlayer.length();i++){
+                  if(!listeOfPlayer.getJSONObject(i).isNull("firstblood_claimed")){
+                    int isDoFb = listeOfPlayer.getJSONObject(i).getInt("firstblood_claimed");
+                    if(isDoFb==1){
+                        System.out.println("player "+listeOfPlayer.getJSONObject(i).getString("name"));
+                        isRadiant = listeOfPlayer.getJSONObject(i).getBoolean("isRadiant");
+                        break;
+                    }
+                  }
+              }
+              if(isRadiant){
+                  JSONObject team  = match.getJSONObject("radiant_team");
+                  val = team.getInt("team_id");
+              }
+              else{
+                  JSONObject team  = match.getJSONObject("dire_team");
+                  val = team.getInt("team_id");
+              }
+              return val;
+          }
+        
+         void finaliser() throws SQLException, JSONException{
             
             OracleConnection co = Connexion.getConnection();
             Date datenow = new java.sql.Date(Calendar.getInstance().getTime().getTime());
@@ -602,6 +661,60 @@ private RestTemplate restTemplate;
                         if(!listeMatch.isEmpty()){
                                 if(listeParis.get(i).getType().compareTo("map_overall")==0){
                                     //traitement pour winner overall
+                                    int nbrWinNeeded = (m.getNbrMap()/2)+1;
+                                    int nbrWinTeam1 = 0;
+                                    int nbrWinTeam2 = 0;
+                                    for(int y=0;y<listeMatch.size();y++){
+                                        if(listeMatch.get(y).getBoolean("radiant_win")==listeMatch.get(y).getBoolean("radiant")){
+                                            if(m.getIdTeam1()!=0)
+                                                nbrWinTeam1++;
+                                            else
+                                                nbrWinTeam2++;
+                                        }
+                                        else{
+                                            if(m.getIdTeam1()!=0)
+                                                nbrWinTeam2++;
+                                            else
+                                                nbrWinTeam1++;
+                                        }
+                                    }
+                                    
+                                    System.out.println("nbrWinNeeded "+nbrWinNeeded);
+                                    System.out.println("nbrWinTeam1 "+nbrWinTeam1);
+                                    System.out.println("nbrWinTeam2 "+nbrWinTeam2);
+                                    
+                                    if(nbrWinTeam1==nbrWinNeeded){
+                                            System.out.println(m.getNomTeam1() +"Winner");
+                                            //traitement pour team 1 Winner
+                                                if(m.getIdTeam1()==listeParis.get(i).getIdTeam()){
+                                                    //paris gagnant 
+                                                    String description = "Felicitation, Votre équipe a gagner pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                                                    traitementParis(listeParis.get(i),"debit",description);
+                                                }
+                                                else{
+                                                    //paris perdant 
+                                                    String description = "Malheuresement, Votre équipe a perdu pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                                                    traitementParis(listeParis.get(i),"credit",description);
+                                                }
+                                    }
+                                    else if(nbrWinTeam2==nbrWinNeeded){
+                                            System.out.println(m.getNomTeam2() +"Winner");
+                                            //traitement pour team 2 Winner
+                                            if(m.getIdTeam2()==listeParis.get(i).getIdTeam()){
+                                                    //paris gagnant 
+                                                    String description = "Felicitation, Votre équipe a gagner pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                                                    traitementParis(listeParis.get(i),"debit",description);
+                                             }
+                                             else{
+                                                    //paris perdant 
+                                                    String description = "Malheuresement, Votre équipe a perdu pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                                                    traitementParis(listeParis.get(i),"credit",description);
+                                             }
+                                    }
+                                    else
+                                            System.out.println("En attente.....");
+                                            //Next fa mbola tsy vita 
+                                    
                                     System.out.println("overall");
                                 }
                                 else{
@@ -612,23 +725,184 @@ private RestTemplate restTemplate;
                                         if(listeParis.get(i).getType().contains("fb")){
                                             //MANEMANY ETO FA TSY AIKO MIJERY OE IZA FIRST BLOOD
                                             System.out.println("map "+mapParier+" firstblood");
+                                            if(listeMatch.size()>=mapParier){
+                                                int indiceMatch = mapParier -1;
+                                                long idMatchOpenDota = listeMatch.get(indiceMatch).getLong("match_id");
+                                                System.out.println("idMatchOPENDOTA "+idMatchOpenDota);
+                                                int idTeamWhoDoFB = getWhoDoTheFB(idMatchOpenDota);
+                                                if(m.getIdTeam1()!=0){
+                                                    if(m.getIdTeam1()==idTeamWhoDoFB){
+                                                        //Team1 do the first Blood 
+                                                        System.out.println(m.getNomTeam1()+ " do the first blood");
+                                                        if(m.getIdTeam1()==listeParis.get(i).getIdTeam()){
+                                                            //paris gagnant 
+                                                            String description = "Felicitation, Votre équipe a fait le first blood sur map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                                                            traitementParis(listeParis.get(i),"debit",description);
+                                                        }
+                                                        else{
+                                                            //paris perdant 
+                                                            String description = "Malheuresement, Votre équipe n'a pas fait le first blood sur map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                                                            traitementParis(listeParis.get(i),"credit",description);
+                                                        }
+                                                    }
+                                                    else{
+                                                        //Team2 do the first Blood 
+                                                        System.out.println(m.getNomTeam2()+ " do the first blood");
+                                                        if(m.getIdTeam2()==listeParis.get(i).getIdTeam()){
+                                                                //paris gagnant 
+                                                                String description = "Felicitation, Votre équipe a fait le first blood sur map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                                                                traitementParis(listeParis.get(i),"debit",description);
+                                                        }
+                                                        else{
+                                                                //paris perdant 
+                                                                String description = "Malheuresement, Votre équipe n'a pas fait le first blood sur map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                                                                traitementParis(listeParis.get(i),"credit",description);
+                                                        }
+                                                    }
+                                                }
+                                                else{
+                                                    if(m.getIdTeam2()==idTeamWhoDoFB){
+                                                        //Team2 do the first Blood 
+                                                        System.out.println(m.getNomTeam2()+ " do the first blood");
+                                                        if(m.getIdTeam2()==listeParis.get(i).getIdTeam()){
+                                                                //paris gagnant 
+                                                                String description = "Felicitation, Votre équipe a fait le first blood sur map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                                                                traitementParis(listeParis.get(i),"debit",description);
+                                                        }
+                                                        else{
+                                                                //paris perdant 
+                                                                String description = "Malheuresement, Votre équipe n'a pas fait le first blood sur map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                                                                traitementParis(listeParis.get(i),"credit",description);
+                                                        }
+                                                    }
+                                                    else{
+                                                        //Team1 do the first Blood 
+                                                        System.out.println(m.getNomTeam1()+ " do the first blood");
+                                                        if(m.getIdTeam1()==listeParis.get(i).getIdTeam()){
+                                                            //paris gagnant 
+                                                            String description = "Felicitation, Votre équipe a fait le first blood sur map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                                                                traitementParis(listeParis.get(i),"debit",description);
+                                                        }
+                                                        else{
+                                                            //paris perdant 
+                                                            String description = "Malheuresement, Votre équipe n'a pas fait le first blood sur map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                                                                traitementParis(listeParis.get(i),"credit",description);
+                                                        }
+                                                    }
+                                                }
+                                                
+                                            }
                                         }
                                         else{
                                             //traitement  pour winner map ?
-                                            System.out.println("map "+mapParier);
+                                            if(listeMatch.size()>=mapParier){
+                                                
+                                                int indiceMatch = mapParier -1;
+                                                if(listeMatch.get(indiceMatch).getBoolean("radiant_win")==listeMatch.get(indiceMatch).getBoolean("radiant")){
+                                                    if(m.getIdTeam1()!=0){
+                                                        System.out.println(m.getNomTeam1()+" Winner map "+mapParier);
+                                                        //Traitement pour team 1 Winner
+                                                        if(m.getIdTeam1()==listeParis.get(i).getIdTeam()){
+                                                            //paris gagnant 
+                                                            String description = "Felicitation, Votre équipe a gagné sur la map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                                                            traitementParis(listeParis.get(i),"debit",description);
+                                                        }
+                                                        else{
+                                                            //paris perdant 
+                                                            String description = "Malheuresement, Votre équipe a perdu sur la map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                                                             traitementParis(listeParis.get(i),"credit",description);
+                                                        }
+                                                    }
+                                                    else{
+                                                        System.out.println(m.getNomTeam2()+" Winner map "+mapParier);
+                                                        //Traitement pour team 2 Winnner 
+                                                        if(m.getIdTeam2()==listeParis.get(i).getIdTeam()){
+                                                            //paris gagnant 
+                                                            String description = "Felicitation, Votre équipe a gagné sur la map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                                                            traitementParis(listeParis.get(i),"debit",description);
+                                                        }
+                                                        else{
+                                                            //paris perdant 
+                                                            String description = "Malheuresement, Votre équipe a perdu sur la map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                                                             traitementParis(listeParis.get(i),"credit",description);
+                                                        }
+                                                    }
+                                                        
+                                                }
+                                                else{
+                                                    if(m.getIdTeam1()!=0){
+                                                        System.out.println(m.getNomTeam2()+" Winner map "+mapParier);
+                                                        //Traitement pour team 2 Winner
+                                                        if(m.getIdTeam2()==listeParis.get(i).getIdTeam()){
+                                                                //paris gagnant 
+                                                                 String description = "Felicitation, Votre équipe a gagné sur la map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                                                            traitementParis(listeParis.get(i),"debit",description);
+                                                            }
+                                                            else{
+                                                                //paris perdant 
+                                                                 String description = "Malheuresement, Votre équipe a perdu sur la map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                                                             traitementParis(listeParis.get(i),"credit",description);
+                                                            }
+                                                    }
+                                                    else{
+                                                        System.out.println(m.getNomTeam1()+" Winner map "+mapParier);
+                                                        //Traitement pour team 1 Winnner 
+                                                        if(m.getIdTeam1()==listeParis.get(i).getIdTeam()){
+                                                                //paris gagnant 
+                                                                 String description = "Felicitation, Votre équipe a gagné sur la map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                                                            traitementParis(listeParis.get(i),"debit",description);
+                                                            }
+                                                            else{
+                                                                //paris perdant 
+                                                                   String description = "Malheuresement, Votre équipe a perdu sur la map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                                                             traitementParis(listeParis.get(i),"credit",description);
+                                                        }
+                                                    }
+                                                        
+                                                }
+                                            }
+                                            else {
+                                                //Check sode efa vita le match
+                                                int nbrWinNeeded = (m.getNbrMap() / 2) + 1;
+                                                int nbrWinTeam1 = 0;
+                                                int nbrWinTeam2 = 0;
+                                                for (int y = 0; y < listeMatch.size(); y++) {
+                                                    if (listeMatch.get(y).getBoolean("radiant_win") == listeMatch.get(y).getBoolean("radiant")) {
+                                                        if (m.getIdTeam1() != 0) {
+                                                            nbrWinTeam1++;
+                                                        } else {
+                                                            nbrWinTeam2++;
+                                                        }
+                                                    } else {
+                                                        if (m.getIdTeam1() != 0) {
+                                                            nbrWinTeam2++;
+                                                        } else {
+                                                            nbrWinTeam1++;
+                                                        }
+                                                    }
+                                                }
+                                                //ra efa vita le match
+                                                if(nbrWinTeam1==nbrWinNeeded || nbrWinTeam2==nbrWinNeeded){
+                                                    //Paris perdu par le parieur
+                                                    String description = "Malheuresement, le map "+mapParier+" n'a pas eu lieu pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                                                    traitementParis(listeParis.get(i),"credit",description);
+                                                }
+                                            }
                                         }
                                     }
                                 }
                         }
                         else{
+                            
+                            System.out.println("empty match");
                             long diffInMillies = Math.abs(m.getDatematch().getTime() - datenow.getTime());
                             long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
                             System.out.println("difference de jour "+diff);
-                            if(diff>1){
+                            if(diff>2){
                                 //Envoie mail
                                 System.out.println("mila mihetsika fa tsy hita paris an'olona");
+                                
                             }
-                             System.out.println("empty");
                              
                         }
                     }
@@ -642,6 +916,8 @@ private RestTemplate restTemplate;
             } 
             
         }
+            
+        
         
         
         
@@ -1045,6 +1321,10 @@ private RestTemplate restTemplate;
               return nbrMap;
         }
         
+        String Bonjour(){
+            return "bonjour, je finalise les paris des clients maintenant";
+        }
+        
         @GetMapping(path="/getallmatchtest", produces = "application/json")
         @ResponseBody
         ArrayList<MatchAPI> getAllMatchTest() throws SQLException, JSONException{
@@ -1175,6 +1455,9 @@ private RestTemplate restTemplate;
             public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
                 
                 try {
+                    JavaApplication j = new JavaApplication();
+                    System.out.println(j.Bonjour());
+                    j.finaliser();
                     insererTest();
                 } catch (SQLException ex) {
                     java.util.logging.Logger.getLogger(JavaApplication.class.getName()).log(Level.SEVERE, null, ex);

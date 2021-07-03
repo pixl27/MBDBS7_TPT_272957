@@ -606,6 +606,9 @@ class JavaApplicationTests {
              co.setAutoCommit(false);
              try{
                  float montant = p.getOdds()*p.getMontant();
+                 if("credit".equals(type)){
+                     montant = 0;
+                 }
                  transaction(p.getIdUser(),type,montant,p.getIdParis(),description);
                  setStatusParis(co,p.getIdParis());
                  co.commit();
@@ -659,11 +662,13 @@ class JavaApplicationTests {
                                             //traitement pour team 1 Winner
                                                 if(m.getIdTeam1()==listeParis.get(i).getIdTeam()){
                                                     //paris gagnant 
-                                                    String description = "Felicitation, Votre équipe a gagner du match entre "+m.getNomTeam1()+" et "+m.getNomTeam2()+" sur winner overall";
+                                                    String description = "Felicitation, Votre équipe a gagner pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
                                                     traitementParis(listeParis.get(i),"debit",description);
                                                 }
                                                 else{
                                                     //paris perdant 
+                                                    String description = "Malheuresement, Votre équipe a perdu pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                                                    traitementParis(listeParis.get(i),"credit",description);
                                                 }
                                     }
                                     else if(nbrWinTeam2==nbrWinNeeded){
@@ -671,9 +676,13 @@ class JavaApplicationTests {
                                             //traitement pour team 2 Winner
                                             if(m.getIdTeam2()==listeParis.get(i).getIdTeam()){
                                                     //paris gagnant 
+                                                    String description = "Felicitation, Votre équipe a gagner pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                                                    traitementParis(listeParis.get(i),"debit",description);
                                              }
                                              else{
                                                     //paris perdant 
+                                                    String description = "Malheuresement, Votre équipe a perdu pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                                                    traitementParis(listeParis.get(i),"credit",description);
                                              }
                                     }
                                     else

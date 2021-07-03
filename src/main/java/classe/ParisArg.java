@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 public class ParisArg {
 
-    public int getIdUser() {
+    public String getIdUser() {
         return idUser;
     }
 
-    public void setIdUser(int idUser) {
+    public void setIdUser(String idUser) {
         this.idUser = idUser;
     }
 
@@ -60,14 +60,14 @@ public class ParisArg {
     public void setOdds(float odds) {
         this.odds = odds;
     }
-    int idUser;
+    String idUser;
     int idMatch;
     String type;
     int idTeamParier;
    float montant;
    float odds;
 
-    public ParisArg(int idUser, int idMatch, String type, int idTeamParier, float montant, float odds) {
+    public ParisArg(String idUser, int idMatch, String type, int idTeamParier, float montant, float odds) {
         this.idUser = idUser;
         this.idMatch = idMatch;
         this.type = type;

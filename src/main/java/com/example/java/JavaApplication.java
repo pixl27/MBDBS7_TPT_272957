@@ -32,6 +32,8 @@ import java.sql.DatabaseMetaData;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -128,14 +130,20 @@ private RestTemplate restTemplate;
           return json;
     }
     
-    String transaction(String type,float montant){
+   String transaction(String idUser,String type,float montant,int idParis,String description) throws JSONException{
             String url = "https://backend-node-mbds272957.herokuapp.com/api/parier";
             HttpHeaders headers = new HttpHeaders();
             headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+            Date datenow = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");  
             
-            MultiValueMap<String, String> body = new LinkedMultiValueMap<String, String>();     
+            MultiValueMap<String, String> body = new LinkedMultiValueMap<String, String>();   
+            body.add("iduser",idUser);
+            body.add("idparis", String.valueOf(idParis));
+            body.add("datehistorique", dateFormat.format(datenow));
+            body.add("description", description);
             body.add("type", type);
-            body.add("solde",String. valueOf(montant));
+            body.add("solde",String.valueOf(montant));
             
             headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
             
@@ -145,7 +153,7 @@ private RestTemplate restTemplate;
             JSONObject json = new JSONObject(response.getBody().toString());
             String val = json.getString("message");
             return val;
-    }
+        }
     
     JSONArray getJSONArrayAPI(String url){
          HttpHeaders headers = new HttpHeaders();
@@ -348,13 +356,13 @@ private RestTemplate restTemplate;
         
         
         
-        void insererParis(OracleConnection connection,int idUser,int idMatch,int idTeam,String type,float montant,float odds,Date dateparis,int statut) throws SQLException{
+        void insererParis(OracleConnection connection,String idUser,int idMatch,int idTeam,String type,float montant,float odds,Date dateparis,int statut) throws SQLException{
             
             Statement statement = null;
             try{
                 statement = connection.createStatement();
            
-                statement.executeQuery("insert into PARIS values(PARIS_SEQ.NEXTVAL,"+idUser+","+idMatch+","+idTeam+",'"+type+"',"+montant+","+odds+",TO_DATE('"+dateparis+"','YYYY-MM-DD'),"+statut+")");
+                statement.executeQuery("insert into PARIS values(PARIS_SEQ.NEXTVAL,'"+idUser+"',"+idMatch+","+idTeam+",'"+type+"',"+montant+","+odds+",TO_DATE('"+dateparis+"','YYYY-MM-DD'),"+statut+")");
             }
             finally{
                 if(statement!=null){
@@ -396,7 +404,9 @@ private RestTemplate restTemplate;
                 else{
                     insererParis(oc,p.getIdUser(),idDoublon,p.getIdTeamParier(),p.getType(),p.getMontant(),p.getOdds(),datenow,0);
                 }
-                String val = transaction("credit",p.getMontant());
+                //String idUser,String type,float montant,String idParis,String description
+                String description = "Parie entre "+m.getNomTeam1()+" et "+m.getNomTeam2()+" sur "+p.getType(); 
+                String val = transaction(p.getIdUser(),"credit",p.getMontant(),0,description);
                 if(val.compareToIgnoreCase("updated")==0){
                     oc.commit();
                 }
@@ -454,7 +464,7 @@ private RestTemplate restTemplate;
              ResultSet res = statement.executeQuery(req);
              while (res.next()){
                  //int idParis, int idUser, int idMatch, int idTeam, String type, float montant, float odds, Date dateparis, int statut
-                Paris temp = new Paris(res.getInt(1),res.getInt(2),res.getInt(3),res.getInt(4),res.getString(5),res.getFloat(6),res.getFloat(7),res.getDate(8),res.getInt(9));
+                Paris temp = new Paris(res.getInt(1),res.getString(2),res.getInt(3),res.getInt(4),res.getString(5),res.getFloat(6),res.getFloat(7),res.getDate(8),res.getInt(9));
                 val.add(temp);
             }
             return val;

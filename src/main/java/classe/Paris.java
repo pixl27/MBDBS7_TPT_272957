@@ -14,7 +14,7 @@ import java.sql.Date;
 public class Paris {
     
      int idParis;
-    int idUser;
+    String idUser;
     int idMatch;
     int idTeam;
     String type;
@@ -31,11 +31,11 @@ public class Paris {
         this.idParis = idParis;
     }
 
-    public int getIdUser() {
+    public String getIdUser() {
         return idUser;
     }
 
-    public void setIdUser(int idUser) {
+    public void setIdUser(String idUser) {
         this.idUser = idUser;
     }
 
@@ -97,7 +97,7 @@ public class Paris {
     
    
 
-    public Paris(int idParis, int idUser, int idMatch, int idTeam, String type, float montant, float odds, Date dateparis, int statut) {
+    public Paris(int idParis, String idUser, int idMatch, int idTeam, String type, float montant, float odds, Date dateparis, int statut) {
         this.idParis = idParis;
         this.idUser = idUser;
         this.idMatch = idMatch;

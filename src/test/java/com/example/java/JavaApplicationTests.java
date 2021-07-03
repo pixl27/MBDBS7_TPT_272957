@@ -13,6 +13,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -249,15 +251,21 @@ class JavaApplicationTests {
             }
             return val;
         }
-        
-           String transaction(String type,float montant) throws JSONException{
+        //"type":"debit","iduser":"60d995cb5f11d836229bd7e0","montant":100000,"idparis":81,"description":"cadeau admin","datehistorique":"2021-07-03T21:00:00.000+00:00"
+           String transaction(String idUser,String type,float montant,String idParis,String description) throws JSONException{
             String url = "https://backend-node-mbds272957.herokuapp.com/api/parier";
             HttpHeaders headers = new HttpHeaders();
             headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+            Date datenow = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");  
             
-            MultiValueMap<String, String> body = new LinkedMultiValueMap<String, String>();     
+            MultiValueMap<String, String> body = new LinkedMultiValueMap<String, String>();   
+            body.add("iduser",idUser);
+            body.add("idparis", idParis);
+            body.add("datehistorique", dateFormat.format(datenow));
+            body.add("description", description);
             body.add("type", type);
-            body.add("solde",String. valueOf(montant));
+            body.add("solde",String.valueOf(montant));
             
             headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
             
@@ -352,11 +360,25 @@ class JavaApplicationTests {
              ResultSet res = statement.executeQuery(req);
              while (res.next()){
                  //int idParis, int idUser, int idMatch, int idTeam, String type, float montant, float odds, Date dateparis, int statut
-                Paris temp = new Paris(res.getInt(1),res.getInt(2),res.getInt(3),res.getInt(4),res.getString(5),res.getFloat(6),res.getFloat(7),res.getDate(8),res.getInt(9));
+                Paris temp = new Paris(res.getInt(1),res.getString(2),res.getInt(3),res.getInt(4),res.getString(5),res.getFloat(6),res.getFloat(7),res.getDate(8),res.getInt(9));
                 val.add(temp);
             }
             return val;
         }
+         
+         void setStatusParis(OracleConnection co,int idParis) throws SQLException{
+             Statement statement = null;
+            try{
+                statement = co.createStatement();
+           
+                statement.executeUpdate("update PARIS set STATUT=1 where IDPARIS="+idParis);
+            }
+            finally{
+                if(statement!=null){
+                    statement.close();
+                }
+            }
+         }
       
          Match getMatchById(OracleConnection co,int id) throws SQLException{
             Match val = new Match();
@@ -383,7 +405,7 @@ class JavaApplicationTests {
             
         }
          
-          ArrayList<JSONObject> getMatchOpenDota(Match m) throws JSONException{
+          ArrayList<JSONObject> getMatchOpenDota(Match m) throws JSONException, SQLException{
             JSONArray arrayMatch = null;
             ArrayList<JSONObject> val = new ArrayList();
             if(m.getIdTeam1()!=0){
@@ -432,10 +454,13 @@ class JavaApplicationTests {
             }
             return val;
         }
+          
+          
         
-        ArrayList<JSONObject> getAllMatchQuiConcorde(String nomOpposingteam,Date datematch,JSONArray arrayMatch) throws JSONException{
+        ArrayList<JSONObject> getAllMatchQuiConcorde(String nomOpposingteam,Date datematch,JSONArray arrayMatch) throws JSONException, SQLException{
             ArrayList<JSONObject> val = new ArrayList();
             int size = arrayMatch.length()-1;
+            int idAdversaire = 0;
             for(int i= 0;i<size;i++){
                 int unixTimestamp = arrayMatch.getJSONObject(i).getInt("start_time");
                 Date datematchAPI = new Date(unixTimestamp*1000L);
@@ -448,13 +473,87 @@ class JavaApplicationTests {
                     System.out.println("Date concorde");
                     if(comparerNom(nomOpposingteam,nameOpposingteamAPI)){
                      System.out.println("adversaire concorde");
-                    val.add(arrayMatch.getJSONObject(i));
+                     val.add(arrayMatch.getJSONObject(i));
+                     idAdversaire = arrayMatch.getJSONObject(i).getInt("opposing_team_id");
                     }
                 }
                 else{
                     System.out.println("Date passé, Break");
                     break;
                 }
+            }
+            //inserer la team adversaire dans notre base de donnée 
+            if(idAdversaire!=0){
+                OracleConnection co = Connexion.getConnection();
+                try{
+                int test = getDoublonTeam(co,idAdversaire);
+
+                if(test == 0){
+                    System.out.println("La team"+nomOpposingteam+"n'est pas encore dans la base de donnée");
+                    System.out.println("Insertion de "+nomOpposingteam+" avec comme ID "+idAdversaire);
+                    Team t = getTeamOPENDOTA(idAdversaire);
+                    insererTeam(co,t);
+                }
+                }
+                finally{
+                    if(co!=null)
+                        co.close();
+                }
+            }
+            return val;
+        }
+        
+          void insererTeam(OracleConnection connection,Team t) throws SQLException{
+           
+            PreparedStatement statement = null;
+            try{
+                
+                String req = "insert into Team values(?,?,?,?)";
+                
+                
+                statement = connection.prepareStatement(req);
+                statement.setInt(1, t.getIdTeam());
+                statement.setString(2, t.getNom());
+                statement.setString(3,t.getTag());
+                statement.setString(4,t.getLogo());
+           
+                statement.executeQuery();
+            }
+            finally{
+                if(statement!=null){
+                    statement.close();
+                }
+            }
+        }
+        
+        Team getTeamOPENDOTA(int idTeam) throws JSONException{
+            
+            String url = "https://api.opendota.com/api/teams/"+idTeam;
+            JSONObject teamJson = getJSONAPI(url);
+            int id = teamJson.getInt("team_id");
+            //int idTeam, String nom, String tag, String logo
+            String nom = teamJson.getString("name");
+            String tag = teamJson.getString("tag");
+            String logo = teamJson.getString("logo_url");
+            Team val = new Team(id,nom,tag,logo);
+            return val;
+        }
+        
+        int getDoublonTeam(OracleConnection co,int idTeam) throws SQLException{
+            
+            int val = 0;
+            Statement statement = null;
+            try{
+            statement = co.createStatement();
+           
+            ResultSet resultSet = statement.executeQuery("select IDTEAM from TEAM where IDTEAM="+idTeam+"");
+                while (resultSet.next()){
+                    val = resultSet.getInt(1);
+                }
+            }
+            finally{
+                if(statement!=null)
+                    statement.close();
             }
             return val;
         }
@@ -470,7 +569,50 @@ class JavaApplicationTests {
                    return nom2.contains(nom1);
               }
         }
+          
+         
+          int getWhoDoTheFB(long idMatch) throws JSONException{
+              int val = 0;
+              String url = "https://api.opendota.com/api/matches/"+idMatch;
+              System.out.println("url get Match Open Dota "+url);
+              JSONObject match = getJSONAPI(url);
+              JSONArray listeOfPlayer = match.getJSONArray("players");
+              Boolean isRadiant = false;
+              for(int i=0;i<listeOfPlayer.length();i++){
+                  if(!listeOfPlayer.getJSONObject(i).isNull("firstblood_claimed")){
+                    int isDoFb = listeOfPlayer.getJSONObject(i).getInt("firstblood_claimed");
+                    if(isDoFb==1){
+                        System.out.println("player "+listeOfPlayer.getJSONObject(i).getString("name"));
+                        isRadiant = listeOfPlayer.getJSONObject(i).getBoolean("isRadiant");
+                        break;
+                    }
+                  }
+              }
+              if(isRadiant){
+                  JSONObject team  = match.getJSONObject("radiant_team");
+                  val = team.getInt("team_id");
+              }
+              else{
+                  JSONObject team  = match.getJSONObject("dire_team");
+                  val = team.getInt("team_id");
+              }
+              return val;
+          }
         
+          
+          
+         void traitementParis(Paris p,String type) throws SQLException{
+             OracleConnection co = Connexion.getConnection();
+             co.setAutoCommit(false);
+             try{
+                 
+                 setStatusParis(co,p.getIdParis());
+                 co.commit();
+             }
+             finally{
+                     co.close();
+             }
+         }
          
           void finaliser() throws SQLException, JSONException{
             
@@ -511,12 +653,30 @@ class JavaApplicationTests {
                                     System.out.println("nbrWinTeam1 "+nbrWinTeam1);
                                     System.out.println("nbrWinTeam2 "+nbrWinTeam2);
                                     
-                                    if(nbrWinTeam1==nbrWinNeeded)
+                                    if(nbrWinTeam1==nbrWinNeeded){
                                             System.out.println(m.getNomTeam1() +"Winner");
-                                    else if(nbrWinTeam2==nbrWinNeeded)
+                                            //traitement pour team 1 Winner
+                                                if(m.getIdTeam1()==listeParis.get(i).getIdTeam()){
+                                                    //paris gagnant 
+                                                    
+                                                }
+                                                else{
+                                                    //paris perdant 
+                                                }
+                                    }
+                                    else if(nbrWinTeam2==nbrWinNeeded){
                                             System.out.println(m.getNomTeam2() +"Winner");
+                                            //traitement pour team 2 Winner
+                                            if(m.getIdTeam2()==listeParis.get(i).getIdTeam()){
+                                                    //paris gagnant 
+                                             }
+                                             else{
+                                                    //paris perdant 
+                                             }
+                                    }
                                     else
                                             System.out.println("En attente.....");
+                                            //Next fa mbola tsy vita 
                                     
                                     System.out.println("overall");
                                 }
@@ -528,23 +688,150 @@ class JavaApplicationTests {
                                         if(listeParis.get(i).getType().contains("fb")){
                                             //MANEMANY ETO FA TSY AIKO MIJERY OE IZA FIRST BLOOD
                                             System.out.println("map "+mapParier+" firstblood");
+                                            if(listeMatch.size()>=mapParier){
+                                                int indiceMatch = mapParier -1;
+                                                long idMatchOpenDota = listeMatch.get(indiceMatch).getLong("match_id");
+                                                System.out.println("idMatchOPENDOTA "+idMatchOpenDota);
+                                                int idTeamWhoDoFB = getWhoDoTheFB(idMatchOpenDota);
+                                                if(m.getIdTeam1()!=0){
+                                                    if(m.getIdTeam1()==idTeamWhoDoFB){
+                                                        //Team1 do the first Blood 
+                                                        System.out.println(m.getNomTeam1()+ " do the first blood");
+                                                        if(m.getIdTeam1()==listeParis.get(i).getIdTeam()){
+                                                            //paris gagnant 
+                                                        }
+                                                        else{
+                                                            //paris perdant 
+                                                        }
+                                                    }
+                                                    else{
+                                                        //Team2 do the first Blood 
+                                                        System.out.println(m.getNomTeam2()+ " do the first blood");
+                                                        if(m.getIdTeam2()==listeParis.get(i).getIdTeam()){
+                                                                //paris gagnant 
+                                                        }
+                                                        else{
+                                                                //paris perdant 
+                                                        }
+                                                    }
+                                                }
+                                                else{
+                                                    if(m.getIdTeam2()==idTeamWhoDoFB){
+                                                        //Team2 do the first Blood 
+                                                        System.out.println(m.getNomTeam2()+ " do the first blood");
+                                                        if(m.getIdTeam2()==listeParis.get(i).getIdTeam()){
+                                                                //paris gagnant 
+                                                        }
+                                                        else{
+                                                                //paris perdant 
+                                                        }
+                                                    }
+                                                    else{
+                                                        //Team1 do the first Blood 
+                                                        System.out.println(m.getNomTeam1()+ " do the first blood");
+                                                        if(m.getIdTeam1()==listeParis.get(i).getIdTeam()){
+                                                            //paris gagnant 
+                                                        }
+                                                        else{
+                                                            //paris perdant 
+                                                        }
+                                                    }
+                                                }
+                                                
+                                            }
                                         }
                                         else{
                                             //traitement  pour winner map ?
-                                            System.out.println("map "+mapParier);
+                                            if(listeMatch.size()>=mapParier){
+                                                
+                                                int indiceMatch = mapParier -1;
+                                                if(listeMatch.get(indiceMatch).getBoolean("radiant_win")==listeMatch.get(indiceMatch).getBoolean("radiant")){
+                                                    if(m.getIdTeam1()!=0){
+                                                        System.out.println(m.getNomTeam1()+" Winner map "+mapParier);
+                                                        //Traitement pour team 1 Winner
+                                                        if(m.getIdTeam1()==listeParis.get(i).getIdTeam()){
+                                                            //paris gagnant 
+                                                        }
+                                                        else{
+                                                            //paris perdant 
+                                                        }
+                                                    }
+                                                    else{
+                                                        System.out.println(m.getNomTeam2()+" Winner map "+mapParier);
+                                                        //Traitement pour team 2 Winnner 
+                                                        if(m.getIdTeam2()==listeParis.get(i).getIdTeam()){
+                                                            //paris gagnant 
+                                                        }
+                                                        else{
+                                                            //paris perdant 
+                                                        }
+                                                    }
+                                                        
+                                                }
+                                                else{
+                                                    if(m.getIdTeam1()!=0){
+                                                        System.out.println(m.getNomTeam2()+" Winner map "+mapParier);
+                                                        //Traitement pour team 2 Winner
+                                                        if(m.getIdTeam2()==listeParis.get(i).getIdTeam()){
+                                                                //paris gagnant 
+                                                            }
+                                                            else{
+                                                                //paris perdant 
+                                                            }
+                                                    }
+                                                    else{
+                                                        System.out.println(m.getNomTeam1()+" Winner map "+mapParier);
+                                                        //Traitement pour team 1 Winnner 
+                                                        if(m.getIdTeam1()==listeParis.get(i).getIdTeam()){
+                                                                //paris gagnant 
+                                                            }
+                                                            else{
+                                                                //paris perdant 
+                                                        }
+                                                    }
+                                                        
+                                                }
+                                            }
+                                            else {
+                                                //Check sode efa vita le match
+                                                int nbrWinNeeded = (m.getNbrMap() / 2) + 1;
+                                                int nbrWinTeam1 = 0;
+                                                int nbrWinTeam2 = 0;
+                                                for (int y = 0; y < listeMatch.size(); y++) {
+                                                    if (listeMatch.get(y).getBoolean("radiant_win") == listeMatch.get(y).getBoolean("radiant")) {
+                                                        if (m.getIdTeam1() != 0) {
+                                                            nbrWinTeam1++;
+                                                        } else {
+                                                            nbrWinTeam2++;
+                                                        }
+                                                    } else {
+                                                        if (m.getIdTeam1() != 0) {
+                                                            nbrWinTeam2++;
+                                                        } else {
+                                                            nbrWinTeam1++;
+                                                        }
+                                                    }
+                                                }
+                                                //ra efa vita le match
+                                                if(nbrWinTeam1==nbrWinNeeded || nbrWinTeam2==nbrWinNeeded){
+                                                    //Paris perdu par le parieur
+                                                }
+                                            }
                                         }
                                     }
                                 }
                         }
                         else{
+                            
+                            System.out.println("empty match");
                             long diffInMillies = Math.abs(m.getDatematch().getTime() - datenow.getTime());
                             long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
                             System.out.println("difference de jour "+diff);
-                            if(diff>1){
+                            if(diff>2){
                                 //Envoie mail
                                 System.out.println("mila mihetsika fa tsy hita paris an'olona");
+                                
                             }
-                             System.out.println("empty");
                              
                         }
                     }
@@ -574,6 +861,8 @@ class JavaApplicationTests {
                         }
                     }*/
                    finaliser();
+                  
+                   
 
                     
                    

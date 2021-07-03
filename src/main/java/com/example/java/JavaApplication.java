@@ -130,6 +130,19 @@ private RestTemplate restTemplate;
           return json;
     }
     
+    JSONArray getJSONArrayAPI(String url) throws JSONException{
+         HttpHeaders headers = new HttpHeaders();
+            headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+            headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+            HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
+            
+          ResponseEntity response = restTemplate.exchange(url, HttpMethod.GET,entity ,String.class);  
+
+          
+               JSONArray jsonarray = new JSONArray(response.getBody());
+          return jsonarray;
+    }
+    
    String transaction(String idUser,String type,float montant,int idParis,String description) throws JSONException{
             String url = "https://backend-node-mbds272957.herokuapp.com/api/parier";
             HttpHeaders headers = new HttpHeaders();
@@ -155,17 +168,7 @@ private RestTemplate restTemplate;
             return val;
         }
     
-   JSONArray getJSONArrayAPI(String url) throws JSONException{
-         HttpHeaders headers = new HttpHeaders();
-            headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-            headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
-            HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
-            
-          ResponseEntity response = restTemplate.exchange(url, HttpMethod.GET,entity ,String.class);  
-          
-          JSONArray jsonarray = new JSONArray(response.getBody().toString());
-          return jsonarray;
-    }
+   
     
     int getStartTime(int idTeam){
           String url = "https://api.opendota.com/api/teams/"+idTeam+"/matches";

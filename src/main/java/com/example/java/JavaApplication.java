@@ -346,7 +346,7 @@ private RestTemplate restTemplate;
            
             PreparedStatement statement = null;
             try{
-                String query = "insert into TEST values('Finaliser est appelé',?)";
+                String query = "insert into TEST values('Finalisation',?)";
                 statement = connection.prepareStatement(query);
                 statement.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
                 statement.executeQuery();
@@ -1335,7 +1335,7 @@ private RestTemplate restTemplate;
         }
         
         String Bonjour(){
-            return "bonjour, je finalise les paris des clients maintenant";
+            return "bonjour, finalise les paris des clients terminer";
         }
         
         @GetMapping(path="/getallmatchtest", produces = "application/json")

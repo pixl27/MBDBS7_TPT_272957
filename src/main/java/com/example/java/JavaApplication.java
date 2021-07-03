@@ -1457,7 +1457,7 @@ private RestTemplate restTemplate;
                 try {
                     JavaApplication j = new JavaApplication();
                     System.out.println(j.Bonjour());
-                    j.finaliser();
+                    //j.finaliser();
                     insererTest();
                 } catch (SQLException ex) {
                     java.util.logging.Logger.getLogger(JavaApplication.class.getName()).log(Level.SEVERE, null, ex);

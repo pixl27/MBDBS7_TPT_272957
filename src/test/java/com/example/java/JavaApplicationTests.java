@@ -606,9 +606,15 @@ class JavaApplicationTests {
              co.setAutoCommit(false);
              try{
                  float montant = p.getOdds()*p.getMontant();
-                 if("credit".equals(type)){
+                 System.out.println("Montant "+montant);
+                 if("credit".compareTo(type)==0){
                      montant = 0;
                  }
+                 System.out.println("idUser "+p.getIdUser());
+                 System.out.println("Montant "+montant);
+                 System.out.println("type "+type);
+                 System.out.println("idParis "+p.getIdParis());
+                 System.out.println("desctiption "+description);
                  transaction(p.getIdUser(),type,montant,p.getIdParis(),description);
                  setStatusParis(co,p.getIdParis());
                  co.commit();
@@ -710,25 +716,30 @@ class JavaApplicationTests {
                                                         System.out.println(m.getNomTeam1()+ " do the first blood");
                                                         if(m.getIdTeam1()==listeParis.get(i).getIdTeam()){
                                                             //paris gagnant 
+                                                            System.out.println("ato");
                                                             String description = "Felicitation, Votre équipe a fait le first blood sur map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
                                                             traitementParis(listeParis.get(i),"debit",description);
                                                         }
                                                         else{
                                                             //paris perdant 
+                                                            System.out.println("ato2");
                                                             String description = "Malheuresement, Votre équipe n'a pas fait le first blood sur map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
                                                             traitementParis(listeParis.get(i),"credit",description);
                                                         }
                                                     }
                                                     else{
                                                         //Team2 do the first Blood 
+                                                        System.out.println("ato3");
                                                         System.out.println(m.getNomTeam2()+ " do the first blood");
                                                         if(m.getIdTeam2()==listeParis.get(i).getIdTeam()){
                                                                 //paris gagnant 
+                                                                System.out.println("ato4");
                                                                 String description = "Felicitation, Votre équipe a fait le first blood sur map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
                                                                 traitementParis(listeParis.get(i),"debit",description);
                                                         }
                                                         else{
                                                                 //paris perdant 
+                                                                System.out.println("ato5");
                                                                 String description = "Malheuresement, Votre équipe n'a pas fait le first blood sur map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
                                                                 traitementParis(listeParis.get(i),"credit",description);
                                                         }
@@ -740,11 +751,13 @@ class JavaApplicationTests {
                                                         System.out.println(m.getNomTeam2()+ " do the first blood");
                                                         if(m.getIdTeam2()==listeParis.get(i).getIdTeam()){
                                                                 //paris gagnant 
+                                                                System.out.println("ato6");
                                                                 String description = "Felicitation, Votre équipe a fait le first blood sur map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
                                                                 traitementParis(listeParis.get(i),"debit",description);
                                                         }
                                                         else{
                                                                 //paris perdant 
+                                                                System.out.println("ato 7");
                                                                 String description = "Malheuresement, Votre équipe n'a pas fait le first blood sur map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
                                                                 traitementParis(listeParis.get(i),"credit",description);
                                                         }
@@ -753,12 +766,14 @@ class JavaApplicationTests {
                                                         //Team1 do the first Blood 
                                                         System.out.println(m.getNomTeam1()+ " do the first blood");
                                                         if(m.getIdTeam1()==listeParis.get(i).getIdTeam()){
+                                                            System.out.println("ato8");
                                                             //paris gagnant 
                                                             String description = "Felicitation, Votre équipe a fait le first blood sur map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
                                                                 traitementParis(listeParis.get(i),"debit",description);
                                                         }
                                                         else{
                                                             //paris perdant 
+                                                            System.out.println("ato 9");
                                                             String description = "Malheuresement, Votre équipe n'a pas fait le first blood sur map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
                                                                 traitementParis(listeParis.get(i),"credit",description);
                                                         }
@@ -906,6 +921,7 @@ class JavaApplicationTests {
                         }
                     }*/
                    finaliser();
+                   
                   
                    
 

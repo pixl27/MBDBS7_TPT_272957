@@ -585,14 +585,19 @@ private RestTemplate restTemplate;
             return val;
         }
       
-        void traitementParis(Paris p,String type,String description) throws SQLException, JSONException{
+       void traitementParis(Paris p,String type,String description) throws SQLException, JSONException{
              OracleConnection co = Connexion.getConnection();
              co.setAutoCommit(false);
              try{
                  float montant = p.getOdds()*p.getMontant();
-                 if("credit".equals(type)){
+                 if("credit".compareTo(type)==0){
                      montant = 0;
                  }
+                 System.out.println("idUser "+p.getIdUser());
+                 System.out.println("Montant "+montant);
+                 System.out.println("type "+type);
+                 System.out.println("idParis "+p.getIdParis());
+                 System.out.println("desctiption "+description);
                  transaction(p.getIdUser(),type,montant,p.getIdParis(),description);
                  setStatusParis(co,p.getIdParis());
                  co.commit();

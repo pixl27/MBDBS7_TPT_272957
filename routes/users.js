@@ -52,9 +52,9 @@ function transaction(req,res) {
 
   historique.save((err) => {
     if (err) {
-      res.status(400).send(err);
+      console.log(err)
     }
-    res.json({ message: `historique saved!` });
+    console.log("historique saved");
   });
   }
   res.json({ message: "updated" });

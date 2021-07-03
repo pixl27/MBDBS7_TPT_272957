@@ -73,6 +73,11 @@ public class JavaApplication {
     // connection descriptor.
    @Autowired
 private RestTemplate restTemplate;
+   
+   @Bean
+        public RestTemplate restTemplate() {
+        return new RestTemplate();
+        }
 
         @RequestMapping("/")
         @ResponseBody
@@ -378,10 +383,7 @@ private RestTemplate restTemplate;
         
        
         
-        @Bean
-        public RestTemplate restTemplate() {
-        return new RestTemplate();
-        }
+        
         
       
         
@@ -1310,6 +1312,10 @@ private RestTemplate restTemplate;
             return val;
         }
         
+        void setRestTemplate(RestTemplate rest){
+            restTemplate = rest;
+        }
+        
         public int getNbrMap(JSONObject data){
             int nbrMap = 1;
               while(nbrMap<=100){
@@ -1457,12 +1463,15 @@ private RestTemplate restTemplate;
 	}
         
         public static class HelloJob implements Job {
+            
+            private RestTemplate restTemplate = new RestTemplate();
 
             @Override
             public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
                 
                 try {
                     JavaApplication j = new JavaApplication();
+                    j.setRestTemplate(restTemplate);
                     j.finaliser();
                     System.out.println(j.Bonjour());
                     insererTest();

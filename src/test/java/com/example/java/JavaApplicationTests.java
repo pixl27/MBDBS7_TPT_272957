@@ -257,7 +257,7 @@ class JavaApplicationTests {
             HttpHeaders headers = new HttpHeaders();
             headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
             Date datenow = new java.sql.Date(Calendar.getInstance().getTime().getTime());
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");  
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");  
             
             MultiValueMap<String, String> body = new LinkedMultiValueMap<String, String>();   
             body.add("iduser",idUser);
@@ -659,7 +659,7 @@ class JavaApplicationTests {
                                             //traitement pour team 1 Winner
                                                 if(m.getIdTeam1()==listeParis.get(i).getIdTeam()){
                                                     //paris gagnant 
-                                                    String description = "Felicitation, parie gagnant du match entre "+m.getNomTeam1()+" et "+m.getNomTeam2()+" sur winner overall";
+                                                    String description = "Felicitation, Votre équipe a gagner du match entre "+m.getNomTeam1()+" et "+m.getNomTeam2()+" sur winner overall";
                                                     traitementParis(listeParis.get(i),"debit",description);
                                                 }
                                                 else{

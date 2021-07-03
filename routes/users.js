@@ -52,7 +52,7 @@ function transaction(req,res) {
 
   historique.save((err) => {
     if (err) {
-      res.send("cant post assignment ", err);
+      res.status(400).send("cant post assignment ", err);
     }
     res.json({ message: `historique saved!` });
   });

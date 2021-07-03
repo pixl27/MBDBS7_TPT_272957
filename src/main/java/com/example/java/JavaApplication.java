@@ -1438,7 +1438,7 @@ private RestTemplate restTemplate;
         
         
         final static Logger logger = LoggerFactory.getLogger(JavaApplication.class);
-	public static void main(String[] args) throws SchedulerException {
+	public static void main(String[] args) throws SchedulerException,JobExecutionException{
 		SpringApplication.run(JavaApplication.class, args);
                 
                 Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();

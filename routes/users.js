@@ -4,6 +4,7 @@ var bcrypt = require('bcryptjs');
 var config = require('../config');
 
 let User = require("../model/user");
+let Historiquesolde = require ("../model/historiquesolde")
 let Sequence = require("../model/sequence");
 
 const { ObjectId } = require('mongodb');
@@ -14,12 +15,24 @@ const { ObjectId } = require('mongodb');
 function transaction(req,res) {
   
   if(req.body.type == "debit"){
-   // User.findOneAndUpdate({id: 0}, {$inc : {solde : req.body.solde}});
-    User.updateOne({"id": 0}, {
+    User.updateOne({_id: ObjectId(req.body.iduser)}, {
       $inc : {solde : req.body.solde}
   }, function(err, affected, resp) {
      console.log(resp);
   })
+  let historique = new Historiquesolde();
+  historique.iduser =  ObjectId(req.body.iduser);
+  historique.montant = req.body.montant;
+  historique.type = req.body.type;
+  historique.idparis = req.body.idparis;
+  historique.datehistorique = req.body.datehistorique;
+
+  historique.save((err) => {
+    if (err) {
+      res.send("cant post assignment ", err);
+    }
+    res.json({ message: `historique saved!` });
+  });
 
   }
   else {

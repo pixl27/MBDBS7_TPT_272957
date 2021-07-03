@@ -6,6 +6,7 @@ var config = require('../config');
 let User = require("../model/user");
 let Historiquesolde = require ("../model/historiquesolde")
 let Sequence = require("../model/sequence");
+let Banque = require("../model/banque");
 
 const { ObjectId } = require('mongodb');
 
@@ -15,11 +16,18 @@ const { ObjectId } = require('mongodb');
 function transaction(req,res) {
   
   if(req.body.type == "debit"){
-    User.updateOne({_id: ObjectId(req.body.iduser)}, {
+    User.updateOne({_id: ObjectId("req.body.iduser")}, {
       $inc : {solde : req.body.montant}
   }, function(err, affected, resp) {
      console.log(resp);
   })
+
+  Banque.updateOne({_id: ObjectId("60c315e614982b5375e5a537")}, {
+    $inc : {montant : req.body.montant}
+}, function(err, affected, resp) {
+   console.log(resp);
+})
+
   let historique = new Historiquesolde();
   historique.iduser =  ObjectId(req.body.iduser);
   historique.montant = req.body.montant;
@@ -42,6 +50,11 @@ function transaction(req,res) {
   }, function(err, affected, resp) {
      console.log(resp);
   })
+  Banque.updateOne({_id: ObjectId("60c315e614982b5375e5a537")}, {
+    $inc : {montant : -req.body.montant}
+}, function(err, affected, resp) {
+   console.log(resp);
+})
   let historique = new Historiquesolde();
   historique.iduser =  ObjectId(req.body.iduser);
   historique.montant = req.body.montant;

@@ -252,7 +252,7 @@ class JavaApplicationTests {
             return val;
         }
         //"type":"debit","iduser":"60d995cb5f11d836229bd7e0","montant":100000,"idparis":81,"description":"cadeau admin","datehistorique":"2021-07-03T21:00:00.000+00:00"
-           String transaction(String idUser,String type,float montant,String idParis,String description) throws JSONException{
+          String transaction(String idUser,String type,float montant,int idParis,String description) throws JSONException{
             String url = "https://backend-node-mbds272957.herokuapp.com/api/parier";
             HttpHeaders headers = new HttpHeaders();
             headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
@@ -261,7 +261,7 @@ class JavaApplicationTests {
             
             MultiValueMap<String, String> body = new LinkedMultiValueMap<String, String>();   
             body.add("iduser",idUser);
-            body.add("idparis", idParis);
+            body.add("idparis", String.valueOf(idParis));
             body.add("datehistorique", dateFormat.format(datenow));
             body.add("description", description);
             body.add("type", type);
@@ -601,11 +601,12 @@ class JavaApplicationTests {
         
           
           
-         void traitementParis(Paris p,String type) throws SQLException{
+         void traitementParis(Paris p,String type,String description) throws SQLException, JSONException{
              OracleConnection co = Connexion.getConnection();
              co.setAutoCommit(false);
              try{
-                 
+                 float montant = p.getOdds()*p.getMontant();
+                 transaction(p.getIdUser(),type,montant,p.getIdParis(),description);
                  setStatusParis(co,p.getIdParis());
                  co.commit();
              }
@@ -658,7 +659,8 @@ class JavaApplicationTests {
                                             //traitement pour team 1 Winner
                                                 if(m.getIdTeam1()==listeParis.get(i).getIdTeam()){
                                                     //paris gagnant 
-                                                    
+                                                    String description = "Felicitation, parie gagnant du match entre "+m.getNomTeam1()+" et "+m.getNomTeam2()+" sur winner overall";
+                                                    traitementParis(listeParis.get(i),"debit",description);
                                                 }
                                                 else{
                                                     //paris perdant 

@@ -135,7 +135,7 @@ private RestTemplate restTemplate;
             HttpHeaders headers = new HttpHeaders();
             headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
             Date datenow = new java.sql.Date(Calendar.getInstance().getTime().getTime());
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");  
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");  
             
             MultiValueMap<String, String> body = new LinkedMultiValueMap<String, String>();   
             body.add("iduser",idUser);

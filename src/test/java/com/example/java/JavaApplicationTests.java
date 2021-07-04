@@ -3,6 +3,7 @@ package com.example.java;
 import classe.Connexion;
 import classe.Match;
 import classe.MatchAPI;
+import classe.NotifWeb;
 import classe.Paris;
 import classe.Team;
 import com.google.gson.Gson;
@@ -165,16 +166,7 @@ class JavaApplicationTests {
          
     
             
-          JSONObject getJSONAPI(String url) throws JSONException{
-         HttpHeaders headers = new HttpHeaders();
-            headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-            headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
-            HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
-            
-          ResponseEntity response = restTemplate.exchange(url, HttpMethod.GET,entity ,String.class);  
-          JSONObject json = new JSONObject(response.getBody().toString());
-          return json;
-    }
+        
     
     JSONArray getJSONArrayAPI(String url) throws JSONException{
          HttpHeaders headers = new HttpHeaders();
@@ -314,6 +306,53 @@ class JavaApplicationTests {
             ResponseEntity response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
             JSONObject json = new JSONObject(response.getBody().toString());
             String val = json.getString("message");
+            return val;
+        }
+         
+           JSONObject getJSONAPI(String url) throws JSONException{
+         HttpHeaders headers = new HttpHeaders();
+            headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+            headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+            HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
+            
+          ResponseEntity response = restTemplate.exchange(url, HttpMethod.GET,entity ,String.class);  
+          JSONObject json = new JSONObject(response.getBody().toString());
+          return json;
+    }
+           
+           String sendNotificationToWeb(String token,String idUser,String title,String message) throws JSONException{
+            String url = "https://fcm.googleapis.com/fcm/send";
+            HttpHeaders headers = new HttpHeaders();
+            headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+            headers.add("Authorization", "key=AAAAl8TtRzE:APA91bEO6IgPg8_LkuRvUmwSyVRLjKA8IRknrBn6_QHuYGha-Q5pAF-Rs6a-1_K-ddM8izqy08471B53jrFhLj9q2zhlVtCSoiA0W3skF2m6Ff2AXMr8pjwpMjiaHSiM-MqQHe7aStXN");
+            headers.add("Content-Type","application/json");
+            headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+            
+            
+            MultiValueMap<String, String> body = new LinkedMultiValueMap<String, String>();  
+            
+            JSONObject data = new JSONObject()
+                    .put("idUser",idUser)
+                    .put("title", title)
+                    .put("body", message);
+            
+            String jsonBody = new JSONObject()
+                  .put("to", token)
+                  .put("data", data)
+                  .toString();
+            
+            
+            System.out.println("jsonBody "+jsonBody);
+            
+            
+
+            
+            
+            HttpEntity<?> httpEntity = new HttpEntity<Object>(jsonBody, headers);
+
+            ResponseEntity response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
+            JSONObject json = new JSONObject(response.getBody().toString());
+            String val = json.getString("success");
             return val;
         }
       
@@ -945,6 +984,46 @@ class JavaApplicationTests {
             } 
             
         }
+          
+          
+          
+             ArrayList<NotifWeb> getAllNotifWeb(String idUser) throws SQLException{
+                        OracleConnection co = Connexion.getConnection();
+                   ArrayList<NotifWeb> val = new ArrayList();
+                   Statement statement = null;
+
+                   try{
+                       statement = co.createStatement();
+
+                        ResultSet resultSet = statement.executeQuery("select TOKEN from NOTIFWEB where IDUSER ='"+idUser+"' ");
+                           while (resultSet.next()){
+                               NotifWeb temp = new NotifWeb(idUser,resultSet.getString(1));
+                               //int idMatch, int idTeam1, int idTeam2, Date datematch, int nbrMap, String nomTeam1, String nomTeam2
+                               val.add(temp);
+                           }
+                   }
+                   finally{
+                       if(statement!=null){
+                           statement.close();
+                       }
+                       if(co!=null){
+                           co.close();
+                       }
+                   }
+
+
+                   return val;
+            }
+             
+             void sendNotificationWebToAllDeviceForUser(String idUser,String title,String message) throws SQLException, JSONException{
+                 ArrayList<NotifWeb> listeToken = getAllNotifWeb(idUser);
+                 System.out.println("listeToken :"+listeToken.size());
+                 for(int i =0;i<listeToken.size();i++){
+                     String val = sendNotificationToWeb(listeToken.get(i).getToken(),idUser,title,message);
+                     if(val.compareTo("1")==0)
+                         System.out.println("Notification envoyé");
+                 }
+             }
          
 	@Test
 	void contextLoads() throws SQLException, JSONException{
@@ -962,12 +1041,16 @@ class JavaApplicationTests {
                     }*/
                    //finaliser();
                    String idUser = "60d995cb5f11d836229bd7e0";
-                   String token = "dxSTjsTfwLPXtKZpoXVwn6:APA91bEnd_MUiWbLTQglRWjNqXQY94YIAzGG-keFW_RX7PEaDvjaLN7t4nI0Dyybekzsvby6ZiWIykFhMl6Icb1_nIUqEBh9264x2kRsfiwPUBcAuO_4Darwr4i1c68JOUxe71JfZ6yJ";      
+                   String token = "c48tnT0oOtkVlOBCL2XdIu:APA91bGgR2cvJPVaXsE1gGF0Vypya4Z7jYp4sSY12-FPZQdeFMtO87nd06t5IPnZW5_9-sEvmdJDv_DUyCeaO7iheRqArzRDOxgwAw18BAvw8d6w2QFDWTfJvXbMJTyWjYBojbiRf7E_";      
+                   String title = "Malheuresement";
+                   String message = "Hello";
+                   //insererNotifWeb(idUser,token);
                    
-                   insererNotifWeb(idUser,token);
-                   
-
+                   //String token,String idUser,String title,String message
+                   //String val = sendNotificationToWeb(token,idUser,"Malheuresement","Hello");
+                    //System.out.println("Success: "+val);
                     
+                    sendNotificationWebToAllDeviceForUser(idUser,title,message);
                    
                  }
 	

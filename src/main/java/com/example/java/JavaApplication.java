@@ -700,11 +700,13 @@ private RestTemplate restTemplate;
                                                     //paris gagnant 
                                                     String description = "Felicitation, Votre équipe a gagner pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
                                                     traitementParis(listeParis.get(i),"debit",description);
+                                                    sendNotificationWebToAllDeviceForUser(listeParis.get(i).getIdUser(),"Felicitation",description);
                                                 }
                                                 else{
                                                     //paris perdant 
                                                     String description = "Malheuresement, Votre équipe a perdu pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
                                                     traitementParis(listeParis.get(i),"credit",description);
+                                                    sendNotificationWebToAllDeviceForUser(listeParis.get(i).getIdUser(),"Malheuresement",description);
                                                 }
                                     }
                                     else if(nbrWinTeam2==nbrWinNeeded){
@@ -714,11 +716,13 @@ private RestTemplate restTemplate;
                                                     //paris gagnant 
                                                     String description = "Felicitation, Votre équipe a gagner pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
                                                     traitementParis(listeParis.get(i),"debit",description);
+                                                    sendNotificationWebToAllDeviceForUser(listeParis.get(i).getIdUser(),"Felicitation",description);
                                              }
                                              else{
                                                     //paris perdant 
                                                     String description = "Malheuresement, Votre équipe a perdu pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
                                                     traitementParis(listeParis.get(i),"credit",description);
+                                                    sendNotificationWebToAllDeviceForUser(listeParis.get(i).getIdUser(),"Malheuresement",description);
                                              }
                                     }
                                     else
@@ -748,11 +752,13 @@ private RestTemplate restTemplate;
                                                             //paris gagnant 
                                                             String description = "Felicitation, Votre équipe a fait le first blood sur map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
                                                             traitementParis(listeParis.get(i),"debit",description);
+                                                            sendNotificationWebToAllDeviceForUser(listeParis.get(i).getIdUser(),"Felicitation",description);
                                                         }
                                                         else{
                                                             //paris perdant 
                                                             String description = "Malheuresement, Votre équipe n'a pas fait le first blood sur map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
                                                             traitementParis(listeParis.get(i),"credit",description);
+                                                            sendNotificationWebToAllDeviceForUser(listeParis.get(i).getIdUser(),"Malheuresement",description);
                                                         }
                                                     }
                                                     else{
@@ -762,11 +768,13 @@ private RestTemplate restTemplate;
                                                                 //paris gagnant 
                                                                 String description = "Felicitation, Votre équipe a fait le first blood sur map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
                                                                 traitementParis(listeParis.get(i),"debit",description);
+                                                                sendNotificationWebToAllDeviceForUser(listeParis.get(i).getIdUser(),"Felicitation",description);
                                                         }
                                                         else{
                                                                 //paris perdant 
                                                                 String description = "Malheuresement, Votre équipe n'a pas fait le first blood sur map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
                                                                 traitementParis(listeParis.get(i),"credit",description);
+                                                                sendNotificationWebToAllDeviceForUser(listeParis.get(i).getIdUser(),"Malheuresement",description);
                                                         }
                                                     }
                                                 }
@@ -778,11 +786,13 @@ private RestTemplate restTemplate;
                                                                 //paris gagnant 
                                                                 String description = "Felicitation, Votre équipe a fait le first blood sur map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
                                                                 traitementParis(listeParis.get(i),"debit",description);
+                                                                sendNotificationWebToAllDeviceForUser(listeParis.get(i).getIdUser(),"Felicitation",description);
                                                         }
                                                         else{
                                                                 //paris perdant 
                                                                 String description = "Malheuresement, Votre équipe n'a pas fait le first blood sur map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
                                                                 traitementParis(listeParis.get(i),"credit",description);
+                                                                sendNotificationWebToAllDeviceForUser(listeParis.get(i).getIdUser(),"Malheuresement",description);
                                                         }
                                                     }
                                                     else{
@@ -792,11 +802,13 @@ private RestTemplate restTemplate;
                                                             //paris gagnant 
                                                             String description = "Felicitation, Votre équipe a fait le first blood sur map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
                                                                 traitementParis(listeParis.get(i),"debit",description);
+                                                                sendNotificationWebToAllDeviceForUser(listeParis.get(i).getIdUser(),"Felicitation",description);
                                                         }
                                                         else{
                                                             //paris perdant 
                                                             String description = "Malheuresement, Votre équipe n'a pas fait le first blood sur map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
                                                                 traitementParis(listeParis.get(i),"credit",description);
+                                                                sendNotificationWebToAllDeviceForUser(listeParis.get(i).getIdUser(),"Malheuresement",description);
                                                         }
                                                     }
                                                 }
@@ -816,11 +828,13 @@ private RestTemplate restTemplate;
                                                             //paris gagnant 
                                                             String description = "Felicitation, Votre équipe a gagné sur la map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
                                                             traitementParis(listeParis.get(i),"debit",description);
+                                                            sendNotificationWebToAllDeviceForUser(listeParis.get(i).getIdUser(),"Felicitation",description);
                                                         }
                                                         else{
                                                             //paris perdant 
                                                             String description = "Malheuresement, Votre équipe a perdu sur la map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
                                                              traitementParis(listeParis.get(i),"credit",description);
+                                                             sendNotificationWebToAllDeviceForUser(listeParis.get(i).getIdUser(),"Malheuresement",description);
                                                         }
                                                     }
                                                     else{
@@ -830,11 +844,13 @@ private RestTemplate restTemplate;
                                                             //paris gagnant 
                                                             String description = "Felicitation, Votre équipe a gagné sur la map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
                                                             traitementParis(listeParis.get(i),"debit",description);
+                                                             sendNotificationWebToAllDeviceForUser(listeParis.get(i).getIdUser(),"Felicitation",description);
                                                         }
                                                         else{
                                                             //paris perdant 
                                                             String description = "Malheuresement, Votre équipe a perdu sur la map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
                                                              traitementParis(listeParis.get(i),"credit",description);
+                                                              sendNotificationWebToAllDeviceForUser(listeParis.get(i).getIdUser(),"Malheuresement",description);
                                                         }
                                                     }
                                                         
@@ -847,11 +863,13 @@ private RestTemplate restTemplate;
                                                                 //paris gagnant 
                                                                  String description = "Felicitation, Votre équipe a gagné sur la map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
                                                             traitementParis(listeParis.get(i),"debit",description);
+                                                            sendNotificationWebToAllDeviceForUser(listeParis.get(i).getIdUser(),"Felicitation",description);
                                                             }
                                                             else{
                                                                 //paris perdant 
                                                                  String description = "Malheuresement, Votre équipe a perdu sur la map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
                                                              traitementParis(listeParis.get(i),"credit",description);
+                                                             sendNotificationWebToAllDeviceForUser(listeParis.get(i).getIdUser(),"Malheuresement",description);
                                                             }
                                                     }
                                                     else{
@@ -861,11 +879,13 @@ private RestTemplate restTemplate;
                                                                 //paris gagnant 
                                                                  String description = "Felicitation, Votre équipe a gagné sur la map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
                                                             traitementParis(listeParis.get(i),"debit",description);
+                                                            sendNotificationWebToAllDeviceForUser(listeParis.get(i).getIdUser(),"Felicitation",description);
                                                             }
                                                             else{
                                                                 //paris perdant 
                                                                    String description = "Malheuresement, Votre équipe a perdu sur la map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
                                                              traitementParis(listeParis.get(i),"credit",description);
+                                                             sendNotificationWebToAllDeviceForUser(listeParis.get(i).getIdUser(),"Malheuresement",description);
                                                         }
                                                     }
                                                         
@@ -1365,6 +1385,82 @@ private RestTemplate restTemplate;
             }
             return val;
         }
+      
+           ArrayList<NotifWeb> getAllNotifWeb(String idUser) throws SQLException{
+                        OracleConnection co = Connexion.getConnection();
+                   ArrayList<NotifWeb> val = new ArrayList();
+                   Statement statement = null;
+
+                   try{
+                       statement = co.createStatement();
+
+                        ResultSet resultSet = statement.executeQuery("select TOKEN from NOTIFWEB where IDUSER ='"+idUser+"' ");
+                           while (resultSet.next()){
+                               NotifWeb temp = new NotifWeb(idUser,resultSet.getString(1));
+                               //int idMatch, int idTeam1, int idTeam2, Date datematch, int nbrMap, String nomTeam1, String nomTeam2
+                               val.add(temp);
+                           }
+                   }
+                   finally{
+                       if(statement!=null){
+                           statement.close();
+                       }
+                       if(co!=null){
+                           co.close();
+                       }
+                   }
+
+
+                   return val;
+            }
+           
+           
+            String sendNotificationToWeb(String token,String idUser,String title,String message) throws JSONException{
+            String url = "https://fcm.googleapis.com/fcm/send";
+            HttpHeaders headers = new HttpHeaders();
+            headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+            headers.add("Authorization", "key=AAAAl8TtRzE:APA91bEO6IgPg8_LkuRvUmwSyVRLjKA8IRknrBn6_QHuYGha-Q5pAF-Rs6a-1_K-ddM8izqy08471B53jrFhLj9q2zhlVtCSoiA0W3skF2m6Ff2AXMr8pjwpMjiaHSiM-MqQHe7aStXN");
+            headers.add("Content-Type","application/json");
+            headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+            
+            
+            MultiValueMap<String, String> body = new LinkedMultiValueMap<String, String>();  
+            
+            JSONObject data = new JSONObject()
+                    .put("idUser",idUser)
+                    .put("title", title)
+                    .put("body", message);
+            
+            String jsonBody = new JSONObject()
+                  .put("to", token)
+                  .put("data", data)
+                  .toString();
+            
+            
+            System.out.println("jsonBody "+jsonBody);
+            
+            
+
+            
+            
+            HttpEntity<?> httpEntity = new HttpEntity<Object>(jsonBody, headers);
+
+            ResponseEntity response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
+            JSONObject json = new JSONObject(response.getBody().toString());
+            String val = json.getString("success");
+            return val;
+       }
+            
+      
+      void sendNotificationWebToAllDeviceForUser(String idUser,String title,String message) throws SQLException, JSONException{
+                 ArrayList<NotifWeb> listeToken = getAllNotifWeb(idUser);
+                 System.out.println("listeToken :"+listeToken.size());
+                 for(int i =0;i<listeToken.size();i++){
+                     String val = sendNotificationToWeb(listeToken.get(i).getToken(),idUser,title,message);
+                     if(val.compareTo("1")==0)
+                         System.out.println("Notification envoyé");
+                 }
+             }
       
         @PostMapping(value = "/insererNotifWeb", consumes = "application/json", produces = "application/json")
         @ResponseBody

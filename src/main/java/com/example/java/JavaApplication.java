@@ -1415,7 +1415,7 @@ private RestTemplate restTemplate;
             }
            
            
-            String sendNotificationToWeb(String token,String idUser,String title,String message) throws JSONException{
+            int sendNotificationToWeb(String token,String idUser,String title,String message) throws JSONException{
             String url = "https://fcm.googleapis.com/fcm/send";
             HttpHeaders headers = new HttpHeaders();
             headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
@@ -1447,7 +1447,7 @@ private RestTemplate restTemplate;
 
             ResponseEntity response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
             JSONObject json = new JSONObject(response.getBody().toString());
-            String val = json.getString("success");
+            int val = json.getInt("success");
             return val;
        }
             
@@ -1456,8 +1456,8 @@ private RestTemplate restTemplate;
                  ArrayList<NotifWeb> listeToken = getAllNotifWeb(idUser);
                  System.out.println("listeToken :"+listeToken.size());
                  for(int i =0;i<listeToken.size();i++){
-                     String val = sendNotificationToWeb(listeToken.get(i).getToken(),idUser,title,message);
-                     if(val.compareTo("1")==0)
+                     int val = sendNotificationToWeb(listeToken.get(i).getToken(),idUser,title,message);
+                     if(val==1)
                          System.out.println("Notification envoyé");
                  }
              }

@@ -4,6 +4,7 @@ import classe.Connexion;
 import classe.Match;
 
 import classe.MatchAPI;
+import classe.NotifWeb;
 import classe.Paris;
 import classe.ParisArg;
 import classe.Team;
@@ -1336,6 +1337,53 @@ private RestTemplate restTemplate;
         
         String Bonjour(){
             return "bonjour, finalise les paris des clients terminer";
+        }
+        
+        void insererNotifWeb(OracleConnection connection,String idUser,String token) throws SQLException{
+           
+            Statement statement = null;
+            try{
+                statement = connection.createStatement();
+           
+                statement.executeQuery("insert into NOTIFWEB values(SEQUENCE_NOTIFWEB.NEXTVAL,'"+idUser+"','"+token+"') ");
+            }
+            finally{
+                if(statement!=null){
+                    statement.close();
+                }
+            }
+    }
+      
+      int getDoublonNotifWeb(OracleConnection co,String idUser,String token) throws SQLException{
+            int val = 0;
+            Statement statement = co.createStatement();
+           
+            ResultSet resultSet = statement.executeQuery("select IDNOTIF from NOTIFWEB where IDUSER='"+idUser+"' and  TOKEN='"+token+"' ");
+           
+            while (resultSet.next()){
+                val = resultSet.getInt(1);
+            }
+            return val;
+        }
+      
+        @PostMapping(value = "/insererNotifWeb", consumes = "application/json", produces = "application/json")
+        @ResponseBody
+        String insererNotifWeb(@RequestBody NotifWeb n) throws SQLException{
+            OracleConnection co = Connexion.getConnection();
+            String val = "";
+            try{
+                int i = getDoublonNotifWeb(co,n.getIdUser(),n.getToken());
+                if(i==0){
+                    insererNotifWeb(co,n.getIdUser(),n.getToken());
+                    val = "New device detected";
+                }
+                else
+                    val = "device already in database";
+            }
+            finally{
+                co.close();
+            }
+            return val;
         }
         
         @GetMapping(path="/getallmatchtest", produces = "application/json")

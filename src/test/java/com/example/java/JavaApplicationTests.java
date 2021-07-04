@@ -240,6 +240,46 @@ class JavaApplicationTests {
             }
     }
       
+      void insererNotifWeb(OracleConnection connection,String idUser,String token) throws SQLException{
+           
+            Statement statement = null;
+            try{
+                statement = connection.createStatement();
+           
+                statement.executeQuery("insert into NOTIFWEB values(SEQUENCE_NOTIFWEB.NEXTVAL,'"+idUser+"','"+token+"') ");
+            }
+            finally{
+                if(statement!=null){
+                    statement.close();
+                }
+            }
+    }
+      
+      int getDoublonNotifWeb(OracleConnection co,String idUser,String token) throws SQLException{
+            int val = 0;
+            Statement statement = co.createStatement();
+           
+            ResultSet resultSet = statement.executeQuery("select IDNOTIF from NOTIFWEB where IDUSER='"+idUser+"' and  TOKEN='"+token+"' ");
+           
+            while (resultSet.next()){
+                val = resultSet.getInt(1);
+            }
+            return val;
+        }
+      
+        void insererNotifWeb(String idUser,String token) throws SQLException{
+            OracleConnection co = Connexion.getConnection();
+            try{
+                int i = getDoublonNotifWeb(co,idUser,token);
+                if(i==0){
+                    insererNotifWeb(co,idUser,token);
+                }
+            }
+            finally{
+                co.close();
+            }
+        }
+      
         int getDoublonMatch(OracleConnection co,MatchAPI match) throws SQLException{
             int val = 0;
             Statement statement = co.createStatement();
@@ -920,9 +960,11 @@ class JavaApplicationTests {
                             co.close();
                         }
                     }*/
-                   finaliser();
+                   //finaliser();
+                   String idUser = "60d995cb5f11d836229bd7e0";
+                   String token = "dxSTjsTfwLPXtKZpoXVwn6:APA91bEnd_MUiWbLTQglRWjNqXQY94YIAzGG-keFW_RX7PEaDvjaLN7t4nI0Dyybekzsvby6ZiWIykFhMl6Icb1_nIUqEBh9264x2kRsfiwPUBcAuO_4Darwr4i1c68JOUxe71JfZ6yJ";      
                    
-                  
+                   insererNotifWeb(idUser,token);
                    
 
                     

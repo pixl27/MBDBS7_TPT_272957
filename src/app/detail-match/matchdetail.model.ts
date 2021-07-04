@@ -1,0 +1,35 @@
+export class MatchDetail {
+    idTeam1!: number;
+    idTeam2!: number;
+    idMatchRivalry!: number;
+    datematch!: Date;
+    nomTeam1!: string;
+    nomTeam2!: string;
+    odds1!: number;
+    odds2!: number;
+    logo1!: string;
+    logo2!: string;
+    odd1_map1!: number;
+    odd1_map2!: number;
+    odd1_map3!: number;
+    odd1_map4!: number;
+    odd1_map5!: number;
+    odd1_fb_map1!: number;
+    odd1_fb_map2!: number;
+    odd1_fb_map3!: number;
+    odd1_fb_map4!: number;
+    odd1_fb_map5!: number;
+    odd2_map1!: number;
+    odd2_map2!: number;
+    odd2_map3!: number;
+    odd2_map4!: number;
+    odd2_map5!: number;
+    odd2_fb_map1!: number;
+    odd2_fb_map2!: number;
+    odd2_fb_map3!: number;
+    odd2_fb_map4!: number;
+    odd2_fb_map5!: number;
+    time!: Date;
+    tournois!: string;
+    nbrMap!: number;
+}

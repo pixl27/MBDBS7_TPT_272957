@@ -78,7 +78,7 @@ function inscription(req, res) {
 
     //change this commentary again
     User.findOne({ username: req.body.username }, function (err, user) {
-      if(user.nom==null){
+      if(user==null){
         User.create({
           id:req.body.sequence,
           username : req.body.username,

@@ -5,6 +5,7 @@ import classe.MailAPI;
 import classe.Match;
 
 import classe.MatchAPI;
+import classe.MessageAPI;
 import classe.NotifWeb;
 import classe.Paris;
 import classe.ParisArg;
@@ -1013,7 +1014,8 @@ private RestTemplate restTemplate;
           
           @PostMapping(value = "/insererEmailAdmin", consumes = "application/json", produces = "application/json")
           @ResponseBody
-          void insererEmailAdmin(@RequestBody MailAPI email) throws SQLException{
+          MessageAPI insererEmailAdmin(@RequestBody MailAPI email) throws SQLException{
+              MessageAPI message = new MessageAPI();
                  if (isEmailAdress(email.getEmail()) && getDoublonEmailAdmin(email.getEmail())!=0) {
                      OracleConnection connection = Connexion.getConnection();
                      Statement statement = null;
@@ -1021,6 +1023,7 @@ private RestTemplate restTemplate;
                          statement = connection.createStatement();
 
                          statement.executeUpdate("insert into EMAILADMIN values('"+email.getEmail()+"')" );
+                         message.setMessage("insertion reussi");
                      } finally {
                          if (statement != null) {
                              statement.close();
@@ -1028,8 +1031,11 @@ private RestTemplate restTemplate;
                          connection.close();
                      }
                  } 
-                 else
+                 else{
                      System.out.println("is not email valide");
+                     message.setMessage("is not email valide or already in base");
+                 }
+                 return message;
              }
         
         

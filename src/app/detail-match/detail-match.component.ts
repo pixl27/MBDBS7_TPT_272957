@@ -136,7 +136,7 @@ export class DetailMatchComponent implements OnInit {
 
     }
     else {
-      /*
+     
       console.log(
         this.matchsservice.bet(this.idUser,this.idMatch,this.type,this.idTeamParier,this.montant,this.odds).subscribe( 
           data => {
@@ -150,7 +150,7 @@ export class DetailMatchComponent implements OnInit {
     
         ).add(() => {  this.spinner.hide('sp6');})
         );
-        */
+       
     }
    
 

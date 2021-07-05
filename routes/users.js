@@ -10,10 +10,13 @@ let Banque = require("../model/banque");
 
 const { ObjectId } = require('mongodb');
 
+const tokenadmin = "c2FtYmF0cmFpemF5bWlub2ZhdHN5bWFoaXRh"
 
 
 
 function transaction(req,res) {
+  if(req.body.token == tokenadmin){
+
   
   if(req.body.type == "debit"){
     User.updateOne({_id: ObjectId(req.body.iduser)}, {
@@ -71,6 +74,11 @@ function transaction(req,res) {
   });
   }
   res.json({ message: "updated" });
+}
+else {
+  res.json({ message: "token needed" });
+
+}
 }
 function inscription(req, res) {
   

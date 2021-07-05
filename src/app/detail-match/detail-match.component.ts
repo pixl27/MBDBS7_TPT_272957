@@ -77,7 +77,7 @@ export class DetailMatchComponent implements OnInit {
       this.date = new Date(sets).getTime();
     }).add(() => {
       this.myForm = this.formBuilder.group({     
-        numbercontrol: ['', [Validators.min(1), Validators.max(this.me.solde)]]
+        numbercontrol: ['', [Validators.min(0), Validators.max(this.me.solde)]]
     }); 
     
       this.spinner.hide('sp6');
@@ -128,20 +128,31 @@ export class DetailMatchComponent implements OnInit {
   }
 
   bet(){
+    this.spinner.show('sp6');
+    if(this.montant == 0 || this.montant==null){
+      this.spinner.hide('sp6');
+
+      this.showtoast("Echec de paris","veuillez entrer un montant valide","error");
+
+    }
+    else {
+      /*
+      console.log(
+        this.matchsservice.bet(this.idUser,this.idMatch,this.type,this.idTeamParier,this.montant,this.odds).subscribe( 
+          data => {
+            this.router.navigate(["/"]);
+            this.showtoast("Paris Effectuer","Votre paris a été bien enregistrer","success");
+    
+          },
+          err => {this.showtoast("Paris Effectuer","Votre paris a été bien enregistrer","success");
+        }
+    
+    
+        ).add(() => {  this.spinner.hide('sp6');})
+        );
+        */
+    }
    
-    console.log(
-      this.matchsservice.bet(this.idUser,this.idMatch,this.type,this.idTeamParier,this.montant,this.odds).subscribe( 
-        data => {
-          this.router.navigate(["/"]);
-          this.showtoast("Paris Effectuer","Votre paris a été bien enregistrer","success");
-  
-        },
-        err => {this.showtoast("Paris Effectuer","Votre paris a été bien enregistrer","success");
-      }
-  
-  
-      )
-      );
 
   }
 

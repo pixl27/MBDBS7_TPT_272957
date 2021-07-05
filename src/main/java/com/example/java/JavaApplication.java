@@ -934,8 +934,9 @@ private RestTemplate restTemplate;
                             System.out.println("difference de jour "+diff);
                             if(diff>2){
                                 //Envoie mail
+                                String email = "maheryrakotondrazaka@gmail.com";
                                 System.out.println("mila mihetsika fa tsy hita paris an'olona");
-                                ec.sendEmail();
+                                ec.sendEmail(m,email);
                             }
                              
                         }
@@ -1628,6 +1629,7 @@ private RestTemplate restTemplate;
                 }
 
             }
+            
         }
 }
 

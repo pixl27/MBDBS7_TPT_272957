@@ -5,6 +5,7 @@
  */
 package com.example.java;
 
+import classe.Match;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Properties;
@@ -29,12 +30,12 @@ import javax.mail.internet.MimeMultipart;
  * @author tolot
  */
 public class EmailController {
-    public String sendEmail() throws MessagingException, AddressException, IOException {
-        sendmail();
+    public String sendEmail(Match m,String emailReceiver) throws MessagingException, AddressException, IOException {
+        sendmail(m,emailReceiver);
       return "Email sent successfully";
    }   
     
-    private void sendmail() throws AddressException, MessagingException, IOException {
+    private void sendmail(Match m,String emailReceiver) throws AddressException, MessagingException, IOException {
    Properties props = new Properties();
    props.put("mail.smtp.auth", "true");
    props.put("mail.smtp.starttls.enable", "true");
@@ -50,13 +51,15 @@ public class EmailController {
    Message msg = new MimeMessage(session);
    msg.setFrom(new InternetAddress("dotabetmailtpt@gmail.com", false));
 
-   msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse("tolotriniavo.ralaiarisoa@gmail.com"));
-   msg.setSubject("Alert un match n'a pas été trouver");
+   msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(emailReceiver));
+   String subject = "Alert un match du "+m.getDatematch()+" n'a pas encore été trouver";
+   msg.setSubject(subject);
    msg.setSentDate(new Date());
 
 
+   String message = "Le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2()+" n'a pas été trouver dans dota <br> Veillez vous connectez et inserer les vainqueurs manuellement";
    MimeBodyPart messageBodyPart = new MimeBodyPart();
-   messageBodyPart.setContent("Veillez vous connecter, un match n'a pas été trouver", "text/html");
+   messageBodyPart.setContent(message, "text/html");
 
    Multipart multipart = new MimeMultipart();
    multipart.addBodyPart(messageBodyPart);

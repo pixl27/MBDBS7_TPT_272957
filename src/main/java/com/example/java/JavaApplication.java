@@ -958,7 +958,7 @@ private RestTemplate restTemplate;
                     }
                     System.out.println("#################################################################################");
                 }
-                if(matchProbleme.isEmpty()){
+                if(!matchProbleme.isEmpty()){
                     System.out.println("preparation envoie mail");
                     ArrayList<MailAPI> listeMail = getAllEmailAdmin();
                        System.out.println("Nombre liste mail "+listeMail.size());

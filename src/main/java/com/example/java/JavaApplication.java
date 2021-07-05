@@ -1016,7 +1016,7 @@ private RestTemplate restTemplate;
           @ResponseBody
           MessageAPI insererEmailAdmin(@RequestBody MailAPI email) throws SQLException{
               MessageAPI message = new MessageAPI();
-                 if (isEmailAdress(email.getEmail()) && getDoublonEmailAdmin(email.getEmail())!=0) {
+                 if (isEmailAdress(email.getEmail()) && getDoublonEmailAdmin(email.getEmail())!=1) {
                      OracleConnection connection = Connexion.getConnection();
                      Statement statement = null;
                      try {

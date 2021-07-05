@@ -77,7 +77,7 @@ function inscription(req, res) {
     var hashedPassword = bcrypt.hashSync(req.body.password, 8);
 
     User.findOne({ username: req.body.username }, function (err, user) {
-      if(user._id!=null){
+      if(user._id==null){
         User.create({
           id:req.body.sequence,
           username : req.body.username,

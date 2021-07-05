@@ -161,7 +161,8 @@ private RestTemplate restTemplate;
             Date datenow = new java.sql.Date(Calendar.getInstance().getTime().getTime());
             DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");  
             
-            MultiValueMap<String, String> body = new LinkedMultiValueMap<String, String>();   
+            MultiValueMap<String, String> body = new LinkedMultiValueMap<String, String>(); 
+            body.add("token","c2FtYmF0cmFpemF5bWlub2ZhdHN5bWFoaXRh");
             body.add("iduser",idUser);
             body.add("idparis", String.valueOf(idParis));
             body.add("datehistorique", dateFormat.format(datenow));

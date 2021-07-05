@@ -1064,7 +1064,7 @@ class JavaApplicationTests {
                      try {
                          statement = connection.createStatement();
 
-                         statement.executeUpdate("insert into Match values('"+email+"')" );
+                         statement.executeUpdate("insert into EMAILADMIN values('"+email+"')" );
                      } finally {
                          if (statement != null) {
                              statement.close();

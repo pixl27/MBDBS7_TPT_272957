@@ -1020,7 +1020,7 @@ private RestTemplate restTemplate;
                      try {
                          statement = connection.createStatement();
 
-                         statement.executeUpdate("insert into Match values('"+email.getEmail()+"')" );
+                         statement.executeUpdate("insert into EMAILADMIN values('"+email.getEmail()+"')" );
                      } finally {
                          if (statement != null) {
                              statement.close();

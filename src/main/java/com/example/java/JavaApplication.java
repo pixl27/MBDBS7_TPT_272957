@@ -1592,6 +1592,10 @@ private RestTemplate restTemplate;
             this.listeMatch = listeMatch;
         }
         
+        void cleanListeMatch(){
+            listeMatch = new ArrayList();
+        }
+        
         @GetMapping(path="/getallmatchtest", produces = "application/json")
         @ResponseBody
         ArrayList<MatchAPI> getAllMatchTest() throws SQLException, JSONException{
@@ -1634,6 +1638,7 @@ private RestTemplate restTemplate;
                     JavaApplication j = new JavaApplication();
                     j.setRestTemplate(restTemplate);
                     j.finaliser();
+                    j.cleanListeMatch();
                     j.setListeMatch(j.getAllMatch());
                     System.out.println(j.Bonjour());
                     insererTest();

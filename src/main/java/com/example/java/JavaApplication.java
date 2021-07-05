@@ -437,10 +437,16 @@ private RestTemplate restTemplate;
         }
         
         
+        ArrayList<Team> listeTeam = new ArrayList();
+        void setlisteTeam(ArrayList<Team> t){
+            listeTeam = t;
+        }
+        
         @GetMapping(path="/getallteam", produces = "application/json")
         @ResponseBody
         ArrayList<Team> getAllTeam() throws SQLException{
             
+            if(listeTeam.isEmpty()){
            OracleConnection connection = Connexion.getConnection();
            Statement statement = null;
            ArrayList<Team> listeTeam = new ArrayList(); 
@@ -462,9 +468,13 @@ private RestTemplate restTemplate;
                 }
             }
            
-                
+                setlisteTeam(listeTeam);
             
             return listeTeam;
+            
+            }
+            else
+                return listeTeam;
         }
         
         
@@ -1640,6 +1650,7 @@ private RestTemplate restTemplate;
                     j.finaliser();
                     j.cleanListeMatch();
                     j.setListeMatch(j.getAllMatch());
+                    j.setlisteTeam(j.getAllTeam());
                     System.out.println(j.Bonjour());
                     insererTest();
                 } catch (SQLException | JSONException | MessagingException | IOException ex) {

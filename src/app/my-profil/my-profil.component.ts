@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../shared/auth.service';
 import { NgxQrcodeElementTypes, NgxQrcodeErrorCorrectionLevels } from 'ngx-qrcode2';
+import { NgxSpinnerService } from "ngx-spinner";
 
 @Component({
   selector: 'app-my-profil',
@@ -15,9 +16,10 @@ export class MyProfilComponent implements OnInit {
   correctionLevel = NgxQrcodeErrorCorrectionLevels.HIGH;
 value !: string ;
 
-  constructor(private authservice:AuthService,private router:Router) { }
+  constructor(private authservice:AuthService,private router:Router,private spinner: NgxSpinnerService) { }
 
   ngOnInit(): void {
+    this.spinner.show('sp6');
     let tokenuservar =  localStorage.getItem("usertoken");
     if(tokenuservar != null){
     this.tokenuser = tokenuservar
@@ -36,7 +38,8 @@ value !: string ;
         err => console.log("tsy nande pory")
   
   
-      )
+      ).add(() => {    this.spinner.hide('sp6');
+    })
       );
   }
 }

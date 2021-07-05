@@ -7,13 +7,16 @@ import { NgxSpinnerService } from "ngx-spinner";
 import { MatSelectModule } from "@angular/material/select";
 import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
+import { AuthService } from '../shared/auth.service';
+
 @Component({
   selector: 'app-list-match',
   templateUrl: './list-match.component.html',
   styleUrls: ['./list-match.component.css']
 })
 export class ListMatchComponent implements OnInit {
-
+  tokenuser!:string
+  me!:any;
    Matchs!:Match[];
    MatchDate!:MatchDate[];
    listetournois!:string[];
@@ -23,18 +26,34 @@ export class ListMatchComponent implements OnInit {
   selected="option 2";
   constructor(private matchsservice:MatchsService,
     private route:ActivatedRoute,
-    private router:Router,private spinner: NgxSpinnerService) { }
+    private router:Router,private spinner: NgxSpinnerService,private authservice:AuthService) { }
 
   ngOnInit(): void {
       
-      console.log("Dans le subscribe des queryParams")
       this.spinner.show('sp6');
-
+      let tokenuservar =  localStorage.getItem("usertoken");
+      if(tokenuservar != null){
+      this.tokenuser = tokenuservar
+     this.getcurrentuser();
+     }
 
       this.getMatchs();
 
    
    
+  }
+  getcurrentuser(){
+  
+    console.log(
+      this.authservice.getCurrentUser(this.tokenuser).subscribe( 
+        data => {
+          this.me = data;
+        },
+        err => console.log("tsy nande pory")
+  
+  
+      )
+      );
   }
  
   tri(option:any){
@@ -45,7 +64,6 @@ export class ListMatchComponent implements OnInit {
     for (let i = 0; i < this.MatchDate.length; i++){
       for (let j = 0; j < this.MatchDate[i].listematch.length; j++){
         if(this.MatchDate[i].listematch[j].tournois == option){
-          console.log("china " + this.MatchDate[i].listematch[j].tournois )
           Matchs.push(this.MatchDate[i].listematch[j]);
           count = count + 1;
         }
@@ -126,12 +144,11 @@ export class ListMatchComponent implements OnInit {
 
   }
    checkdate(MatchDateNew:MatchDate[],Datetest:Date){
-    console.log("mi check date");
 
     for (let i = 0; i < MatchDateNew.length; i++) {
     if(MatchDateNew[i].temp == Datetest)
     {
-      console.log("mitovy");
+     // console.log("mitovy");
       return i;
     }
     }
@@ -153,10 +170,8 @@ export class ListMatchComponent implements OnInit {
    {
     var MatchDateTemp:MatchDate=new MatchDate();
     MatchDateTemp.temp = Matchs[i].datematch;
-    console.log(MatchDateTemp + "ok");
     MatchDateTemp.listematch=[];
     MatchDateTemp.listematch.push(Matchs[i]);
-    console.log(MatchDateTemp + "tafiditra");
 
     MatchDateNew.push(MatchDateTemp);
 

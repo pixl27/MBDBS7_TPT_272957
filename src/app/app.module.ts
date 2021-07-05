@@ -14,7 +14,7 @@ import { DetailTeamComponent } from './detail-team/detail-team.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
 import { LoginComponent } from './login/login.component';
 import { HttpClientModule } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxQRCodeModule } from 'ngx-qrcode2';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxSpinnerModule } from "ngx-spinner";
@@ -25,6 +25,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
 import { MatBadgeModule } from "@angular/material/badge";
+import { NgxSimpleCountdownModule } from 'ngx-simple-countdown';
 
 import { JwPaginationModule  } from 'jw-angular-pagination';
 
@@ -133,9 +134,11 @@ const routes:Routes = [
     MatNativeDateModule ,
     MatFormFieldModule,
     MatIconModule,
+    ReactiveFormsModule,
     MatBadgeModule,
     JwPaginationModule ,
     AngularFireDatabaseModule,
+    NgxSimpleCountdownModule,
       AngularFireAuthModule,
       AngularFireMessagingModule,
       ToastrModule.forRoot(),

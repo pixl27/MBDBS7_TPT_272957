@@ -7,6 +7,10 @@ import { MatchDetail } from './matchdetail.model';
 import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 import { NgxSpinnerService } from "ngx-spinner";
 import { AuthService } from '../shared/auth.service';
+import { interval ,timer} from 'rxjs';
+import { map } from 'rxjs/operators'
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-detail-match',
@@ -16,6 +20,8 @@ import { AuthService } from '../shared/auth.service';
 export class DetailMatchComponent implements OnInit {
   matchtransmis!:MatchDetail
   model: any = {};
+  myDate !: any;
+  counter!:any;
   closeResult = '';
   tokenuser!:string
   me!:any;
@@ -25,18 +31,38 @@ export class DetailMatchComponent implements OnInit {
   idTeamParier!: number
   montant!: number
   odds!: number
+  date !: any ;
+  myForm = new FormGroup({});
+
   constructor(private matchsservice:MatchsService,
     private route:ActivatedRoute,
-    private router:Router,private modalService: NgbModal,private spinner: NgxSpinnerService,private authservice:AuthService) { }
+    private router:Router,private toastr: ToastrService,private modalService: NgbModal,private spinner: NgxSpinnerService,private authservice:AuthService,private formBuilder: FormBuilder) 
+  {
+   
+  }
+  get f() { return this.myForm.controls; }
 
   ngOnInit(): void {
     this.spinner.show('sp6');
     let tokenuservar =  localStorage.getItem("usertoken");
+   
+   console.log(this.counter);
+    //this.myDate = this.datePipe.transform(this.myDate, 'yyyy-MM-dd');
     if(tokenuservar != null){
     this.tokenuser = tokenuservar
    this.getcurrentuser();
    }
     this.getMatchById();
+  }
+  showtoast(title:string,body:string,type:string) {
+    if(type=="success"){
+        this.toastr.success(body, title);
+
+    }
+    else {
+        this.toastr.error(body, title);
+
+    }
   }
  
   getMatchById() {
@@ -44,13 +70,19 @@ export class DetailMatchComponent implements OnInit {
     // en number en mettant un "+" devant
     const id: number = +this.route.snapshot.params.id;
 
-    console.log('Dans ngOnInit de details, id = ' + id);
     this.matchsservice.getMatch(id).subscribe((match) => {
       this.matchtransmis = match;
+      var sets = match.time.toString().replace("T"," ").replace("Z","");
+   //   console.lo
+      this.date = new Date(sets).getTime();
     }).add(() => {
-
+      this.myForm = this.formBuilder.group({     
+        numbercontrol: ['', [Validators.min(1), Validators.max(this.me.solde)]]
+    }); 
+    
       this.spinner.hide('sp6');
-      
+      //this.date = this.matchtransmis.datematch;
+
        });
   }
   getcurrentuser(){
@@ -96,12 +128,12 @@ export class DetailMatchComponent implements OnInit {
   }
 
   bet(){
-    console.log(this.idUser +" - " +this.montant)
-    
+   
     console.log(
       this.matchsservice.bet(this.idUser,this.idMatch,this.type,this.idTeamParier,this.montant,this.odds).subscribe( 
         data => {
           this.router.navigate(["/"]);
+          this.showtoast("Paris Effectuer","Votre paris a été bien enregistrer","success");
   
         },
         err => console.log("paris failed")

@@ -45,8 +45,9 @@ export class AppComponent {
 
   logOut(){
     localStorage.removeItem("usertoken");
-    window.location.reload();
-
+    this.router.navigate(["/"]).then(() => {
+      window.location.reload();
+    });
 
   }
   getcurrentuser(){

@@ -372,7 +372,7 @@
                           </svg>
                         </span>
                         <div class="relative">
-                          <h4 class="phase-title text-white font-bold uppercase pb-2">Nombre de Lose Tmea</h4>
+                          <h4 class="phase-title text-white font-bold uppercase pb-2">Nombre de Loss Team</h4>
                           <p class="phase-copy">{{teamTransmis.losses}}</p>
                         </div>
                       </div>
@@ -507,7 +507,7 @@
                         </span>
                         <div class="relative">
                           <h4 class="phase-title text-white font-bold uppercase pb-2">Derniere Match Jouer</h4>
-                          <p class="phase-copy"><strong>{{teamTransmis.last_match_time}}</strong></p>
+                          <p class="phase-copy"><strong>{{teamTransmis.last_match_time* 1000 | date:'yyyy-MM-dd'}}</strong></p>
                         </div>
                       </div>
                     </div>

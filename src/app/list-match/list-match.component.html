@@ -54,22 +54,11 @@ Use a better box model (opinionated).
                   <div class="vb vb-invisible" style="position: relative; overflow: hidden;">
                     <div class="vb-content" style="display: block; overflow: hidden scroll; height: 100%; width: calc(100% + 17px);">
                       <div class="side-menu-tabs">
-                        <a class="side-menu-tab active"><span>esports</span></a> <a class="side-menu-tab"><span>Sports</span></a>
+                        <a class="side-menu-tab active"><span>esports</span></a> 
                       </div>
                       <a class="side-menu-item">
                         <div class="game-container no-tournaments">
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" class="icon game-icon icon-white">
-                            <path
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="#FFF"
-                              fill-rule="evenodd"
-                              d="M20 9.4h7.55a2 2 0 0 1 2 2v6.9a2 2 0 0 1-2 2H20v7.4a2 2 0 0 1-2 2h-5.1a2 2 0 0 1-2-2v-7.4H2.46a2 2 0 0 1-2-2v-6.9c0-1.1.9-2 2-2h8.46V2c0-1.1.9-2 2-2H18a2 2 0 0 1 2 2v7.4z"
-                            ></path>
-                          </svg>
-                          <span class="game-label">
-                            All Games
-                            <span class="text-blue-light ml-2">484</span>
-                          </span>
+
                         </div>
                       </a>
                       <div class="game-and-tournament">
@@ -206,7 +195,7 @@ Use a better box model (opinionated).
                             </span>
                             <span class="game-label">
                               Dota 2
-                              <span class="text-blue-light ml-2">26</span>
+                              <span class="text-blue-light ml-2">10</span>
                             </span>
                           </div>
                           <div class="toggle-click-area">
@@ -334,7 +323,7 @@ Use a better box model (opinionated).
                                 fill-rule="evenodd"
                               ></path>
                             </svg>
-                            <div class="cta-text"><strong>Play Live </strong><span>vs real players </span>to win real money!</div>
+                            <div class="cta-text"><strong>Dota Bet</strong><span>on Your Favorite Player</span>to win money!</div>
                           </div>
                         </div>
                       </div>
@@ -352,7 +341,7 @@ Use a better box model (opinionated).
                     <div class="betslip-toggle relative inline-flex justify-center items-center bg-yellow border border-yellow-dark text-navy text-base">
 
                       <span class="betslip-toggle-content h-full flex flex-col justify-center text-center">
-                        Bet Slip
+                        Dota Bet List Match
                       </span>
                       <!---->
                     </div>
@@ -375,14 +364,18 @@ Use a better box model (opinionated).
   <mat-option  *ngFor="let nom of listeteams" value="{{nom}}">{{nom}}</mat-option>
 </mat-select>
 </mat-form-field>
-
+<div *ngIf="me==null"><style>.disabledd{pointer-events:none;cursor: not-allowed;opacity: .25; }</style>
+</div>
+<h1 *ngIf="me!=null">connected</h1>
+<h1 *ngIf="me==null">disconnected</h1>
                   <div *ngFor="let md of MatchDate">
                     <h1  class="bet-center-inner-container">{{md.temp | date}}</h1>
                     <div>
+                      
                       <div *ngFor="let a of md.listematch"  class="bet-line-container bet-line-container-full-size live">
                         <div class="bet-line bet-center-inner-container betline-full-size">
-                          <a routerLink="/detail-match/{{a.idMatchRivalry}}" class="match-time"><div class="text-red-light uppercase font-bold live-now">{{a.datematch}}</div></a>
-                          <a routerLink="/detail-match/{{a.idMatchRivalry}}" class="match-info-container no-underline">
+                          <a [ngStyle]="{'pointer-events':me == null ? 'none' : 'all' , 'opacity':me == null ? '.25' : '1'  }"  routerLink="/detail-match/{{a.idMatchRivalry}}" class="match-time "><div class="text-red-light uppercase font-bold live-now">{{a.datematch}}</div></a>
+                          <a [ngStyle]="{'pointer-events':me == null ? 'none' : 'all' , 'opacity':me == null ? '.25' : '1'  }" routerLink="/detail-match/{{a.idMatchRivalry}}" class="match-info-container no-underline ">
                             <span class="icon game-icon icon-dota-2">
                               <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50">
                                 <path
@@ -399,9 +392,9 @@ Use a better box model (opinionated).
                               <div class="match-time"><div class="text-red-light uppercase font-bold live-now">{{a.datematch}}</div></div>
                             </div>
                           </a>
-                          <a href="/match/dota-2/the-international-eeu-qualifier/375099-nemiga-vs-trident-clan" class="prop-bets-link live"><span>Best Of {{a.nbrMap}}</span></a>
+                          <a href="" class="prop-bets-link live"><span>Best Of {{a.nbrMap}}</span></a>
                           <div class="outcomes">
-                            <a class="betline-outcome outcomeOne no-underline">
+                            <a [ngStyle]="{'pointer-events':me == null ? 'none' : 'all' , 'opacity':me == null ? '.25' : '1'  }" class="betline-outcome outcomeOne no-underline ">
                               <div class="team-container">
                                 <div class="team-logo icon">
                                   <!---->
@@ -426,7 +419,7 @@ Use a better box model (opinionated).
                               </div>
                             </a>
                             <a class="versus no-underline shrink-vs">vs</a>
-                            <a class="betline-outcome outcomeTwo no-underline">
+                            <a [ngStyle]="{'pointer-events':me == null ? 'none' : 'all' , 'opacity':me == null ? '.25' : '1'  }" class="betline-outcome outcomeTwo no-underline ">
                               <div class="odds-container">
                                 <div class="odds-flex-container">
                                   <!---->

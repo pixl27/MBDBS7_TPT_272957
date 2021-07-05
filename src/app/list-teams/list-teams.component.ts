@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TeamsService } from '../shared/teams.service';
 import { Team } from './team.model';
+import { NgxSpinnerService } from "ngx-spinner";
 
 @Component({
   selector: 'app-list-teams',
@@ -14,9 +15,10 @@ pageOfItems!: Array<any>;
 
   constructor(private teamsservice:TeamsService,
     private route:ActivatedRoute,
-    private router:Router) { }
+    private router:Router,private spinner: NgxSpinnerService) { }
 
   ngOnInit(): void {
+    this.spinner.show('sp6');
     this.getTeams();
   }
   onChangePage(pageOfItems: Array<any>) {
@@ -29,6 +31,7 @@ pageOfItems!: Array<any>;
 
       this.Teams = data;
       console.log("données reçues");
-    });
+    }).add(() => {this.spinner.hide('sp6');});
   }
 }
+

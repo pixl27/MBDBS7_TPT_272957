@@ -29,6 +29,7 @@
     "firebase": "^8.7.0",
     "jw-angular-pagination": "^1.2.0",
     "ngx-qrcode2": "^9.0.0",
+    "ngx-simple-countdown": "^1.2.1",
     "ngx-spinner": "^11.0.0",
     "ngx-toastr": "^14.0.0",
     "normalize.css": "^8.0.1",

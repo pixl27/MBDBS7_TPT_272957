@@ -66,6 +66,8 @@
   </head>
 
   <body class="bg-grey-100">
+    <ngx-spinner name="sp6" [fullScreen]="false" type="timer" size="medium"></ngx-spinner>
+
     <svg xmlns="http://www.w3.org/2000/svg" style="visibility: hidden; position: absolute; top: 0; left: -9999px;">
       <defs>
         <linearGradient id="vertical-orange-yellow-gradient" x1="57.483%" x2="57.483%" y1="0%" y2="100%">
@@ -90,7 +92,7 @@
                 <div class="inner-container account-layout">
                   <div class="nav-list">
                     <ul class="sticky">
-                      <li><a href="/account/details" class="sidebar-nav-link">Identity Details</a></li>
+                  
                       <!---->
                       <li><a href="/account/transaction-history/1" class="sidebar-nav-link link-multiple-active nuxt-link-exact-active nuxt-link-active" aria-current="page">Transaction History</a></li>
                     </ul>
@@ -158,7 +160,7 @@
 
                                 </thead>
                                 <tbody style="background: azure;">
-                                <tr *ngFor="let h of myhistorique">
+                                <tr *ngFor="let h of pageOfItems">
                                   <td>
                                     {{ h.type }}
                                   </td>
@@ -172,23 +174,14 @@
 
                         </div>
                       </div>
-                      <ul class="nav-pagination">
-                        <li class="page-item arrow is-disabled">
-                          <a href="/account/transaction-history/0?currency=USD" class="" rel="nofollow">
-                            <span class="icon">
-                              <svg viewBox="0 0 9 14" xmlns="http://www.w3.org/2000/svg"><path d="M7.75.98L1.74 6.99 7.75 13" stroke-width="2" stroke="#bcbcbc" fill="none" fill-rule="evenodd" stroke-linecap="round"></path></svg>
-                            </span>
-                          </a>
-                        </li>
-                        <li class="page-item is-active"><a href="/account/transaction-history/1?currency=USD" class="">1</a></li>
-                        <li class="page-item arrow is-disabled">
-                          <a href="/account/transaction-history/2?currency=USD" class="" rel="nofollow">
-                            <span class="icon">
-                              <svg viewBox="0 0 9 14" xmlns="http://www.w3.org/2000/svg"><path d="M1.01.98l6.01 6.01L1.01 13" stroke-width="2" stroke="#bcbcbc" fill="none" fill-rule="evenodd" stroke-linecap="round"></path></svg>
-                            </span>
-                          </a>
-                        </li>
-                      </ul>
+                      <div class="card-footer pb-0 pt-3" style="margin-left: auto;margin-right: auto;width: max-content;">
+                        <jw-pagination [items]="myhistorique" (changePage)="onChangePage($event)"></jw-pagination>
+                        <style>
+                          .page-link {
+                            background-color: #000;
+                          }
+                        </style>
+                    </div>
                     </div>
                   </div>
                 </div>

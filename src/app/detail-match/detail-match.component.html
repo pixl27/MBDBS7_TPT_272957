@@ -76,7 +76,15 @@
                             </span>
                             <div class="info-text"><strong class="tournament-name">{{matchtransmis.tournois}}</strong> <span class="uppercase">best of {{matchtransmis.nbrMap}}</span></div>
                           </div>
-                          <div class="match-countdown"><span class="title">Upcoming Match</span> <strong class="countdown en">02 : 23 : 41</strong></div>
+                          
+                          <div class="match-countdown"><span class="title">Match Begin in </span> <strong class="countdown en"><div class="countdown"  simpleCountdown [styles]="'
+                            font-size: 20px;
+                            color: white;
+                            background-color: none;
+                            padding: 10px 4px;
+                            font-weight: bold;
+                          '"[dateTo]="date/1000"></div>
+                          </strong></div>
                           <div  class="match-info">
                             <span class="icon">
                               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 25">
@@ -148,14 +156,6 @@
                             </div>
                           </a>
                         </div>
-                        <!---->
-                        <div class="bet-distribution">
-                          <div class="distribution-line">
-                            <span class="text-red-faint font-black italic">77%</span>
-                            <div class="progress-bar flex-auto"><span class="progress-value" style="width: 77%;"></span></div>
-                            <span class="text-blue-faint font-black italic">23%</span>
-                          </div>
-                        </div>
                       </div>
                       <!---->
                     </div>
@@ -164,12 +164,6 @@
                     <div class="market-tabs-container">
                       <div class="matchpage-inner-container market-tabs">
                         <div class="flex bg-grey-100 overflow-x-auto pb-2 relative"><a class="tab-link active">All</a></div>
-                        <div class="form-input-wrapper form-toggle-wrapper closed-toggle">
-                          <label class="flex">
-                            <span role="checkbox" tabindex="0" aria-checked="false" class="form-toggle"><span aria-hidden="true" class="form-toggle-dot"></span> <input placeholder="" type="checkbox" class="form-toggle" /></span>
-                          </label>
-                          <!---->
-                        </div>
                         <!---->
                       </div>
                     </div>
@@ -674,26 +668,31 @@
 
     <ng-template #content let-modal>
       <div class="modal-header">
-        <h4 class="modal-title" id="modal-basic-title">Profile update</h4>
+        <h4 class="modal-title" id="modal-basic-title">Entrez votre montant</h4>
+      <br/>
+      
         <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <form (ngSubmit)="bet()" >
+        <form [formGroup]="myForm" (ngSubmit)="bet()" >
           <div class="form-group">
+            <h4 *ngIf="f.numbercontrol.errors" class="modal-title" style="color: red;" id="modal-basic-title">Solde insuffisant ou negatif</h4>
+            <h4  class="modal-title" style="color: yellowgreen;" id="modal-basic-title">Attention : Toute paris effectuer ne peut etre annuler</h4>
             <label for="dateOfBirth">Entrer le Montant</label>
             <div class="input-group">
-              <input [(ngModel)]="montant" id="dateOfBirth" class="form-control" placeholder="0" name="montant" type="number">
+              <input [(ngModel)]="montant"  formControlName="numbercontrol" id="dateOfBirth" class="form-control" placeholder="0" name="montant" type="number" required>
             </div>
           </div>
           <div >
 
-            <button  class="btn btn-outline-dark" (click)="modal.dismiss('Cross click')" style="float: left;" >Parier</button>
+            <button  *ngIf="!f.numbercontrol.errors"  class="btn btn-outline-dark" (click)="modal.dismiss('Cross click')" style="float: left;" >Parier</button>
          
           </div>
 
         </form>
+
         <button  class="btn btn-outline-dark" (click)="modal.dismiss('Cross click')"  >Annuler</button>
 
       </div>

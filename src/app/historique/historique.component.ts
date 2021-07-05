@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../shared/auth.service';
 import { MatchsService } from '../shared/matchs.service';
 import { Historique } from './historique.model';
+import { NgxSpinnerService } from "ngx-spinner";
 
 @Component({
   selector: 'app-historique',
@@ -12,17 +13,22 @@ import { Historique } from './historique.model';
 export class HistoriqueComponent implements OnInit {
   tokenuser!:string
   me!:any;
+  pageOfItems!: Array<any>;
   myhistorique!:Historique[];
-  constructor(private authservice:AuthService,private matchservice:MatchsService,private router:Router) { }
+  constructor(private authservice:AuthService,private spinner: NgxSpinnerService,private matchservice:MatchsService,private router:Router) { }
 
   ngOnInit(): void {
+    this.spinner.show('sp6');
     let tokenuservar =  localStorage.getItem("usertoken");
     if(tokenuservar != null){
     this.tokenuser = tokenuservar
    this.getcurrentuser();
    }
   }
-
+  onChangePage(pageOfItems: Array<any>) {
+    // update current page of items
+    this.pageOfItems = pageOfItems;
+}
   getHistorique(){
     console.log("userid" + this.me._id)
 
@@ -36,7 +42,7 @@ export class HistoriqueComponent implements OnInit {
         err => console.log("tsy nande pory")
   
   
-      )
+      ).add(() => {this.spinner.hide('sp6');})
       );
   }
   getcurrentuser(){

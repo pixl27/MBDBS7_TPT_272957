@@ -75,24 +75,33 @@ function transaction(req,res) {
 function inscription(req, res) {
   
     var hashedPassword = bcrypt.hashSync(req.body.password, 8);
+
+    User.findOne({ username: req.body.username }, function (err, user) {
+      if(user._id!=null){
+        User.create({
+          id:req.body.sequence,
+          username : req.body.username,
+          password : hashedPassword,
+          idrole: 1,
+          nom: req.body.nom,
+          prenom: req.body.prenom,
+          solde: 5000
+        },
+        function (err, user) {
+          if (err) return res.status(500).send("There was a problem registering the user.")
+          // create a token
+          var token = jwt.sign({ id: user._id }, config.secret, {
+            expiresIn: 86400 // expires in 24 hours
+          });
+          res.status(200).send({ auth: true, token: token });
+        });
+      }
+      else {
+        res.status(400).send({message:"pseudo deja pris" });
+      }
+    });
     
-    User.create({
-      id:req.body.sequence,
-      username : req.body.username,
-      password : hashedPassword,
-      idrole: 1,
-      nom: req.body.nom,
-      prenom: req.body.prenom,
-      solde: 5000
-    },
-    function (err, user) {
-      if (err) return res.status(500).send("There was a problem registering the user.")
-      // create a token
-      var token = jwt.sign({ id: user._id }, config.secret, {
-        expiresIn: 86400 // expires in 24 hours
-      });
-      res.status(200).send({ auth: true, token: token });
-    }); 
+    
   }
 
   function decode(req, res) {

@@ -78,7 +78,7 @@ function inscription(req, res) {
 
     //add this commentary just to update Heroku
     User.findOne({ username: req.body.username }, function (err, user) {
-      if(user._id==null){
+      if(user.nom==null){
         User.create({
           id:req.body.sequence,
           username : req.body.username,

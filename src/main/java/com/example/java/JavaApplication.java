@@ -940,19 +940,28 @@ private RestTemplate restTemplate;
                             long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
                             System.out.println("difference de jour "+diff);
                             if(diff>2){
-                                //Envoie mail
-                                matchProbleme.add(m);
-                               
-                                System.out.println("mila mihetsika fa tsy hita paris an'olona");
+                                Boolean isMatchInserena = true;
+                                for(int j=0;j<matchProbleme.size();j++){
+                                    if(matchProbleme.get(j).getIdMatch() == m.getIdMatch()){
+                                        isMatchInserena = false;
+                                        break;
+                                    }
+                                }
                                 
+                                if(isMatchInserena){
+                                    matchProbleme.add(m);
+                                    System.out.println("mila mihetsika fa tsy hita paris an'olona");
+                                }
+
                             } 
                         }
                     }
                     System.out.println("#################################################################################");
                 }
                 if(matchProbleme.isEmpty()){
+                    System.out.println("preparation envoie mail");
                     ArrayList<MailAPI> listeMail = getAllEmailAdmin();
-          
+                       System.out.println("Nombre liste mail "+listeMail.size());
                      for(int l=0;l<listeMail.size();l++){
                                    ec.sendEmail(matchProbleme,listeMail.get(l).getEmail());
                      }

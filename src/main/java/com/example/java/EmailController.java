@@ -7,6 +7,7 @@ package com.example.java;
 
 import classe.Match;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Properties;
 import javax.mail.MessagingException;
@@ -30,12 +31,12 @@ import javax.mail.internet.MimeMultipart;
  * @author tolot
  */
 public class EmailController {
-    public String sendEmail(Match m,String emailReceiver) throws MessagingException, AddressException, IOException {
+    public String sendEmail(ArrayList<Match> m,String emailReceiver) throws MessagingException, AddressException, IOException {
         sendmail(m,emailReceiver);
-      return "Email sent successfully";
+        return "Email sent successfully";
    }   
     
-    private void sendmail(Match m,String emailReceiver) throws AddressException, MessagingException, IOException {
+    private void sendmail(ArrayList<Match> listeMatch,String emailReceiver) throws AddressException, MessagingException, IOException {
    Properties props = new Properties();
    props.put("mail.smtp.auth", "true");
    props.put("mail.smtp.starttls.enable", "true");
@@ -52,12 +53,19 @@ public class EmailController {
    msg.setFrom(new InternetAddress("dotabetmailtpt@gmail.com", false));
 
    msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(emailReceiver));
-   String subject = "Alert un match du "+m.getDatematch()+" n'a pas encore été trouver";
+   String subject = "Alert un match ou plusieurs n'a pas encore été trouver";
    msg.setSubject(subject);
    msg.setSentDate(new Date());
 
 
-   String message = "Le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2()+" n'a pas été trouver dans dota <br> Veillez vous connectez et inserer les vainqueurs manuellement";
+   String message = "Les match(s) suivant n'a pas été trouver dans OPENDOTA API <br> ";
+   for(int i=0;i<listeMatch.size();i++){
+       String addForMessage = "<p> - "+listeMatch.get(i).getNomTeam1()+" vs "+listeMatch.get(i).getNomTeam2()+" le "+listeMatch.get(i).getDatematch()+"   </p> <br>";
+       message = message + addForMessage;
+   }
+   String addForMessage = "Veillez vous connectez et inserer les vainqueurs manuellement";
+   message = message + addForMessage;
+   
    MimeBodyPart messageBodyPart = new MimeBodyPart();
    messageBodyPart.setContent(message, "text/html");
 

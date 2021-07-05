@@ -1,6 +1,7 @@
 package com.example.java;
 
 import classe.Connexion;
+import classe.MailAPI;
 import classe.Match;
 import classe.MatchAPI;
 import classe.NotifWeb;
@@ -23,6 +24,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
 
@@ -274,6 +277,23 @@ class JavaApplicationTests {
                 co.close();
             }
         }
+        
+        
+        
+        int getDoublonEmailAdmin(String email) throws SQLException{
+            int val = 0;
+            OracleConnection co = Connexion.getConnection();
+            Statement statement = co.createStatement();
+           
+            ResultSet resultSet = statement.executeQuery("select EMAIL from EMAILADMIN where EMAIL='"+email+"' ");
+           
+            while (resultSet.next()){
+                val++;
+            }
+            return val;
+        }
+        
+        
       
         int getDoublonMatch(OracleConnection co,MatchAPI match) throws SQLException{
             int val = 0;
@@ -1028,6 +1048,55 @@ class JavaApplicationTests {
                  }
              }
          
+             public static boolean isEmailAdress(String email){
+                 String regex = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^-]+(?:\\.[a-zA-Z0-9_!#$%&'*+/=?`{|}~^-]+)*@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$";
+                Pattern pattern = Pattern.compile(regex);
+                Matcher matcher = pattern.matcher(email);
+                return matcher.matches();
+            }
+             
+             
+             
+             void insererEmailAdmin(String email) throws SQLException{
+                 if (isEmailAdress(email) && getDoublonEmailAdmin(email)!=0) {
+                     OracleConnection connection = Connexion.getConnection();
+                     Statement statement = null;
+                     try {
+                         statement = connection.createStatement();
+
+                         statement.executeUpdate("insert into Match values('"+email+"')" );
+                     } finally {
+                         if (statement != null) {
+                             statement.close();
+                         }
+                         connection.close();
+                     }
+                 } 
+                 else
+                     System.out.println("is not email valide");
+             }
+             
+             ArrayList<MailAPI> getAllEmailAdmin() throws SQLException{
+                 ArrayList<MailAPI> listeMail = new ArrayList();
+                 OracleConnection co = Connexion.getConnection();
+                 Statement statement = null;
+                 try{
+                    statement = co.createStatement();
+           
+                    ResultSet resultSet = statement.executeQuery("select EMAIL from EMAILADMIN");
+
+                    while (resultSet.next()){
+                        MailAPI m = new MailAPI(resultSet.getString(1));
+                        listeMail.add(m);
+                    }
+                 }
+                 finally{
+                     if(statement!=null)
+                         statement.close();
+                     co.close();
+                 }
+                 return listeMail;
+             } 
              
              
              
@@ -1057,6 +1126,8 @@ class JavaApplicationTests {
                     
                    //EmailController ec = new EmailController();
                    //ec.sendEmail();
+                   
+                   
                    
                  }
 	

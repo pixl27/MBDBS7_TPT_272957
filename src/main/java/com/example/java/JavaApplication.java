@@ -1,6 +1,7 @@
 package com.example.java;
 
 import classe.Connexion;
+import classe.MailAPI;
 import classe.Match;
 
 import classe.MatchAPI;
@@ -47,6 +48,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
+import java.util.regex.Pattern;
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
 
@@ -662,6 +664,8 @@ private RestTemplate restTemplate;
             OracleConnection co = Connexion.getConnection();
             Date datenow = new java.sql.Date(Calendar.getInstance().getTime().getTime());
             EmailController ec = new EmailController();
+            ArrayList<Match> matchProbleme = new ArrayList();
+            
             try{
                 ArrayList<Paris> listeParis = getAllParisNonFinie(co);
                 for(int i=0;i<listeParis.size();i++){
@@ -920,6 +924,8 @@ private RestTemplate restTemplate;
                                                     //Paris perdu par le parieur
                                                     String description = "Malheuresement, le map "+mapParier+" n'a pas eu lieu pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
                                                     traitementParis(listeParis.get(i),"credit",description);
+                                                    
+                                                    
                                                 }
                                             }
                                         }
@@ -934,14 +940,21 @@ private RestTemplate restTemplate;
                             System.out.println("difference de jour "+diff);
                             if(diff>2){
                                 //Envoie mail
-                                String email = "maheryrakotondrazaka@gmail.com";
+                                matchProbleme.add(m);
+                               
                                 System.out.println("mila mihetsika fa tsy hita paris an'olona");
-                                ec.sendEmail(m,email);
-                            }
-                             
+                                
+                            } 
                         }
                     }
                     System.out.println("#################################################################################");
+                }
+                if(matchProbleme.isEmpty()){
+                    ArrayList<MailAPI> listeMail = getAllEmailAdmin();
+          
+                     for(int l=0;l<listeMail.size();l++){
+                                   ec.sendEmail(matchProbleme,listeMail.get(l).getEmail());
+                     }
                 }
             }
             finally{
@@ -952,7 +965,72 @@ private RestTemplate restTemplate;
             
         }
             
+         @GetMapping(path="/getAllEmailAdmin", produces = "application/json")
+        @ResponseBody
+         ArrayList<MailAPI> getAllEmailAdmin() throws SQLException{
+                 ArrayList<MailAPI> listeMail = new ArrayList();
+                 OracleConnection co = Connexion.getConnection();
+                 Statement statement = null;
+                 try{
+                    statement = co.createStatement();
+           
+                    ResultSet resultSet = statement.executeQuery("select EMAIL from EMAILADMIN");
+
+                    while (resultSet.next()){
+                        MailAPI m = new MailAPI(resultSet.getString(1));
+                        listeMail.add(m);
+                    }
+                 }
+                 finally{
+                     if(statement!=null)
+                         statement.close();
+                     co.close();
+                 }
+                 return listeMail;
+             } 
+         
+         
+           public static boolean isEmailAdress(String email){
+                 String regex = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^-]+(?:\\.[a-zA-Z0-9_!#$%&'*+/=?`{|}~^-]+)*@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$";
+                Pattern pattern = Pattern.compile(regex);
+                java.util.regex.Matcher matcher = pattern.matcher(email);
+                return matcher.matches();
+            }
         
+          int getDoublonEmailAdmin(String email) throws SQLException{
+            int val = 0;
+            OracleConnection co = Connexion.getConnection();
+            Statement statement = co.createStatement();
+           
+            ResultSet resultSet = statement.executeQuery("select EMAIL from EMAILADMIN where EMAIL='"+email+"' ");
+           
+            while (resultSet.next()){
+                val++;
+            }
+            return val;
+        }
+         
+          
+          @PostMapping(value = "/insererEmailAdmin", consumes = "application/json", produces = "application/json")
+          @ResponseBody
+          void insererEmailAdmin(@RequestBody MailAPI email) throws SQLException{
+                 if (isEmailAdress(email.getEmail()) && getDoublonEmailAdmin(email.getEmail())!=0) {
+                     OracleConnection connection = Connexion.getConnection();
+                     Statement statement = null;
+                     try {
+                         statement = connection.createStatement();
+
+                         statement.executeUpdate("insert into Match values('"+email.getEmail()+"')" );
+                     } finally {
+                         if (statement != null) {
+                             statement.close();
+                         }
+                         connection.close();
+                     }
+                 } 
+                 else
+                     System.out.println("is not email valide");
+             }
         
         
         

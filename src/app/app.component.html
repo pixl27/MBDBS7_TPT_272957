@@ -48,7 +48,7 @@
       <span class="nav-item-content"><span class="auth-button btn btn-bloodorange">Signup</span></span>
     </a>
     <a *ngIf="tokenuser==null" routerLink="/login" class="nav-item no-hover no-active nav-button register-button">
-      <span class="nav-item-content"><span class="auth-button btn btn-bloodorange">ikii {{ message | async | json }}</span></span>
+      <span class="nav-item-content"><span class="auth-button btn btn-bloodorange">Login</span></span>
     </a>
     <a *ngIf="tokenuser!=null" (click)="logOut()" class="nav-item no-hover no-active nav-button register-button">
       <span class="nav-item-content"><span class="auth-button btn btn-bloodorange">Deconnexion</span></span>

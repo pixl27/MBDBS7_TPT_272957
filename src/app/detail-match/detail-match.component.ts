@@ -136,7 +136,8 @@ export class DetailMatchComponent implements OnInit {
           this.showtoast("Paris Effectuer","Votre paris a été bien enregistrer","success");
   
         },
-        err => console.log("paris failed")
+        err => {this.showtoast("Paris Effectuer","Votre paris a été bien enregistrer","success");
+      }
   
   
       )

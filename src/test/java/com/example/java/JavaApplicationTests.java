@@ -8,6 +8,7 @@ import classe.Paris;
 import classe.Team;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import java.io.IOException;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 
@@ -22,6 +23,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
 
 
 
@@ -1025,8 +1028,13 @@ class JavaApplicationTests {
                  }
              }
          
+             
+             
+             
+             
+             
 	@Test
-	void contextLoads() throws SQLException, JSONException{
+	void contextLoads() throws SQLException, JSONException, MessagingException, AddressException, IOException{
                     /*
                     OracleConnection co = Connexion.getConnection();
                     try{
@@ -1040,17 +1048,15 @@ class JavaApplicationTests {
                         }
                     }*/
                    //finaliser();
-                   String idUser = "60d995cb5f11d836229bd7e0";
-                   String token = "c48tnT0oOtkVlOBCL2XdIu:APA91bGgR2cvJPVaXsE1gGF0Vypya4Z7jYp4sSY12-FPZQdeFMtO87nd06t5IPnZW5_9-sEvmdJDv_DUyCeaO7iheRqArzRDOxgwAw18BAvw8d6w2QFDWTfJvXbMJTyWjYBojbiRf7E_";      
-                   String title = "Malheuresement";
-                   String message = "Hello";
+                   
                    //insererNotifWeb(idUser,token);
                    
                    //String token,String idUser,String title,String message
                    //String val = sendNotificationToWeb(token,idUser,"Malheuresement","Hello");
                     //System.out.println("Success: "+val);
                     
-                    sendNotificationWebToAllDeviceForUser(idUser,title,message);
+                   //EmailController ec = new EmailController();
+                   //ec.sendEmail();
                    
                  }
 	

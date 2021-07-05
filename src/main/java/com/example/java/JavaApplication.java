@@ -9,6 +9,7 @@ import classe.Paris;
 import classe.ParisArg;
 import classe.Team;
 import com.google.gson.Gson;
+import java.io.IOException;
 import org.json.JSONArray;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -46,6 +47,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
+import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -654,10 +657,11 @@ private RestTemplate restTemplate;
               return val;
           }
         
-         void finaliser() throws SQLException, JSONException{
+         void finaliser() throws SQLException, JSONException, MessagingException, AddressException, IOException{
             
             OracleConnection co = Connexion.getConnection();
             Date datenow = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+            EmailController ec = new EmailController();
             try{
                 ArrayList<Paris> listeParis = getAllParisNonFinie(co);
                 for(int i=0;i<listeParis.size();i++){
@@ -931,7 +935,7 @@ private RestTemplate restTemplate;
                             if(diff>2){
                                 //Envoie mail
                                 System.out.println("mila mihetsika fa tsy hita paris an'olona");
-                                
+                                ec.sendEmail();
                             }
                              
                         }
@@ -1619,7 +1623,7 @@ private RestTemplate restTemplate;
                     j.finaliser();
                     System.out.println(j.Bonjour());
                     insererTest();
-                } catch (SQLException ex) {
+                } catch (SQLException | JSONException | MessagingException | IOException ex) {
                     java.util.logging.Logger.getLogger(JavaApplication.class.getName()).log(Level.SEVERE, null, ex);
                 }
 

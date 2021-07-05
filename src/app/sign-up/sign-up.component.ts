@@ -23,7 +23,7 @@ signup(){
         this.router.navigate(["/"]);
 
       },
-      err => console.log("erreur de  connexion")
+      err => console.log(err)
 
 
     )

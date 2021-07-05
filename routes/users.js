@@ -76,6 +76,7 @@ function inscription(req, res) {
   
     var hashedPassword = bcrypt.hashSync(req.body.password, 8);
 
+    //add this commentary just to update Heroku
     User.findOne({ username: req.body.username }, function (err, user) {
       if(user._id==null){
         User.create({

@@ -11,6 +11,11 @@ package classe;
  */
 public class MailAPI {
     String email;
+    
+    
+    public MailAPI(){
+        
+    }
 
     public String getEmail() {
         return email;

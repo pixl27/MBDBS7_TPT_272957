@@ -557,6 +557,43 @@ class JavaApplicationTests {
             return val;
         }
           
+         int getDoublonProbleme( OracleConnection co,int idParis) throws SQLException{
+            int val = 0;
+            Statement statement = co.createStatement();
+           
+            ResultSet resultSet = statement.executeQuery("select * from PROBLEME where IDPARIS="+idParis+" ");
+           
+            while (resultSet.next()){
+                val++;
+            }
+            return val;
+        }
+          
+          
+        void insertProbleme(OracleConnection oc,int idParis) throws SQLException{
+            if(getDoublonProbleme(oc,idParis)!=1){
+                PreparedStatement statement = null;
+                 try{
+                
+                String req = "insert into PROBLEME values(SEQ_PROBLEME.NEXTVAL,?,0)";
+
+                statement = oc.prepareStatement(req);
+                statement.setInt(1, idParis);
+
+                statement.executeQuery();
+            }
+            finally{
+                if(statement!=null){
+                    statement.close();
+                }
+            }
+            }
+            else{
+                System.out.println("deja dans la base");
+            }
+            
+        }
+          
           
         
         ArrayList<JSONObject> getAllMatchQuiConcorde(String nomOpposingteam,Date datematch,JSONArray arrayMatch) throws JSONException, SQLException{
@@ -1126,7 +1163,8 @@ class JavaApplicationTests {
                     
                    //EmailController ec = new EmailController();
                    //ec.sendEmail();
-                   
+                   //OracleConnection oc = Connexion.getConnection();
+                   //insertProbleme(oc,42);
                    
                    
                  }

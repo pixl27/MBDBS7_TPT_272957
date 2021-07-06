@@ -348,6 +348,46 @@ private RestTemplate restTemplate;
             }
         }
         
+          int getDoublonProbleme( OracleConnection co,int idParis) throws SQLException{
+            int val = 0;
+            Statement statement = co.createStatement();
+           
+            ResultSet resultSet = statement.executeQuery("select * from PROBLEME where IDPARIS="+idParis+" ");
+           
+            while (resultSet.next()){
+                val++;
+            }
+            return val;
+        }
+        
+        
+        void insertProbleme(int idParis) throws SQLException{
+            OracleConnection oc = Connexion.getConnection();
+            if(getDoublonProbleme(oc,idParis)!=1){
+                PreparedStatement statement = null;
+                 try{
+                
+                String req = "insert into PROBLEME values(SEQ_PROBLEME.NEXTVAL,?,0)";
+
+                statement = oc.prepareStatement(req);
+                statement.setInt(1, idParis);
+
+                statement.executeQuery();
+            }
+            finally{
+                if(statement!=null){
+                    statement.close();
+                }
+                if(oc!=null)
+                    oc.close();
+            }
+            }
+            else{
+                System.out.println("deja dans la base");
+            }
+            
+        }
+        
         static void insererTest() throws SQLException{
              
             OracleConnection connection = Connexion.getConnection();
@@ -961,8 +1001,11 @@ private RestTemplate restTemplate;
                                 
                                 if(isMatchInserena){
                                     matchProbleme.add(m);
+                                    
                                     System.out.println("mila mihetsika fa tsy hita paris an'olona");
                                 }
+                                
+                                insertProbleme(listeParis.get(i).getIdParis());
 
                             } 
                         }

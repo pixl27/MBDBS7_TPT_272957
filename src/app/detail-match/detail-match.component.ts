@@ -144,7 +144,8 @@ export class DetailMatchComponent implements OnInit {
             this.showtoast("Paris Effectuer","Votre paris a été bien enregistrer","success");
     
           },
-          err => {this.showtoast("Paris Effectuer","Votre paris a été bien enregistrer","success");
+          err => {this.showtoast("Paris Effectuer","Votre paris a été bien enregistrer","success");this.spinner.hide('sp6');
+
         }
     
     

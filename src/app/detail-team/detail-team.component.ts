@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TeamDetail } from '../list-teams/teamdetail.model';
 import { TeamsService } from '../shared/teams.service';
+import { NgxSpinnerService } from "ngx-spinner";
+
 @Component({
   selector: 'app-detail-team',
   templateUrl: './detail-team.component.html',
@@ -12,7 +14,7 @@ export class DetailTeamComponent implements OnInit {
 
   constructor(private teamsservice:TeamsService,
     private route:ActivatedRoute,
-    private router:Router) { }
+    private router:Router,private spinner: NgxSpinnerService) { }
 
   ngOnInit(): void {
     this.getTeamById();

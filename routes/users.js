@@ -49,7 +49,7 @@ function transaction(req,res) {
   }
   else {
     User.updateOne({_id: ObjectId(req.body.iduser)}, {
-      $inc : {solde : -req.body.solde}
+      $inc : {solde : -req.body.montant}
   }, function(err, affected, resp) {
      console.log(resp);
   })

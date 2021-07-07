@@ -9,6 +9,7 @@ import classe.MessageAPI;
 import classe.NotifWeb;
 import classe.Paris;
 import classe.ParisArg;
+import classe.Probleme;
 import classe.Team;
 import com.google.gson.Gson;
 import java.io.IOException;
@@ -532,6 +533,20 @@ private RestTemplate restTemplate;
             return val;
         }
         
+        Paris getParisById(OracleConnection co,int idParis) throws SQLException{
+            Paris p = new Paris();
+            Statement statement = co.createStatement();
+            String req = "select * from Paris where IDPARIS="+idParis;
+            
+             ResultSet res = statement.executeQuery(req);
+             while (res.next()){
+                 //int idParis, int idUser, int idMatch, int idTeam, String type, float montant, float odds, Date dateparis, int statut
+                 p = new Paris(res.getInt(1),res.getString(2),res.getInt(3),res.getInt(4),res.getString(5),res.getFloat(6),res.getFloat(7),res.getDate(8),res.getInt(9));
+                
+            }
+            return p;
+        }
+        
         Match getMatchById(OracleConnection co,int id) throws SQLException{
             Match val = new Match();
             Statement statement = null;
@@ -1029,6 +1044,45 @@ private RestTemplate restTemplate;
             
         }
             
+         
+         
+         @GetMapping(path="/getAllProbleme", produces = "application/json")
+        @ResponseBody
+         ArrayList<Probleme> getAllProbleme() throws SQLException{
+             ArrayList<Probleme> pb = new ArrayList();
+             OracleConnection oc = Connexion.getConnection();
+              Statement statement = null;
+                 try{
+                    statement = oc.createStatement();
+           
+                    ResultSet resultSet = statement.executeQuery("select IDPARIS from PROBLEME where STATUT = 0");
+
+                    while (resultSet.next()){
+                        Paris paristemp = getParisById(oc,resultSet.getInt(1));
+                        Match matchtemp = getMatchById(oc,paristemp.getIdMatch());
+                        String nomTeamNalainy = "";
+                        if(paristemp.getIdTeam()==matchtemp.getIdTeam1()){
+                            nomTeamNalainy = matchtemp.getNomTeam1();
+                        }
+                        else 
+                            nomTeamNalainy = matchtemp.getNomTeam2();
+                        //int idParis, String nomTeam1, String nomTeam2, Date datematch, String type_paris, String nomTeamNalainy
+                        Probleme temp = new Probleme(paristemp.getIdParis(),matchtemp.getNomTeam1(),matchtemp.getNomTeam2(),matchtemp.getDatematch(),paristemp.getType(),nomTeamNalainy);
+                        pb.add(temp);
+                    }
+                 }
+                 finally{
+                     if(statement!=null)
+                         statement.close();
+                     oc.close();
+                 }
+             return pb;
+         }
+         
+         
+         
+         
+         
          @GetMapping(path="/getAllEmailAdmin", produces = "application/json")
         @ResponseBody
          ArrayList<MailAPI> getAllEmailAdmin() throws SQLException{

@@ -23,6 +23,9 @@ public class Paris {
     Date dateparis;
     int statut;
 
+    public Paris() {
+    }
+
     public int getIdParis() {
         return idParis;
     }

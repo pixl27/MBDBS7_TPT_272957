@@ -349,9 +349,9 @@ private RestTemplate restTemplate;
             }
         }
         
-          int getDoublonProbleme(int idParis) throws SQLException{
+          int getDoublonProbleme(OracleConnection co,int idParis) throws SQLException{
             int val = 0;
-            OracleConnection co = Connexion.getConnection();
+            
              Statement statement = null;
             try{
             statement = co.createStatement();
@@ -366,16 +366,15 @@ private RestTemplate restTemplate;
                 if(statement!=null){
                     statement.close();
                 }
-                if(co!=null)
-                    co.close();
+                
             }
             return val;
         }
         
         
-        void insertProbleme(int idParis) throws SQLException{
-            OracleConnection oc = Connexion.getConnection();
-            if(getDoublonProbleme(idParis)!=1){
+        void insertProbleme(OracleConnection oc,int idParis) throws SQLException{
+           
+            if(getDoublonProbleme(oc,idParis)!=1){
                 PreparedStatement statement = null;
                  try{
                 
@@ -390,8 +389,6 @@ private RestTemplate restTemplate;
                 if(statement!=null){
                     statement.close();
                 }
-                if(oc!=null)
-                    oc.close();
             }
             }
             else{

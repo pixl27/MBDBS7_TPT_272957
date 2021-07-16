@@ -1193,7 +1193,11 @@ private RestTemplate restTemplate;
           Calendar c = Calendar.getInstance(); 
              c.add(Calendar.DATE, 14);
             Date datenow = new java.sql.Date(c.getTimeInMillis());
-          for(int i=0;i<10;i++){
+            
+            int j = 10;
+            int taille = array.length() -1;
+            if(j<taille){
+                for(int i=0;i<j;i++){
               
               int sizeMarket = array.getJSONObject(i).getJSONArray("markets").length()-1;
               
@@ -1277,6 +1281,95 @@ private RestTemplate restTemplate;
               }
              
           }
+                
+            }
+            else{
+                for(int i=0;i<taille;i++){
+              
+              int sizeMarket = array.getJSONObject(i).getJSONArray("markets").length()-1;
+              
+              if (sizeMarket>0){
+                 continue;
+              }
+              
+              int idRivalry = array.getJSONObject(i).getInt("id");
+              String tournois = array.getJSONObject(i).getJSONObject("tournament").getString("name");
+              
+              JSONArray arrayTeam = array.getJSONObject(i).getJSONArray("competitors");
+              
+              
+              String nameTest = array.getJSONObject(i).getJSONArray("markets").getJSONObject(sizeMarket).getString("name");
+              
+             
+             
+              
+              
+              JSONArray  arrayOdds = array.getJSONObject(i).getJSONArray("markets").getJSONObject(sizeMarket).getJSONArray("outcomes");
+              
+              int nbrMap = 1;
+              while(nbrMap<=100){
+                  String temp = "Map "+nbrMap+" - Winner";
+                  int indice = nbrMap-1;
+                  String name = array.getJSONObject(i).getJSONArray("markets").getJSONObject(indice).getString("name");
+                  if(temp.equals(name)){
+                      nbrMap++;
+                  }
+                  else{
+                      
+                      break;
+                  }
+              }
+              nbrMap = nbrMap-1;
+              
+              float odds1 = 0;
+              float odds2 = 0;
+              if(arrayOdds.length()>0){
+                  odds1 = (float) arrayOdds.getJSONObject(0).getDouble("odds");
+                  odds2 = (float) arrayOdds.getJSONObject(1).getDouble("odds");
+              }
+              
+              
+            
+            
+            String nomTeam1 = arrayTeam.getJSONObject(0).getString("name");
+            Team team1 = findTeambynomV2(nomTeam1);
+            int idTeam1 = team1.getIdTeam();
+            String logoTeam1 = team1.getLogo();
+            
+            
+            
+            String nomTeam2 = arrayTeam.getJSONObject(1).getString("name");
+            Team team2 = findTeambynomV2(nomTeam2);
+            int idTeam2 = team2.getIdTeam();
+            String logoTeam2 = team2.getLogo();
+            
+            String time = array.getJSONObject(i).getString("scheduled_at");
+            
+            String[] arrOfStr = array.getJSONObject(i).getString("scheduled_at").split("T");
+            
+            Date datematch = Date.valueOf(arrOfStr[0]);
+            
+              
+              
+              //si tous les equipes sont presentent dans notre BD
+              if(idTeam1!=0 || idTeam2!=0){
+                 
+                  
+                     if(datematch.compareTo(datenow)<=0){
+                      //int idTeam1, int idTeam2, int idMatchRivalry, Date datematch, String nomTeam1, String nomTeam2, float odds1, float odds2, String logo, String time, String tournois
+                      MatchAPI temp = new MatchAPI(idTeam1,idTeam2,idRivalry,datematch,nomTeam1,nomTeam2,odds1,odds2,logoTeam1,logoTeam2,time,tournois,nbrMap);
+                      
+                      val.add(temp);
+                     }
+                     else{
+                         break;
+                     }
+                  
+              }
+             
+          }
+            }
+          
           return val;
           
         }

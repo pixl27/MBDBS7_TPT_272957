@@ -1195,6 +1195,7 @@ private RestTemplate restTemplate;
             Date datenow = new java.sql.Date(c.getTimeInMillis());
             
             int j = 10;
+            int t = 0;
             int taille = array.length() -1;
             if(j<taille){
                 for(int i=0;i<j;i++){
@@ -1202,8 +1203,13 @@ private RestTemplate restTemplate;
               int sizeMarket = array.getJSONObject(i).getJSONArray("markets").length()-1;
               
               if (sizeMarket>0){
+                  int test = j +1;
+                  if(test<taille){
+                  j++;
+                  }
                  continue;
               }
+              
               
               int idRivalry = array.getJSONObject(i).getInt("id");
               String tournois = array.getJSONObject(i).getJSONObject("tournament").getString("name");

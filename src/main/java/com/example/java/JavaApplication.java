@@ -349,14 +349,25 @@ private RestTemplate restTemplate;
             }
         }
         
-          int getDoublonProbleme( OracleConnection co,int idParis) throws SQLException{
+          int getDoublonProbleme(int idParis) throws SQLException{
             int val = 0;
-            Statement statement = co.createStatement();
+            OracleConnection co = Connexion.getConnection();
+             Statement statement = null;
+            try{
+            statement = co.createStatement();
            
             ResultSet resultSet = statement.executeQuery("select * from PROBLEME where IDPARIS="+idParis+" ");
            
             while (resultSet.next()){
                 val++;
+            }
+            }
+            finally{
+                if(statement!=null){
+                    statement.close();
+                }
+                if(co!=null)
+                    co.close();
             }
             return val;
         }
@@ -364,7 +375,7 @@ private RestTemplate restTemplate;
         
         void insertProbleme(int idParis) throws SQLException{
             OracleConnection oc = Connexion.getConnection();
-            if(getDoublonProbleme(oc,idParis)!=1){
+            if(getDoublonProbleme(idParis)!=1){
                 PreparedStatement statement = null;
                  try{
                 

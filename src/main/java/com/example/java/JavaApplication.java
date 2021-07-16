@@ -429,8 +429,7 @@ private RestTemplate restTemplate;
         }
         
         
-        
-       
+         
         
         
         
@@ -1195,16 +1194,26 @@ private RestTemplate restTemplate;
              c.add(Calendar.DATE, 14);
             Date datenow = new java.sql.Date(c.getTimeInMillis());
           for(int i=0;i<10;i++){
+              
+              int sizeMarket = array.getJSONObject(i).getJSONArray("markets").length()-1;
+              
+              if (sizeMarket>0){
+                 continue;
+              }
+              
               int idRivalry = array.getJSONObject(i).getInt("id");
               String tournois = array.getJSONObject(i).getJSONObject("tournament").getString("name");
               
               JSONArray arrayTeam = array.getJSONObject(i).getJSONArray("competitors");
               
-              int sizeMarket = array.getJSONObject(i).getJSONArray("markets").length()-1;
+              
               String nameTest = array.getJSONObject(i).getJSONArray("markets").getJSONObject(sizeMarket).getString("name");
+              
              
-            
-              JSONArray arrayOdds = array.getJSONObject(i).getJSONArray("markets").getJSONObject(sizeMarket).getJSONArray("outcomes");
+             
+              
+              
+              JSONArray  arrayOdds = array.getJSONObject(i).getJSONArray("markets").getJSONObject(sizeMarket).getJSONArray("outcomes");
               
               int nbrMap = 1;
               while(nbrMap<=100){
@@ -1386,6 +1395,7 @@ private RestTemplate restTemplate;
             
             //Odds
             int sizeMarket = data.getJSONArray("markets").length()-1;
+            
             JSONArray outcomes = data.getJSONArray("markets").getJSONObject(sizeMarket).getJSONArray("outcomes");
             float odds1 = 0;
             float odds2 = 0;

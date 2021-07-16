@@ -1202,7 +1202,7 @@ private RestTemplate restTemplate;
               
               int sizeMarket = array.getJSONObject(i).getJSONArray("markets").length()-1;
               
-              if (sizeMarket>0){
+              if (sizeMarket<0){
                   int test = j +1;
                   if(test<taille){
                   j++;

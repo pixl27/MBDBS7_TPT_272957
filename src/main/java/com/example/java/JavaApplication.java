@@ -1027,7 +1027,7 @@ private RestTemplate restTemplate;
                                     System.out.println("mila mihetsika fa tsy hita paris an'olona");
                                 }
                                 
-                                insertProbleme(listeParis.get(i).getIdParis());
+                                insertProbleme(co,listeParis.get(i).getIdParis());
 
                             } 
                         }

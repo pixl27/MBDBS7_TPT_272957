@@ -1738,9 +1738,9 @@ private RestTemplate restTemplate;
         @ResponseBody
         ArrayList<MatchAPI> getAllMatchTest() throws SQLException, JSONException{
             
-           if(listeMatch.isEmpty())
+           if(listeMatch.isEmpty()){
                System.out.println("gett all match");
-               listeMatch = getAllMatch();
+               listeMatch = getAllMatch();}
         
           return listeMatch;
         }

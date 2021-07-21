@@ -1195,6 +1195,7 @@ private RestTemplate restTemplate;
           
           
           JSONArray array = json.getJSONArray("data");
+          System.out.println("taille truc "+array);
           
           
           

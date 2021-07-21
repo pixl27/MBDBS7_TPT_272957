@@ -1195,7 +1195,7 @@ private RestTemplate restTemplate;
           
           
           JSONArray array = json.getJSONArray("data");
-          System.out.println("taille truc "+array);
+          System.out.println("taille truc "+array.length());
           
           
           
@@ -1207,11 +1207,12 @@ private RestTemplate restTemplate;
             int t = 0;
             int taille = array.length() -1;
             if(j<taille){
+                System.out.println("ATOOO");
                 for(int i=0;i<j;i++){
               
               int sizeMarket = array.getJSONObject(i).getJSONArray("markets").length()-1;
               
-              if (sizeMarket<0){
+              if (sizeMarket<=0){
                   int test = j +1;
                   if(test<taille){
                   j++;
@@ -1288,11 +1289,18 @@ private RestTemplate restTemplate;
                       MatchAPI temp = new MatchAPI(idTeam1,idTeam2,idRivalry,datematch,nomTeam1,nomTeam2,odds1,odds2,logoTeam1,logoTeam2,time,tournois,nbrMap);
                       
                       val.add(temp);
+                      System.out.println("ajouter match gerer");
                      }
                      else{
                          break;
                      }
                   
+              }
+              else{
+                  int test = j +1;
+                  if(test<taille){
+                  j++;
+                  }
               }
              
           }

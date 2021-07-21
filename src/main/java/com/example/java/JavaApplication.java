@@ -1825,6 +1825,7 @@ private RestTemplate restTemplate;
         ArrayList<MatchAPI> getAllMatchTest() throws SQLException, JSONException{
             
            if(listeMatch.isEmpty())
+               System.out.println("gett all match");
                listeMatch = getAllMatch();
         
           return listeMatch;

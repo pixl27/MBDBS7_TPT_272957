@@ -1863,6 +1863,7 @@ private RestTemplate restTemplate;
                     JavaApplication j = new JavaApplication();
                     j.setRestTemplate(restTemplate);
                     j.finaliser();
+                    System.out.println("je prends les données");
                     j.cleanListeMatch();
                     j.setListeMatch(j.getAllMatch());
                     j.setlisteTeam(j.getAllTeam());

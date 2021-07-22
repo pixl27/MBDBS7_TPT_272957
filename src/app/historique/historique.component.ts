@@ -37,7 +37,7 @@ export class HistoriqueComponent implements OnInit {
       this.matchservice.getHistorique(this.me._id).subscribe( 
         result => {
           this.myhistorique = result;
-          console.log("historique " + this.myhistorique.length);
+          console.log("historique " + this.myhistorique);
         },
         err => console.log("tsy nande pory")
   

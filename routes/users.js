@@ -45,6 +45,23 @@ function transaction(req,res) {
     }
     console.log("historique saved");
   });
+  /// Historique Banque
+
+  let historiquebanque = new Historiquesolde();
+  historiquebanque.iduser =  ObjectId("admin");
+  historiquebanque.montant = req.body.montant;
+  historiquebanque.type = "credit";
+  historiquebanque.idparis = req.body.idparis;
+  historiquebanque.description = req.body.description;
+  historiquebanque.datehistorique = req.body.datehistorique;
+
+  historiquebanque.save((err) => {
+    if (err) {
+      console.log(err);
+    }
+    console.log("historique saved");
+  });
+
 
   }
   else {
@@ -72,6 +89,25 @@ function transaction(req,res) {
     }
     console.log("historique saved");
   });
+
+  //Historique Banque
+
+  let historiquebanque = new Historiquesolde();
+  historiquebanque.iduser =  ObjectId("admin");
+  historiquebanque.montant = req.body.montant;
+  historiquebanque.type = "debit";
+  historiquebanque.idparis = req.body.idparis;
+  historiquebanque.description = req.body.description;
+  historiquebanque.datehistorique = req.body.datehistorique;
+
+  historiquebanque.save((err) => {
+    if (err) {
+      console.log(err);
+    }
+    console.log("historique saved");
+  });
+
+
   }
   res.json({ message: "updated" });
 }

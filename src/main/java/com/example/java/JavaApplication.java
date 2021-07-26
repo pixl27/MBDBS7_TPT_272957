@@ -833,7 +833,7 @@ private RestTemplate restTemplate;
                                     if(listeMatch.size()>=mapParier){
                                         System.out.println("Type Paris "+listeParis.get(i).getType());
                                         if(listeParis.get(i).getType().contains("fb")){
-                                            //MANEMANY ETO FA TSY AIKO MIJERY OE IZA FIRST BLOOD
+                                            //traitement fb
                                             System.out.println("map "+mapParier+" firstblood");
                                             if(listeMatch.size()>=mapParier){
                                                 int indiceMatch = mapParier -1;
@@ -1065,7 +1065,7 @@ private RestTemplate restTemplate;
             
         }
             
-         
+         public 
          
          @GetMapping(path="/getAllProbleme", produces = "application/json")
         @ResponseBody
@@ -1106,7 +1106,71 @@ private RestTemplate restTemplate;
              return pb;
          }
          
+         @PostMapping(value = "/finaliserManuelWin", consumes = "application/json", produces = "application/json")
+          @ResponseBody
+         MessageAPI finaliserManuelWin(@RequestBody int idParis) throws SQLException{
+             MessageAPI message = new MessageAPI();
+             OracleConnection oc = Connexion.getConnection();
+             Paris p = getParisById(oc,idParis);
+             Match m = getMatchById(oc,p.getIdMatch());
+             //traitement map overall
+             if(p.getType().compareTo("map_overall")==0){
+                  String description = "Felicitation, Votre équipe a gagner pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                  traitementParis(p,"debit",description);
+                  sendNotificationWebToAllDeviceForUser(p.getIdUser(),"Felicitation",description);
+             }
+             //traitement fb
+             else if(p.getType().contains("fb")){
+                 String[] array = p.getType().split("_");
+                 int mapParier = Integer.parseInt(array[1]);
+                 String description = "Felicitation, Votre équipe a fait le first blood sur map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                 traitementParis(p,"debit",description);
+                 sendNotificationWebToAllDeviceForUser(p.getIdUser(),"Felicitation",description);
+             }
+             //traitement winer map specifique
+             else{
+                 String[] array = p.getType().split("_");
+                 int mapParier = Integer.parseInt(array[1]);
+                 String description = "Felicitation, Votre équipe a gagné sur la map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                 traitementParis(p,"debit",description);
+                 sendNotificationWebToAllDeviceForUser(p.getIdUser(),"Felicitation",description);
+             }
+             message.setMessage("Finaliser win parie pour parie "+p.getIdParis());
+             return message;
+         }
          
+         @PostMapping(value = "/finaliserManuelLoss", consumes = "application/json", produces = "application/json")
+          @ResponseBody
+         MessageAPI finaliserManuelLoss(@RequestBody int idParis) throws SQLException{
+             MessageAPI message = new MessageAPI();
+             OracleConnection oc = Connexion.getConnection();
+             Paris p = getParisById(oc,idParis);
+             Match m = getMatchById(oc,p.getIdMatch());
+             //traitement map overall
+             if(p.getType().compareTo("map_overall")==0){
+                   String description = "Malheuresement, Votre équipe a perdu pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                   traitementParis(p,"credit",description);
+                   sendNotificationWebToAllDeviceForUser(p.getIdUser(),"Malheuresement",description);
+             }
+             //traitement fb
+             else if(p.getType().contains("fb")){
+                 String[] array = p.getType().split("_");
+                 int mapParier = Integer.parseInt(array[1]);
+                String description = "Malheuresement, Votre équipe n'a pas fait le first blood sur map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                 traitementParis(p,"credit",description);
+                  sendNotificationWebToAllDeviceForUser(p.getIdUser(),"Malheuresement",description);
+             }
+             //traitement winer map specifique
+             else{
+                 String[] array = p.getType().split("_");
+                 int mapParier = Integer.parseInt(array[1]);
+                 String description = "Malheuresement, Votre équipe a perdu sur la map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                 traitementParis(p,"credit",description);
+                 sendNotificationWebToAllDeviceForUser(p.getIdUser(),"Malheuresement",description);
+             }
+             message.setMessage("Finaliser loss parie pour parie "+p.getIdParis());
+             return message;
+         }
          
          
          
@@ -1156,7 +1220,7 @@ private RestTemplate restTemplate;
         }
          
           
-           @PostMapping(value = "/deleteEmailAdmin", consumes = "application/json", produces = "application/json")
+          @PostMapping(value = "/deleteEmailAdmin", consumes = "application/json", produces = "application/json")
           @ResponseBody
            MessageAPI deleteEmailAdmin(@RequestBody MailAPI email) throws SQLException{
                 MessageAPI message = new MessageAPI();

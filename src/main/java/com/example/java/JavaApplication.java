@@ -1156,6 +1156,27 @@ private RestTemplate restTemplate;
         }
          
           
+           @PostMapping(value = "/deleteEmailAdmin", consumes = "application/json", produces = "application/json")
+          @ResponseBody
+           MessageAPI deleteEmailAdmin(@RequestBody MailAPI email) throws SQLException{
+                MessageAPI message = new MessageAPI();
+                OracleConnection connection = Connexion.getConnection();
+                     Statement statement = null;
+                     try {
+                         statement = connection.createStatement();
+
+                         statement.executeUpdate("delete from  EMAILADMIN where EMAIL='"+email.getEmail()+"' ");
+                         message.setMessage("delete reussi");
+                     } finally {
+                         if (statement != null) {
+                             statement.close();
+                         }
+                         connection.close();
+                     }
+               return message;     
+           }
+           
+          
           @PostMapping(value = "/insererEmailAdmin", consumes = "application/json", produces = "application/json")
           @ResponseBody
           MessageAPI insererEmailAdmin(@RequestBody MailAPI email) throws SQLException{

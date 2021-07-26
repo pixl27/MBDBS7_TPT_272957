@@ -1076,19 +1076,25 @@ private RestTemplate restTemplate;
                  try{
                     statement = oc.createStatement();
            
-                    ResultSet resultSet = statement.executeQuery("select IDPARIS from PROBLEME where STATUT = 0");
+                    ResultSet resultSet = statement.executeQuery("select IDPARIS,IDMATCH,IDTEAM,TYPE from PARIS where STATUT = 2");
 
                     while (resultSet.next()){
-                        Paris paristemp = getParisById(oc,resultSet.getInt(1));
-                        Match matchtemp = getMatchById(oc,paristemp.getIdMatch());
+                        //int idParis, int idUser, int idMatch, int idTeam, String type, float montant, float odds, Date dateparis, int statut
+                        int idParis = resultSet.getInt(1);
+                        int idMatch = resultSet.getInt(2);
+                        int idteam = resultSet.getInt(3);
+                        String type = resultSet.getString(4);
+                        
+                        
+                        Match matchtemp = getMatchById(oc,idMatch);
                         String nomTeamNalainy = "";
-                        if(paristemp.getIdTeam()==matchtemp.getIdTeam1()){
+                        if(idteam==matchtemp.getIdTeam1()){
                             nomTeamNalainy = matchtemp.getNomTeam1();
                         }
                         else 
                             nomTeamNalainy = matchtemp.getNomTeam2();
                         //int idParis, String nomTeam1, String nomTeam2, Date datematch, String type_paris, String nomTeamNalainy
-                        Probleme temp = new Probleme(paristemp.getIdParis(),matchtemp.getNomTeam1(),matchtemp.getNomTeam2(),matchtemp.getDatematch(),paristemp.getType(),nomTeamNalainy);
+                        Probleme temp = new Probleme(idParis,matchtemp.getNomTeam1(),matchtemp.getNomTeam2(),matchtemp.getDatematch(),type,nomTeamNalainy);
                         pb.add(temp);
                     }
                  }

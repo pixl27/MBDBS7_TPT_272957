@@ -705,6 +705,20 @@ private RestTemplate restTemplate;
             }
          }
          
+         void setParisToProbleme(OracleConnection co,int idParis) throws SQLException{
+          Statement statement = null;
+            try{
+                statement = co.createStatement();
+           
+                statement.executeUpdate("update PARIS set STATUT=2 where IDPARIS="+idParis);
+            }
+            finally{
+                if(statement!=null){
+                    statement.close();
+                }
+            }
+         }
+         
          int getWhoDoTheFB(long idMatch) throws JSONException{
               int val = 0;
               String url = "https://api.opendota.com/api/matches/"+idMatch;
@@ -1027,7 +1041,7 @@ private RestTemplate restTemplate;
                                     System.out.println("mila mihetsika fa tsy hita paris an'olona");
                                 }
                                 
-                                insertProbleme(co,listeParis.get(i).getIdParis());
+                                setParisToProbleme(co,listeParis.get(i).getIdParis());
 
                             } 
                         }

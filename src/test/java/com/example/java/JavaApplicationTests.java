@@ -1167,6 +1167,12 @@ class JavaApplicationTests {
                    //insertProbleme(oc,42);
                    
                    
+                   //String idUser,String title,String message
+                   String idUser = "60d995cb5f11d836229bd7e0";
+                   String title = "test mobile";
+                   String message = "Mino fotsiny ihany";
+                   sendNotificationWebToAllDeviceForUser(idUser,title,message);
+                   
                  }
 	
 

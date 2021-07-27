@@ -1579,6 +1579,10 @@ private RestTemplate restTemplate;
               }
               nbrMap = nbrMap-1;
               
+              if(nbrMap==0){
+                  break;
+              }
+              
               float odds1 = 0;
               float odds2 = 0;
               if(arrayOdds.length()>0){
@@ -1922,8 +1926,11 @@ private RestTemplate restTemplate;
                   String temp = "Map "+nbrMap+" - Winner";
                   int indice = nbrMap-1;
                   String name = data.getJSONArray("markets").getJSONObject(indice).getString("name");
+                  System.out.println("name map winner "+name);
+                  
                   if(temp.equals(name)){
                       nbrMap++;
+                      System.out.println("add nbr map");
                   }
                   else{
                       

@@ -37,6 +37,7 @@ import { MessagingService } from './shared/messaging.service';
 import { environment } from '../environments/environment';
 import { AsyncPipe } from '../../node_modules/@angular/common';
 import { ToastrModule } from 'ngx-toastr';
+import { BackofficeListEmailComponent } from './backoffice-list-email/backoffice-list-email.component';
 
 
 const routes:Routes = [
@@ -120,6 +121,7 @@ const routes:Routes = [
     DetailTeamComponent,
     SignUpComponent,
     LoginComponent,
+    BackofficeListEmailComponent,
 
   ],
   imports: [

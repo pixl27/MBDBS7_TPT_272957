@@ -44,6 +44,7 @@ export class DetailMatchComponent implements OnInit {
 
   ngOnInit(): void {
     this.spinner.show('sp6');
+    this.getMatchById();
     let tokenuservar =  localStorage.getItem("usertoken");
    
    console.log(this.counter);
@@ -52,7 +53,7 @@ export class DetailMatchComponent implements OnInit {
     this.tokenuser = tokenuservar
    this.getcurrentuser();
    }
-    this.getMatchById();
+   
   }
   showtoast(title:string,body:string,type:string) {
     if(type=="success"){
@@ -75,6 +76,8 @@ export class DetailMatchComponent implements OnInit {
       var sets = match.time.toString().replace("T"," ").replace("Z","");
    //   console.lo
       this.date = new Date(sets).getTime();
+      this.date = this.date + 3*60*60*1000;
+      console.log("seconds",this.date);
     }).add(() => {
       this.myForm = this.formBuilder.group({     
         numbercontrol: ['', [Validators.min(0), Validators.max(this.me.solde)]]

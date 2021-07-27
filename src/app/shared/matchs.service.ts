@@ -5,6 +5,7 @@ import { catchError, filter, map, mergeMap, tap } from 'rxjs/operators';
 import { MatchDetail } from '../detail-match/matchdetail.model';
 import { Historique } from '../historique/historique.model';
 import { Match } from '../list-teams/match.model';
+import { timeout} from 'rxjs/operators';
 
 
 @Injectable({
@@ -38,7 +39,9 @@ export class MatchsService {
 
     //return of(assignementCherche);
   
-        return this.http.get<MatchDetail>(this.uri2 + "?idRivalry=" + id)
+        return this.http.get<MatchDetail>(this.uri2 + "?idRivalry=" + id).pipe(
+          timeout(10000)
+      );
       
   }
   

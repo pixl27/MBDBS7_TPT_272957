@@ -17,8 +17,5 @@ firebase.initializeApp({
   messaging.setBackgroundMessageHandler(function(payload) {
 
     console.log("Notification back" + payload.data.title);
-  var  myObj = JSON.parse(payload);
-  console.log("oo" +myObj);
-  console.log(myObj.data.title);
-    return self.registration.showNotification(myObj.data.title,  { body: myObj.data.title});
+    return self.registration.showNotification(payload.data.title,  { body: payload.data.title});
 });

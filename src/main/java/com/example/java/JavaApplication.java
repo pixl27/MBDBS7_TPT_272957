@@ -1,6 +1,7 @@
 package com.example.java;
 
 import classe.Connexion;
+import classe.Dashboard;
 import classe.MailAPI;
 import classe.Match;
 
@@ -77,6 +78,7 @@ import org.springframework.web.client.RestTemplate;
 @CrossOrigin
 @EnableAutoConfiguration(exclude = {org.springframework.boot.autoconfigure.gson.GsonAutoConfiguration.class})
 public class JavaApplication {
+    int NbrMatchProbleme;
      // The recommended format of a connection URL is the long format with the
     // connection descriptor.
    @Autowired
@@ -1055,6 +1057,7 @@ private RestTemplate restTemplate;
                      for(int l=0;l<listeMail.size();l++){
                                    ec.sendEmail(matchProbleme,listeMail.get(l).getEmail());
                      }
+                     this.NbrMatchProbleme = matchProbleme.size();
                 }
             }
             finally{
@@ -1064,6 +1067,9 @@ private RestTemplate restTemplate;
             } 
             
         }
+         
+         
+         
             
          public 
          
@@ -1174,6 +1180,8 @@ private RestTemplate restTemplate;
          
          
          
+         
+         
          @GetMapping(path="/getAllEmailAdmin", produces = "application/json")
         @ResponseBody
          ArrayList<MailAPI> getAllEmailAdmin() throws SQLException{
@@ -1198,6 +1206,71 @@ private RestTemplate restTemplate;
                  return listeMail;
              } 
          
+         public int getNbrParis(OracleConnection co) throws SQLException{
+             int val = 0;
+
+                try(Statement statement = co.createStatement()) {
+
+                ResultSet resultSet = statement.executeQuery("select count(*) from Paris");
+
+                while (resultSet.next()){
+                    val = resultSet.getInt(1);
+                }
+                }
+                
+                return val;
+         }
+         
+         
+         public int getNbrParisProbleme(OracleConnection co) throws SQLException{
+             int val = 0;
+                try(Statement statement = co.createStatement()) {
+
+                ResultSet resultSet = statement.executeQuery("select count(*) from Paris where statut=2");
+
+                while (resultSet.next()){
+                    val = resultSet.getInt(1);
+                }
+                }
+                
+                return val;
+         }
+         
+         public int getNbrMatch(OracleConnection oc) throws SQLException{
+              int val = 0;
+                try(Statement statement = oc.createStatement()) {
+
+                ResultSet resultSet = statement.executeQuery("select count(*) from Match");
+
+                while (resultSet.next()){
+                    val = resultSet.getInt(1);
+                }
+                }
+                
+                return val;
+         }
+         
+         @GetMapping(path="/getDashBoard", produces = "application/json")
+        @ResponseBody
+         public Dashboard getDashBoard() throws SQLException{
+             Dashboard val = new Dashboard();
+             OracleConnection oc = Connexion.getConnection();
+             try{
+                 double earning = 0;
+                 int nbrParis = getNbrParis(oc);
+                 int nbrMatch = getNbrMatch(oc);
+                 
+                 int pourcentage = 100 - (this.NbrMatchProbleme*100/nbrMatch);
+                 
+                 //double earnings, int nbrParis, int pourcentage
+                 val = new Dashboard(earning,nbrParis,pourcentage);
+             }
+             finally{
+                 oc.close();
+             }
+             return val;
+         }
+         
          
            public static boolean isEmailAdress(String email){
                  String regex = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^-]+(?:\\.[a-zA-Z0-9_!#$%&'*+/=?`{|}~^-]+)*@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$";
@@ -1209,12 +1282,20 @@ private RestTemplate restTemplate;
           int getDoublonEmailAdmin(String email) throws SQLException{
             int val = 0;
             OracleConnection co = Connexion.getConnection();
-            Statement statement = co.createStatement();
+            Statement statement = null;
+            try{
+            statement = co.createStatement();
            
             ResultSet resultSet = statement.executeQuery("select EMAIL from EMAILADMIN where EMAIL='"+email+"' ");
            
             while (resultSet.next()){
                 val++;
+            }
+            }
+            finally{
+                if(statement!=null)
+                    statement.close();
+                co.close();
             }
             return val;
         }

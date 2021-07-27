@@ -78,7 +78,7 @@ import org.springframework.web.client.RestTemplate;
 @CrossOrigin
 @EnableAutoConfiguration(exclude = {org.springframework.boot.autoconfigure.gson.GsonAutoConfiguration.class})
 public class JavaApplication {
-    int NbrMatchProbleme;
+
      // The recommended format of a connection URL is the long format with the
     // connection descriptor.
    @Autowired
@@ -1057,7 +1057,7 @@ private RestTemplate restTemplate;
                      for(int l=0;l<listeMail.size();l++){
                                    ec.sendEmail(matchProbleme,listeMail.get(l).getEmail());
                      }
-                     this.NbrMatchProbleme = matchProbleme.size();
+                     
                 }
             }
             finally{
@@ -1222,11 +1222,11 @@ private RestTemplate restTemplate;
          }
          
          
-         public int getNbrParisProbleme(OracleConnection co) throws SQLException{
+         public int getNbrMatchProbleme(OracleConnection co) throws SQLException{
              int val = 0;
                 try(Statement statement = co.createStatement()) {
 
-                ResultSet resultSet = statement.executeQuery("select count(*) from Paris where statut=2");
+                ResultSet resultSet = statement.executeQuery("select count(distinct(idMatch)) from Paris where statut=2");
 
                 while (resultSet.next()){
                     val = resultSet.getInt(1);
@@ -1970,8 +1970,8 @@ private RestTemplate restTemplate;
                  double earning = 0;
                  int nbrParis = getNbrParis(oc);
                  int nbrMatch = getNbrMatch(oc);
-                 
-                 int pourcentage = 100 - (this.NbrMatchProbleme*100/nbrMatch);
+                 int nbrMatchProbleme = getNbrMatchProbleme(oc);
+                 int pourcentage = 100 - (nbrMatchProbleme*100/nbrMatch);
                  
                  //double earnings, int nbrParis, int pourcentage
                  val = new Dashboard(earning,nbrParis,pourcentage);

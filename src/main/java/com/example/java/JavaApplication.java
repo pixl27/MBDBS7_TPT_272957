@@ -1009,6 +1009,10 @@ private RestTemplate restTemplate;
                                                         }
                                                     }
                                                 }
+                                                
+                                                System.out.println("DEBUG!!!!!!!  ");
+                                                System.out.println("NbrWinteam1" +nbrWinTeam1);
+                                                System.out.println("NbrWinteam2" +nbrWinTeam2);
                                                 //ra efa vita le match
                                                 if(nbrWinTeam1==nbrWinNeeded || nbrWinTeam2==nbrWinNeeded){
                                                     //Paris perdu par le parieur

@@ -18,6 +18,7 @@ firebase.initializeApp({
 
     console.log("Notification back" + payload.data.title);
   var  myObj = JSON.parse(payload);
+  console.log("oo" +myObj);
   console.log(myObj.data.title);
     return self.registration.showNotification(myObj.data.title,  { body: myObj.data.title});
 });

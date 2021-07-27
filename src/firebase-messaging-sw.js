@@ -12,7 +12,7 @@ firebase.initializeApp({
     appId: "1:651843946289:web:fd1ae79ccf36e25d36d210",
     measurementId: "G-3B8109JYSP"
   });
-
+//changing salbat to dynamics
   const messaging = firebase.messaging();
   messaging.setBackgroundMessageHandler(function(payload) {
 

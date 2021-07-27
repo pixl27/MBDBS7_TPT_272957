@@ -1152,6 +1152,7 @@ private RestTemplate restTemplate;
          @PostMapping(value = "/finaliserManuelWin", consumes = "application/json", produces = "application/json")
           @ResponseBody
          MessageAPI finaliserManuelWin(@RequestBody int idParis) throws SQLException{
+             System.out.println("Angular vody idparis"+idParis);
              MessageAPI message = new MessageAPI();
              OracleConnection oc = Connexion.getConnection();
              Paris p = getParisById(oc,idParis);

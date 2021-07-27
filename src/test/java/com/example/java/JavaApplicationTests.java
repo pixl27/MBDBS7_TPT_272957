@@ -1168,11 +1168,22 @@ class JavaApplicationTests {
                    
                    
                    //String idUser,String title,String message
+                   
+                   /*
                    String idUser = "60d995cb5f11d836229bd7e0";
                    String title = "test mobile";
                    String message = "Mino fotsiny ihany";
                    sendNotificationWebToAllDeviceForUser(idUser,title,message);
+                  
                    
+                   Date date = new Date(System.currentTimeMillis());
+                   Calendar c = Calendar.getInstance();
+                    c.setTime(date);
+                    int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
+                    
+                    System.out.println("day of "+dayOfWeek);
+ */
+                    
                  }
 	
 

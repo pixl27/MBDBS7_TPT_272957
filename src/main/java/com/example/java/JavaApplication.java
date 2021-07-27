@@ -2,6 +2,7 @@ package com.example.java;
 
 import classe.Connexion;
 import classe.Dashboard;
+import classe.GraphJourSemaine;
 import classe.MailAPI;
 import classe.Match;
 
@@ -1152,6 +1153,7 @@ private RestTemplate restTemplate;
          @PostMapping(value = "/finaliserManuelWin", consumes = "application/json", produces = "application/json")
           @ResponseBody
          MessageAPI finaliserManuelWin(@RequestBody int idParis) throws SQLException{
+             
              System.out.println("Angular vody idparis"+idParis);
              MessageAPI message = new MessageAPI();
              OracleConnection oc = Connexion.getConnection();
@@ -1286,6 +1288,58 @@ private RestTemplate restTemplate;
                 }
                 
                 return val;
+         }
+         
+          @GetMapping(path="/getGrapheJourParie", produces = "application/json")
+        @ResponseBody
+         public GraphJourSemaine getGrapheJourParie() throws SQLException{
+             GraphJourSemaine gs = new GraphJourSemaine();
+             OracleConnection oc = Connexion.getConnection();
+             int lundi = 0;
+             int mardi = 0;
+             int mercredi = 0;
+             int jeudi = 0;
+             int vendredi = 0;
+             int samedi = 0;
+             int dimanche = 0;
+             
+              try(Statement statement = oc.createStatement()) {
+
+                ResultSet resultSet = statement.executeQuery("select count(*),dateparis from Paris group by dateparis");
+
+                while (resultSet.next()){
+                    int nbr = resultSet.getInt(1);
+                    Calendar c = Calendar.getInstance();
+                    c.setTime(resultSet.getDate(2));
+                    int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
+                    if(dayOfWeek==1){
+                        dimanche = dimanche + nbr;
+                    }
+                    if(dayOfWeek == 2){
+                        lundi = lundi + nbr;
+                    }
+                    if(dayOfWeek == 3){
+                        mardi = mardi + nbr;
+                    }
+                    if(dayOfWeek == 4){
+                        mercredi = mercredi + nbr;
+                    }
+                    if(dayOfWeek == 5){
+                        jeudi = jeudi + nbr;
+                    }
+                    if(dayOfWeek == 6){
+                        vendredi = vendredi + nbr;
+                    }
+                    if(dayOfWeek == 7){
+                        samedi = samedi + nbr;
+                    }
+                }
+                gs = new GraphJourSemaine(lundi,mardi,mercredi,jeudi,vendredi,samedi,dimanche);
+                }
+              finally{
+                  oc.close();
+              }
+             return gs;
          }
          
          

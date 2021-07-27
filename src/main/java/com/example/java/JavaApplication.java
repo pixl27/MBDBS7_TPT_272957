@@ -1250,9 +1250,9 @@ private RestTemplate restTemplate;
                 return val;
          }
          
-         @GetMapping(path="/getDashBoard", produces = "application/json")
+         @GetMapping(path="/getdashboard", produces = "application/json")
         @ResponseBody
-         public Dashboard getDashBoard() throws SQLException{
+         public Dashboard getdashboard() throws SQLException{
              Dashboard val = new Dashboard();
              OracleConnection oc = Connexion.getConnection();
              try{

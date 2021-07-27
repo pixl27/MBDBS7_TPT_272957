@@ -1580,7 +1580,7 @@ private RestTemplate restTemplate;
               nbrMap = nbrMap-1;
               
               if(nbrMap==0){
-                  break;
+                  continue;
               }
               
               float odds1 = 0;

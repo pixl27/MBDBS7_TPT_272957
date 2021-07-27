@@ -1543,27 +1543,7 @@ private RestTemplate restTemplate;
             return val;
         }
         
-        @GetMapping(path="/getdashboard", produces = "application/json")
-        @ResponseBody
-         public Dashboard getdashboard() throws SQLException{
-             System.out.println("tafiditra ATO");
-             Dashboard val = new Dashboard();
-             OracleConnection oc = Connexion.getConnection();
-             try{
-                 double earning = 0;
-                 int nbrParis = getNbrParis(oc);
-                 int nbrMatch = getNbrMatch(oc);
-                 
-                 int pourcentage = 100 - (this.NbrMatchProbleme*100/nbrMatch);
-                 
-                 //double earnings, int nbrParis, int pourcentage
-                 val = new Dashboard(earning,nbrParis,pourcentage);
-             }
-             finally{
-                 oc.close();
-             }
-             return val;
-         }
+      
         
         @GetMapping(path="/getmatchbyIdRivalry", produces = "application/json")
         @ResponseBody
@@ -1933,6 +1913,28 @@ private RestTemplate restTemplate;
         
           return listeMatch;
         }
+        
+         @GetMapping(path="/getdashboard", produces = "application/json")
+        @ResponseBody
+         public Dashboard getdashboard() throws SQLException{
+             System.out.println("tafiditra ATO");
+             Dashboard val = new Dashboard();
+             OracleConnection oc = Connexion.getConnection();
+             try{
+                 double earning = 0;
+                 int nbrParis = getNbrParis(oc);
+                 int nbrMatch = getNbrMatch(oc);
+                 
+                 int pourcentage = 100 - (this.NbrMatchProbleme*100/nbrMatch);
+                 
+                 //double earnings, int nbrParis, int pourcentage
+                 val = new Dashboard(earning,nbrParis,pourcentage);
+             }
+             finally{
+                 oc.close();
+             }
+             return val;
+         }
         
         
         

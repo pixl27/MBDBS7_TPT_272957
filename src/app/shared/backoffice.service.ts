@@ -20,13 +20,17 @@ export class BackOfficeService {
   }
 
   //uri = "http://localhost:8010/api/assignments";
-  uri = "https://backend-javaa-mbds272957.herokuapp.com/getAllEmailAdmin"
+  uri = "https://backend-javaa-mbds272957.herokuapp.com/"
 
   getEmails():Observable<MailAPI[]> {
     console.log("Dans le service de gestion des match...")
     //return of(this.matieres);
-    return this.http.get<MailAPI[]>(this.uri);
+    return this.http.get<MailAPI[]>(this.uri + "getAllEmailAdmin");
   }
+  deleteEmails(email:MailAPI):Observable<any> {
+  
+    return this.http.post(this.uri + "deleteEmailAdmin", {email});
 
+  }
 
 }

@@ -43,5 +43,19 @@ export class BackofficeListEmailComponent implements OnInit {
       ).add(() => {this.spinner.hide('sp6');})
       );
   }
+  deleteEmail(email:MailAPI){
+    console.log(email.email);
+    console.log(
+
+      this.backofficeservice.deleteEmails(email).subscribe( 
+        result => {
+         
+        },
+        err => console.log("tsy nande pory")
+  
+  
+      ).add(() => {this.spinner.hide('sp6');})
+      );
+  }
  
 }

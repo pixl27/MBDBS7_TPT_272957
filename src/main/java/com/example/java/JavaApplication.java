@@ -1302,6 +1302,26 @@ private RestTemplate restTemplate;
                return message;     
            }
            
+           @PostMapping(value = "/deleteEmailAdmin", consumes = "application/json", produces = "application/json")
+          @ResponseBody
+           MessageAPI deleteEmailAdmin(@RequestBody String email) throws SQLException{
+                MessageAPI message = new MessageAPI();
+                OracleConnection connection = Connexion.getConnection();
+                     Statement statement = null;
+                     try {
+                         statement = connection.createStatement();
+
+                         statement.executeUpdate("delete from  EMAILADMIN where EMAIL='"+email+"' ");
+                         message.setMessage("delete reussi");
+                     } finally {
+                         if (statement != null) {
+                             statement.close();
+                         }
+                         connection.close();
+                     }
+               return message;     
+           }
+           
           
           @PostMapping(value = "/insererEmailAdmin", consumes = "application/json", produces = "application/json")
           @ResponseBody
@@ -1314,6 +1334,32 @@ private RestTemplate restTemplate;
                          statement = connection.createStatement();
 
                          statement.executeUpdate("insert into EMAILADMIN values('"+email.getEmail()+"')" );
+                         message.setMessage("insertion reussi");
+                     } finally {
+                         if (statement != null) {
+                             statement.close();
+                         }
+                         connection.close();
+                     }
+                 } 
+                 else{
+                     System.out.println("is not email valide");
+                     message.setMessage("is not email valide or already in base");
+                 }
+                 return message;
+             }
+          
+          @PostMapping(value = "/insererEmailAdmin", consumes = "application/json", produces = "application/json")
+          @ResponseBody
+          MessageAPI insererEmailAdmin(@RequestBody String email) throws SQLException{
+              MessageAPI message = new MessageAPI();
+                 if (isEmailAdress(email) && getDoublonEmailAdmin(email)!=1) {
+                     OracleConnection connection = Connexion.getConnection();
+                     Statement statement = null;
+                     try {
+                         statement = connection.createStatement();
+
+                         statement.executeUpdate("insert into EMAILADMIN values('"+email+"')" );
                          message.setMessage("insertion reussi");
                      } finally {
                          if (statement != null) {

@@ -1305,6 +1305,8 @@ private RestTemplate restTemplate;
            @PostMapping(value = "/deleteEmailAdminAngular", consumes = "application/json", produces = "application/json")
           @ResponseBody
            MessageAPI deleteEmailAdminAngular(@RequestBody String email) throws SQLException{
+               System.out.println("Angular appel delete");
+               System.out.println("email a supprimer "+email);
                 MessageAPI message = new MessageAPI();
                 OracleConnection connection = Connexion.getConnection();
                      Statement statement = null;

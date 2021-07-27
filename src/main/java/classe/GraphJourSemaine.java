@@ -16,10 +16,11 @@ public class GraphJourSemaine {
     int jeudi;
     int vendredi;
     int samedi;
+int dimanche;
 
     public GraphJourSemaine() {
     }
-    int dimanche;
+    
 
     public int getLundi() {
         return lundi;

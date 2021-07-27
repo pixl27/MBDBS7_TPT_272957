@@ -1483,6 +1483,33 @@ private RestTemplate restTemplate;
             return val;
         }
         
+        double getEarning(){
+            double val =0;
+            
+            String url = "https://backend-node-mbds272957.herokuapp.com/api/historiques/60c315e614982b5375e5a537";
+          
+          HttpHeaders headers = new HttpHeaders();
+            headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+            headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+            HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
+            
+          ResponseEntity response = restTemplate.exchange(url, HttpMethod.GET,entity ,String.class);  
+          JSONArray array = new JSONArray(response.getBody().toString());
+          
+          for(int i=0;i<array.length();i++){
+              double montant = array.getJSONObject(i).getDouble("montant");
+              String type = array.getJSONObject(i).getString("type");
+              if(type.compareTo("debit")==0){
+                  val = val + montant;
+              }
+              else{
+                  val = val - montant;
+              }
+          }
+          
+            return val;
+        }
+        
        
         ArrayList<MatchAPI> getAllMatch() throws SQLException, JSONException{
             
@@ -2061,7 +2088,7 @@ private RestTemplate restTemplate;
              Dashboard val = new Dashboard();
              OracleConnection oc = Connexion.getConnection();
              try{
-                 double earning = 0;
+                 double earning = getEarning();
                  int nbrParis = getNbrParis(oc);
                  int nbrMatch = getNbrMatch(oc);
                  int nbrMatchProbleme = getNbrMatchProbleme(oc);

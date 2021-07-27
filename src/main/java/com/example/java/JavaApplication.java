@@ -832,7 +832,7 @@ private RestTemplate restTemplate;
                                 else{
                                     String[] array = listeParis.get(i).getType().split("_");
                                     int mapParier = Integer.parseInt(array[1]);
-                                    if(listeMatch.size()>=mapParier){
+                                   
                                         System.out.println("Type Paris "+listeParis.get(i).getType());
                                         if(listeParis.get(i).getType().contains("fb")){
                                             //traitement fb
@@ -911,6 +911,39 @@ private RestTemplate restTemplate;
                                                     }
                                                 }
                                                 
+                                            }
+                                            else {
+                                                //Check sode efa vita le match
+                                                int nbrWinNeeded = (m.getNbrMap() / 2) + 1;
+                                                int nbrWinTeam1 = 0;
+                                                int nbrWinTeam2 = 0;
+                                                for (int y = 0; y < listeMatch.size(); y++) {
+                                                    if (listeMatch.get(y).getBoolean("radiant_win") == listeMatch.get(y).getBoolean("radiant")) {
+                                                        if (m.getIdTeam1() != 0) {
+                                                            nbrWinTeam1++;
+                                                        } else {
+                                                            nbrWinTeam2++;
+                                                        }
+                                                    } else {
+                                                        if (m.getIdTeam1() != 0) {
+                                                            nbrWinTeam2++;
+                                                        } else {
+                                                            nbrWinTeam1++;
+                                                        }
+                                                    }
+                                                }
+                                                
+                                                System.out.println("DEBUG!!!!!!!  ");
+                                                System.out.println("NbrWinteam1" +nbrWinTeam1);
+                                                System.out.println("NbrWinteam2" +nbrWinTeam2);
+                                                //ra efa vita le match
+                                                if(nbrWinTeam1==nbrWinNeeded || nbrWinTeam2==nbrWinNeeded){
+                                                    //Paris perdu par le parieur
+                                                    String description = "Malheuresement, le map "+mapParier+" n'a pas eu lieu pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                                                    traitementParis(listeParis.get(i),"credit",description);
+                                                    sendNotificationWebToAllDeviceForUser(listeParis.get(i).getIdUser(),"Malheuresement",description);
+                                                    
+                                                }
                                             }
                                         }
                                         else{
@@ -1023,7 +1056,7 @@ private RestTemplate restTemplate;
                                                 }
                                             }
                                         }
-                                    }
+                                    
                                 }
                         }
                         else{

@@ -1018,7 +1018,7 @@ private RestTemplate restTemplate;
                                                     //Paris perdu par le parieur
                                                     String description = "Malheuresement, le map "+mapParier+" n'a pas eu lieu pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
                                                     traitementParis(listeParis.get(i),"credit",description);
-                                                    
+                                                    sendNotificationWebToAllDeviceForUser(listeParis.get(i).getIdUser(),"Malheuresement",description);
                                                     
                                                 }
                                             }

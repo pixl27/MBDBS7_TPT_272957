@@ -1302,9 +1302,9 @@ private RestTemplate restTemplate;
                return message;     
            }
            
-           @PostMapping(value = "/deleteEmailAdmin", consumes = "application/json", produces = "application/json")
+           @PostMapping(value = "/deleteEmailAdminAngular", consumes = "application/json", produces = "application/json")
           @ResponseBody
-           MessageAPI deleteEmailAdmin(@RequestBody String email) throws SQLException{
+           MessageAPI deleteEmailAdminAngular(@RequestBody String email) throws SQLException{
                 MessageAPI message = new MessageAPI();
                 OracleConnection connection = Connexion.getConnection();
                      Statement statement = null;
@@ -1349,9 +1349,9 @@ private RestTemplate restTemplate;
                  return message;
              }
           
-          @PostMapping(value = "/insererEmailAdmin", consumes = "application/json", produces = "application/json")
+          @PostMapping(value = "/insererEmailAdminAngular", consumes = "application/json", produces = "application/json")
           @ResponseBody
-          MessageAPI insererEmailAdmin(@RequestBody String email) throws SQLException{
+          MessageAPI insererEmailAdminAngular(@RequestBody String email) throws SQLException{
               MessageAPI message = new MessageAPI();
                  if (isEmailAdress(email) && getDoublonEmailAdmin(email)!=1) {
                      OracleConnection connection = Connexion.getConnection();

@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { forkJoin, Observable, of } from 'rxjs';
 import { catchError, filter, map, mergeMap, tap } from 'rxjs/operators';
 import { MailAPI } from '../backoffice-list-email/MailAPI.model';
+import { Probleme } from '../backoffice-list-problem/Probleme.model';
 import { Historique } from '../historique/historique.model';
 
 
@@ -27,10 +28,27 @@ export class BackOfficeService {
     //return of(this.matieres);
     return this.http.get<MailAPI[]>(this.uri + "getAllEmailAdmin");
   }
-  deleteEmails(email:MailAPI):Observable<any> {
-  
-    return this.http.post(this.uri + "deleteEmailAdmin", {email});
+  getProblemes():Observable<Probleme[]> {
+    console.log("Dans le service de gestion des match...")
+    //return of(this.matieres);
+    return this.http.get<Probleme[]>(this.uri + "getAllProbleme");
+  }
+  deleteEmails(email:string):Observable<any> {
+    return this.http.post<any>(this.uri + "deleteEmailAdmin", {email});
 
   }
+  insererEmail(email:string):Observable<any> {
+    return this.http.post<any>(this.uri + "insererEmailAdmin", {email});
 
+  }
+  fairegagner(idParis:Number):Observable<any>{
+console.log("enfoiré " + idParis);
+    return this.http.post<any>(this.uri + "finaliserManuelWin", idParis);
+
+  }
+  faireperdre(idParis:Number):Observable<any>{
+    return this.http.post<any>(this.uri + "finaliserManuelLoss",idParis);
+
+  }
+  
 }

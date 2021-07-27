@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { ResolveEnd, Router } from '@angular/router';
 import { AuthService } from './shared/auth.service';
 import { MessagingService } from './shared/messaging.service';
 import { ToastrService } from 'ngx-toastr';
@@ -16,14 +16,24 @@ export class AppComponent {
   tokenuser!:string
   me!:any;
   message!:any;
+  actualroute!:string;
 
 
 
-  constructor(private authservice:AuthService,private router:Router,private messagingService: MessagingService,private toastr: ToastrService) { }
+  constructor(private authservice:AuthService,public router:Router,private messagingService: MessagingService,private toastr: ToastrService) { }
 
   ngOnInit(): void {
   
   //this.messagingService.receiveback();
+  this.router.events.subscribe((routerData) => {
+    if(routerData instanceof ResolveEnd){ 
+      this.actualroute = routerData.url;
+      if(this.actualroute == "/emailadmin"){
+        console.log("mitovy");
+      }
+  } 
+})
+
   this.message = this.messagingService.currentMessage
     let tokenuservar =  localStorage.getItem("usertoken");
     if(tokenuservar != null){

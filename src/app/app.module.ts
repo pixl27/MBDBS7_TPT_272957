@@ -38,6 +38,8 @@ import { environment } from '../environments/environment';
 import { AsyncPipe } from '../../node_modules/@angular/common';
 import { ToastrModule } from 'ngx-toastr';
 import { BackofficeListEmailComponent } from './backoffice-list-email/backoffice-list-email.component';
+import { BackofficeListProblemComponent } from './backoffice-list-problem/backoffice-list-problem.component';
+import { SortDirective } from './directive/sort.directive';
 
 
 const routes:Routes = [
@@ -103,8 +105,20 @@ const routes:Routes = [
     // doit afficher le composant AssignmentsComponent (celui qui affiche la liste)
     path:"historique",
     component:HistoriqueComponent
+  },
+  // Tout les routes de Back Office
+  {
+    // indique que http://localhost:4200 sans rien ou avec un "/" à la fin
+    // doit afficher le composant AssignmentsComponent (celui qui affiche la liste)
+    path:"emailadmin",
+    component:BackofficeListEmailComponent
+  },
+  {
+    // indique que http://localhost:4200 sans rien ou avec un "/" à la fin
+    // doit afficher le composant AssignmentsComponent (celui qui affiche la liste)
+    path:"problemeadmin",
+    component:BackofficeListProblemComponent
   }
-
  
 ]
 
@@ -122,6 +136,8 @@ const routes:Routes = [
     SignUpComponent,
     LoginComponent,
     BackofficeListEmailComponent,
+    BackofficeListProblemComponent,
+    SortDirective,
 
   ],
   imports: [

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { BackOfficeService } from '../shared/backoffice.service';
 import { MailAPI } from './MailAPI.model';
@@ -14,7 +15,11 @@ export class BackofficeListEmailComponent implements OnInit {
   me!:any;
   pageOfItems!: Array<any>;
   emails!:MailAPI[];
-  constructor(private backofficeservice:BackOfficeService,private spinner: NgxSpinnerService,private router:Router) { }
+  emailtodelete!:string;
+  emailtoinsert!:string;
+
+  closeResult = '';
+  constructor(private backofficeservice:BackOfficeService,private modalService: NgbModal,private spinner: NgxSpinnerService,private router:Router) { }
 
   ngOnInit(): void {
     this.spinner.show('sp6');
@@ -23,6 +28,7 @@ export class BackofficeListEmailComponent implements OnInit {
     this.tokenuser = tokenuservar
   
    }
+   this.getEmails();
   }
   onChangePage(pageOfItems: Array<any>) {
     // update current page of items
@@ -43,19 +49,65 @@ export class BackofficeListEmailComponent implements OnInit {
       ).add(() => {this.spinner.hide('sp6');})
       );
   }
-  deleteEmail(email:MailAPI){
-    console.log(email.email);
+  deleteEmail(){
+
+    this.spinner.show('sp6');
+    console.log("email to delete : " + this.emailtodelete)
     console.log(
 
-      this.backofficeservice.deleteEmails(email).subscribe( 
+      this.backofficeservice.deleteEmails(this.emailtodelete).subscribe( 
         result => {
          
         },
         err => console.log("tsy nande pory")
   
   
-      ).add(() => {this.spinner.hide('sp6');})
+      ).add(() => {this.getEmails()})
       );
+  }
+  private getDismissReason(reason: any): string {
+    if (reason === ModalDismissReasons.ESC) {
+      return 'by pressing ESC';
+    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+      return 'by clicking on a backdrop';
+    } else {
+      return `with: ${reason}`;
+    }
+  }
+  setemailtodelete(email:string){
+    this.emailtodelete = email;
+  }
+  setemailtoinsert(email:string){
+    this.emailtoinsert = email;
+  }
+  insertemail(){
+    this.spinner.show('sp6');
+    console.log(
+
+      this.backofficeservice.insererEmail(this.emailtoinsert).subscribe( 
+        result => {
+         
+        },
+        err => console.log("tsy nande pory")
+  
+  
+      ).add(() => {this.getEmails()})
+      );
+  }
+  open(content:any, email:string) {
+    this.setemailtodelete(email);
+    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    });
+  }
+  openinsert(content1:any) {
+    this.modalService.open(content1, {ariaLabelledBy: 'modal-insert-title'}).result.then((result) => {
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    });
   }
  
 }

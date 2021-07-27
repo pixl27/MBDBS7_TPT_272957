@@ -14,15 +14,15 @@
     <div class="navigation-menu-contents">
       <div class="nav-item nav-dropdown-item">
         <span class="nav-item-content">
-          <span class="nav-item-text"> <a routerLink="/acceuil" class="nav-item rushlane">Acceuil</a></span>
+          <span class="nav-item-text"> <a routerLink="/acceuil" *ngIf="( actualroute!='/emailadmin' && actualroute!='/problemeadmin')" class="nav-item rushlane">Acceuil</a></span>
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9 5" width="8" height="8" class="dropdown-triangle"><path xmlns="http://www.w3.org/2000/svg" fill="currentColor" fill-rule="evenodd" d="M4.177 5l-4-5h8z"></path></svg>
           <div class="v-portal" style="display: none;"></div>
           <span class="site-overlay"></span>
         </span>
         <!---->
       </div>
-      <a routerLink="/list-teams" class="nav-item nav-item-contests"><span class="nav-item-content">Teams</span></a> 
-      <a routerLink="/bet" class="nav-item rushlane">
+      <a routerLink="/list-teams"  *ngIf="( actualroute!='/emailadmin' && actualroute!='/problemeadmin')" class="nav-item nav-item-contests"><span class="nav-item-content">Teams</span></a> 
+      <a routerLink="/bet"  *ngIf="( actualroute!='/emailadmin' && actualroute!='/problemeadmin')" class="nav-item rushlane">
         <span class="nav-item-content"><span class="pr-2">🔥</span>Parier</span> <span class="chip chip-red-light px-4">New</span>
       </a>
       <a href="/academy" class="nav-item nav-item-academy"></a> <a href="/esports" class="nav-item nav-item-news"></a> <a href="/promos" class="nav-item nav-item-promos"></a>
@@ -38,19 +38,19 @@
       </span>
       <!---->
     </div>
-    <a *ngIf="tokenuser!=null" routerLink="/historique" class="nav-item no-hover no-active nav-button">
+    <a *ngIf="tokenuser!=null && ( actualroute!='/emailadmin' && actualroute!='/problemeadmin') "  routerLink="/historique" class="nav-item no-hover no-active nav-button">
       <span class="nav-item-content"><span class="auth-button border border-transparent hover:underline">Mon Historique</span></span>
     </a>
-    <a *ngIf="tokenuser!=null" routerLink="/mon-profil" style="margin-right: 30px;" class="nav-item no-hover no-active nav-button">
+    <a *ngIf="tokenuser!=null && ( actualroute!='/emailadmin' && actualroute!='/problemeadmin') " routerLink="/mon-profil" style="margin-right: 30px;" class="nav-item no-hover no-active nav-button">
       <span class="nav-item-content"><span class="auth-button border border-transparent hover:underline">Mon Profil</span></span>
     </a>
-    <a *ngIf="tokenuser==null" routerLink="/sign-up" class="nav-item no-hover no-active nav-button register-button">
-      <span class="nav-item-content"><span class="auth-button btn btn-bloodorange">Signup</span></span>
+    <a *ngIf="tokenuser==null && ( actualroute!='/emailadmin' && actualroute!='/problemeadmin')" routerLink="/sign-up" class="nav-item no-hover no-active nav-button register-button">
+      <span class="nav-item-content"><span class="auth-button btn btn-bloodorange">Sign-Up</span></span>
     </a>
-    <a *ngIf="tokenuser==null" routerLink="/login" class="nav-item no-hover no-active nav-button register-button">
+    <a *ngIf="tokenuser==null && ( actualroute!='/emailadmin' && actualroute!='/problemeadmin')" routerLink="/login" class="nav-item no-hover no-active nav-button register-button">
       <span class="nav-item-content"><span class="auth-button btn btn-bloodorange">Login</span></span>
     </a>
-    <a *ngIf="tokenuser!=null" (click)="logOut()" class="nav-item no-hover no-active nav-button register-button">
+    <a *ngIf="tokenuser!=null && ( actualroute!='/emailadmin' && actualroute!='/problemeadmin')" (click)="logOut()" class="nav-item no-hover no-active nav-button register-button">
       <span class="nav-item-content"><span class="auth-button btn btn-bloodorange">Deconnexion</span></span>
     </a>
 

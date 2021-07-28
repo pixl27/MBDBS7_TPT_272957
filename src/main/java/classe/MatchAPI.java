@@ -6,6 +6,9 @@
 package classe;
 
 import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import oracle.jdbc.OracleConnection;
 
 /**
  *
@@ -343,7 +346,30 @@ public class MatchAPI {
         this.tournois = tournois;
     }
 
-    
+     public static void insererMatch(OracleConnection connection,MatchAPI match) throws SQLException{
+           
+            PreparedStatement statement = null;
+            try{
+                
+                String req = "insert into Match values(MATCH_SEQ.NEXTVAL,?,?,?,?,?,?)";
+                
+                
+                statement = connection.prepareStatement(req);
+                statement.setInt(1, match.getIdTeam1());
+                statement.setInt(2, match.getIdTeam2());
+                statement.setDate(3, match.getDatematch());
+                statement.setInt(4, match.getNbrMap());
+                statement.setString(5,match.getNomTeam1());
+                statement.setString(6,match.getNomTeam2());
+           
+                statement.executeQuery();
+            }
+            finally{
+                if(statement!=null){
+                    statement.close();
+                }
+            }
+        }
     
     
 }

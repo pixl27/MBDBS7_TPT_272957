@@ -6,6 +6,11 @@
 package classe;
 
 import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import oracle.jdbc.OracleConnection;
 
 /**
  *
@@ -113,7 +118,92 @@ public class Paris {
     }
     
     
+     public static void insererParis(OracleConnection connection,String idUser,int idMatch,int idTeam,String type,float montant,float odds,Date dateparis,int statut) throws SQLException{
+            
+            Statement statement = null;
+            try{
+                statement = connection.createStatement();
+           
+                statement.executeQuery("insert into PARIS values(PARIS_SEQ.NEXTVAL,'"+idUser+"',"+idMatch+","+idTeam+",'"+type+"',"+montant+","+odds+",TO_DATE('"+dateparis+"','YYYY-MM-DD'),"+statut+")");
+            }
+            finally{
+                if(statement!=null){
+                    statement.close();
+                }
+            }
+            
+        }
+     
     
-    
-    
+     public static ArrayList<Paris> getAllParisNonFinie(OracleConnection co) throws SQLException{
+            ArrayList<Paris> val = new ArrayList();
+            Statement statement = co.createStatement();
+            String req = "select * from Paris where statut=0 order by dateparis";
+            
+             ResultSet res = statement.executeQuery(req);
+             while (res.next()){
+                 //int idParis, int idUser, int idMatch, int idTeam, String type, float montant, float odds, Date dateparis, int statut
+                Paris temp = new Paris(res.getInt(1),res.getString(2),res.getInt(3),res.getInt(4),res.getString(5),res.getFloat(6),res.getFloat(7),res.getDate(8),res.getInt(9));
+                val.add(temp);
+            }
+            return val;
+       }
+     
+     public static Paris getParisById(OracleConnection co,int idParis) throws SQLException{
+            Paris p = new Paris();
+            Statement statement = co.createStatement();
+            String req = "select * from Paris where IDPARIS="+idParis;
+            
+             ResultSet res = statement.executeQuery(req);
+             while (res.next()){
+                 //int idParis, int idUser, int idMatch, int idTeam, String type, float montant, float odds, Date dateparis, int statut
+                 p = new Paris(res.getInt(1),res.getString(2),res.getInt(3),res.getInt(4),res.getString(5),res.getFloat(6),res.getFloat(7),res.getDate(8),res.getInt(9));
+                
+            }
+            return p;
+       }
+     
+       public static int getNbrParis(OracleConnection co) throws SQLException{
+             int val = 0;
+
+                try(Statement statement = co.createStatement()) {
+
+                ResultSet resultSet = statement.executeQuery("select count(*) from Paris");
+
+                while (resultSet.next()){
+                    val = resultSet.getInt(1);
+                }
+                }
+                
+                return val;
+         }
+       
+       
+       public static  void setStatusParis(OracleConnection co,int idParis) throws SQLException{
+             Statement statement = null;
+            try{
+                statement = co.createStatement();
+           
+                statement.executeUpdate("update PARIS set STATUT=1 where IDPARIS="+idParis);
+            }
+            finally{
+                if(statement!=null){
+                    statement.close();
+                }
+            }
+         }
+       
+      public static  void setParisToProbleme(OracleConnection co,int idParis) throws SQLException{
+          Statement statement = null;
+            try{
+                statement = co.createStatement();
+           
+                statement.executeUpdate("update PARIS set STATUT=2 where IDPARIS="+idParis);
+            }
+            finally{
+                if(statement!=null){
+                    statement.close();
+                }
+            }
+         }
 }

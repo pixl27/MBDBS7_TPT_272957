@@ -89,21 +89,9 @@ private RestTemplate restTemplate;
         public RestTemplate restTemplate() {
         return new RestTemplate();
         }
-
-        @RequestMapping("/")
-        @ResponseBody
-        String home(){
-            return "x";
-        }
-        
-        @RequestMapping("/hello")
-        @ResponseBody
-        String hello(){
-            return "Heelo man";
-        }
         
         
-    private int getRowCount(ResultSet resultSet) {
+    public static int getRowCount(ResultSet resultSet) {
         if (resultSet == null) {
             return 0;
         }
@@ -122,19 +110,6 @@ private RestTemplate restTemplate;
         return 0;
     }
     
-     int getVraiTeam(ArrayList<Team> list){
-            int val = 0;
-            int timeMax = 0;
-            for(int i =0;i<list.size();i++){
-                 int startTimeTemp = list.get(i).getIdTeam();
-                 if(startTimeTemp>timeMax){
-                     val = i;
-                     timeMax = startTimeTemp;
-                 }
-            }
-            return val;
-    }
-    
     JSONObject getJSONAPI(String url){
          HttpHeaders headers = new HttpHeaders();
             headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
@@ -146,7 +121,7 @@ private RestTemplate restTemplate;
           return json;
     }
     
-  JSONArray getJSONArrayAPI(String url) throws JSONException{
+    JSONArray getJSONArrayAPI(String url) throws JSONException{
        HttpHeaders headers = new HttpHeaders();
             headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
             headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
@@ -158,7 +133,7 @@ private RestTemplate restTemplate;
           return jsonarray;
     }
     
-   String transaction(String idUser,String type,float montant,int idParis,String description) throws JSONException{
+    String transaction(String idUser,String type,float montant,int idParis,String description) throws JSONException{
             String url = "https://backend-node-mbds272957.herokuapp.com/api/parier";
             HttpHeaders headers = new HttpHeaders();
             headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
@@ -183,139 +158,15 @@ private RestTemplate restTemplate;
             String val = json.getString("message");
             return val;
         }
-    
    
-    
-    int getStartTime(int idTeam){
+     int getStartTime(int idTeam){
           String url = "https://api.opendota.com/api/teams/"+idTeam+"/matches";
           JSONArray array = getJSONArrayAPI(url);
           int val = array.getJSONObject(0).getInt("start_time");
           return val;
     }
-        
-     Team findTeambynomV2(String nom) throws SQLException{
-            OracleConnection connection = Connexion.getConnection();
-            
-            
-           PreparedStatement statement = null;
-           Team val = new Team();
-           
-            try{
-            
-                String req ="select IDTEAM,LOGO from Team where nom like ? ";
-                
-                statement = connection.prepareStatement(req,ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
-                
-                statement.setString(1,"%" + nom + "%");
-                
-                ResultSet resultSet = statement.executeQuery();
 
-                int nbrRow = getRowCount(resultSet);
-                System.out.println("nbrRow:"+nbrRow);
-                if(nbrRow==1){
-                    while (resultSet.next()){
-                        val.setIdTeam(resultSet.getInt(1));
-                        val.setLogo(resultSet.getString(2));
-                    }
-                }
-                if(nbrRow>1){
-                    System.out.println("Team de ce nom bobaka");
-                    ArrayList<Team> arrayTeamTemp = new ArrayList();
-                    while (resultSet.next()){
-                        Team temp = new Team();
-                        temp.setIdTeam(resultSet.getInt(1));
-                        temp.setLogo(resultSet.getString(2));
-                        arrayTeamTemp.add(temp);
-                    }
-                    int indiceVrai = getVraiTeam(arrayTeamTemp);
-                    val = arrayTeamTemp.get(indiceVrai);
-                }
-            }
-            finally{
-                if(statement!=null){
-                statement.close();
-            }
-                if(connection!=null){
-                    connection.close();
-                }
-            }
-            
-            return val;
-        }
-        
-        Team findteambynom(String nom) throws SQLException{
-            OracleConnection connection = Connexion.getConnection();
-           Statement statement = null;
-           Team val = new Team();
-           
-            try{
-            
-                statement = connection.createStatement();
-
-                ResultSet resultSet = statement.executeQuery("select IDTEAM,LOGO from Team where nom like '%"+nom+"%'");
-
-                
-                    while (resultSet.next()){
-                        val.setIdTeam(resultSet.getInt(1));
-                        val.setLogo(resultSet.getString(2));
-                    }
-                
-                
-            }
-            finally{
-                if(statement!=null){
-                statement.close();
-            }
-                if(connection!=null){
-                    connection.close();
-                }
-            }
-            
-            return val;
-        }
-        
-        int findidteambynom(String nom) throws SQLException{
-            OracleConnection connection = Connexion.getConnection();
-           Statement statement = null;
-           
-           int id = 0; 
-            try{
-            
-            statement = connection.createStatement();
-           
-            ResultSet resultSet = statement.executeQuery("select IDTEAM from Team where nom like '%"+nom+"%'");
-            
-            
-            while (resultSet.next())
-               id = resultSet.getInt(1);
-            }
-            finally{
-                if(statement!=null){
-                statement.close();
-            }
-                if(connection!=null){
-                    connection.close();
-                }
-            }
-            
-            return id;
-        }
-        
-        int findteambynom(OracleConnection co,String nom) throws SQLException{
-           
-           
-            
-            Statement statement = co.createStatement();
-           
-            ResultSet resultSet = statement.executeQuery("select IDTEAM from Team where nom like '%"+nom+"%'");
-            int id = 0; 
-            while (resultSet.next())
-                id = resultSet.getInt(1);
-            
-            return id;
-        }
-        
-        int getSequence(OracleConnection co,String nom) throws SQLException{
+     int getSequence(OracleConnection co,String nom) throws SQLException{
             int val = 0;
             Statement statement = co.createStatement();
            
@@ -327,80 +178,7 @@ private RestTemplate restTemplate;
             return val;
         }
         
-        void insererMatch(OracleConnection connection,MatchAPI match) throws SQLException{
-           
-            PreparedStatement statement = null;
-            try{
-                
-                String req = "insert into Match values(MATCH_SEQ.NEXTVAL,?,?,?,?,?,?)";
-                
-                
-                statement = connection.prepareStatement(req);
-                statement.setInt(1, match.getIdTeam1());
-                statement.setInt(2, match.getIdTeam2());
-                statement.setDate(3, match.getDatematch());
-                statement.setInt(4, match.getNbrMap());
-                statement.setString(5,match.getNomTeam1());
-                statement.setString(6,match.getNomTeam2());
-           
-                statement.executeQuery();
-            }
-            finally{
-                if(statement!=null){
-                    statement.close();
-                }
-            }
-        }
-        
-          int getDoublonProbleme(OracleConnection co,int idParis) throws SQLException{
-            int val = 0;
-            
-             Statement statement = null;
-            try{
-            statement = co.createStatement();
-           
-            ResultSet resultSet = statement.executeQuery("select * from PROBLEME where IDPARIS="+idParis+" ");
-           
-            while (resultSet.next()){
-                val++;
-            }
-            }
-            finally{
-                if(statement!=null){
-                    statement.close();
-                }
-                
-            }
-            return val;
-        }
-        
-        
-        void insertProbleme(OracleConnection oc,int idParis) throws SQLException{
-           
-            if(getDoublonProbleme(oc,idParis)!=1){
-                PreparedStatement statement = null;
-                 try{
-                
-                String req = "insert into PROBLEME values(SEQ_PROBLEME.NEXTVAL,?,0)";
-
-                statement = oc.prepareStatement(req);
-                statement.setInt(1, idParis);
-
-                statement.executeQuery();
-            }
-            finally{
-                if(statement!=null){
-                    statement.close();
-                }
-            }
-            }
-            else{
-                System.out.println("deja dans la base");
-            }
-            
-        }
-        
-        static void insererTest() throws SQLException{
+     static void insererTest() throws SQLException{
              
             OracleConnection connection = Connexion.getConnection();
            
@@ -422,33 +200,7 @@ private RestTemplate restTemplate;
         }
         
         
-        
-        void insererParis(OracleConnection connection,String idUser,int idMatch,int idTeam,String type,float montant,float odds,Date dateparis,int statut) throws SQLException{
-            
-            Statement statement = null;
-            try{
-                statement = connection.createStatement();
-           
-                statement.executeQuery("insert into PARIS values(PARIS_SEQ.NEXTVAL,'"+idUser+"',"+idMatch+","+idTeam+",'"+type+"',"+montant+","+odds+",TO_DATE('"+dateparis+"','YYYY-MM-DD'),"+statut+")");
-            }
-            finally{
-                if(statement!=null){
-                    statement.close();
-                }
-            }
-            
-        }
-        
-        
-         
-        
-        
-        
-      
-        
-        
-        
-        @PostMapping(value = "/parier", consumes = "application/json", produces = "application/json")
+         @PostMapping(value = "/parier", consumes = "application/json", produces = "application/json")
         @ResponseBody
         String parier(@RequestBody ParisArg p) throws SQLException{
             MatchAPI m = getmatchbyIdRivalry(p.getIdMatch());
@@ -457,15 +209,15 @@ private RestTemplate restTemplate;
             OracleConnection oc = Connexion.getConnection();
             oc.setAutoCommit(false);
             try{
-                int idDoublon = getDoublonMatch(oc,m);
+                int idDoublon = Match.getDoublonMatch(oc,m);
                 Date datenow = new java.sql.Date(Calendar.getInstance().getTime().getTime());
                 if(idDoublon==0){
-                    insererMatch(oc,m);
+                    MatchAPI.insererMatch(oc,m);
                     int idMatchTemp = getSequence(oc,"MATCH_SEQ");
-                    insererParis(oc,p.getIdUser(),idMatchTemp,p.getIdTeamParier(),p.getType(),p.getMontant(),p.getOdds(),datenow,0);
+                    Paris.insererParis(oc,p.getIdUser(),idMatchTemp,p.getIdTeamParier(),p.getType(),p.getMontant(),p.getOdds(),datenow,0);
                 }
                 else{
-                    insererParis(oc,p.getIdUser(),idDoublon,p.getIdTeamParier(),p.getType(),p.getMontant(),p.getOdds(),datenow,0);
+                    Paris.insererParis(oc,p.getIdUser(),idDoublon,p.getIdTeamParier(),p.getType(),p.getMontant(),p.getOdds(),datenow,0);
                 }
                 //String idUser,String type,float montant,String idParis,String description
                 String description = "Parie entre "+m.getNomTeam1()+" et "+m.getNomTeam2()+" sur "+p.getType(); 
@@ -528,127 +280,7 @@ private RestTemplate restTemplate;
                 return listeTeam;
         }
         
-        
-        ArrayList<Paris> getAllParisNonFinie(OracleConnection co) throws SQLException{
-            ArrayList<Paris> val = new ArrayList();
-            Statement statement = co.createStatement();
-            String req = "select * from Paris where statut=0 order by dateparis";
-            
-             ResultSet res = statement.executeQuery(req);
-             while (res.next()){
-                 //int idParis, int idUser, int idMatch, int idTeam, String type, float montant, float odds, Date dateparis, int statut
-                Paris temp = new Paris(res.getInt(1),res.getString(2),res.getInt(3),res.getInt(4),res.getString(5),res.getFloat(6),res.getFloat(7),res.getDate(8),res.getInt(9));
-                val.add(temp);
-            }
-            return val;
-        }
-        
-        Paris getParisById(OracleConnection co,int idParis) throws SQLException{
-            Paris p = new Paris();
-            Statement statement = co.createStatement();
-            String req = "select * from Paris where IDPARIS="+idParis;
-            
-             ResultSet res = statement.executeQuery(req);
-             while (res.next()){
-                 //int idParis, int idUser, int idMatch, int idTeam, String type, float montant, float odds, Date dateparis, int statut
-                 p = new Paris(res.getInt(1),res.getString(2),res.getInt(3),res.getInt(4),res.getString(5),res.getFloat(6),res.getFloat(7),res.getDate(8),res.getInt(9));
-                
-            }
-            return p;
-        }
-        
-        Match getMatchById(OracleConnection co,int id) throws SQLException{
-            Match val = new Match();
-            Statement statement = null;
-            
-            try{
-                statement = co.createStatement();
-           
-                 ResultSet resultSet = statement.executeQuery("select * from Match where idMatch ="+id);
-                    while (resultSet.next()){
-                        //int idMatch, int idTeam1, int idTeam2, Date datematch, int nbrMap, String nomTeam1, String nomTeam2
-                        val = new Match(resultSet.getInt(1),resultSet.getInt(2),resultSet.getInt(3),resultSet.getDate(4),resultSet.getInt(5),resultSet.getString(6),resultSet.getString(7));
-                    }
-            }
-            finally{
-                if(statement!=null){
-                    statement.close();
-                }
-            }
-             
-            
-            return val;
-            
-            
-        }
-        
-      ArrayList<JSONObject> getAllMatchQuiConcorde(int idOpposingteam,Date datematch,JSONArray arrayMatch) throws JSONException{
-            ArrayList<JSONObject> val = new ArrayList();
-            int size = arrayMatch.length()-1;
-            for(int i= 0;i<size;i++){
-                int unixTimestamp = arrayMatch.getJSONObject(i).getInt("start_time");
-                System.out.println("unix timestamp "+unixTimestamp);
-                Date datematchAPI = new Date(unixTimestamp*1000L);
-                System.out.println("Start time match :"+datematchAPI);
-                System.out.println("Date match base "+datematch);
-                int idOpposingteamAPI = arrayMatch.getJSONObject(i).getInt("opposing_team_id");
-                if(datematch.compareTo(datematchAPI)<=0){
-                    System.out.println("Date concorde");
-                    if(idOpposingteam==idOpposingteamAPI){
-                     System.out.println("adversaire concorde");
-                    val.add(arrayMatch.getJSONObject(i));
-                    }
-                }
-                else{
-                    System.out.println("Date passé, Break");
-                    break;
-                }
-            }
-            return val;
-        }
-        
-         ArrayList<JSONObject> getAllMatchQuiConcorde(String nomOpposingteam,Date datematch,JSONArray arrayMatch) throws JSONException{
-            ArrayList<JSONObject> val = new ArrayList();
-            int size = arrayMatch.length()-1;
-            for(int i= 0;i<size;i++){
-                int unixTimestamp = arrayMatch.getJSONObject(i).getInt("start_time");
-                Date datematchAPI = new Date(unixTimestamp*1000L);
-                System.out.println("Start time match :"+datematchAPI);
-                System.out.println("Date match base "+datematch);
-                String nameOpposingteamAPI = arrayMatch.getJSONObject(i).getString("opposing_team_name");
-                System.out.println("Nom adversaire "+nameOpposingteamAPI);
-                System.out.println("Nom normal "+nomOpposingteam);
-                if(datematch.compareTo(datematchAPI)<=0){
-                    System.out.println("Date concorde");
-                    if(comparerNom(nomOpposingteam,nameOpposingteamAPI)){
-                     System.out.println("adversaire concorde");
-                    val.add(arrayMatch.getJSONObject(i));
-                    }
-                }
-                else{
-                    System.out.println("Date passé, Break");
-                    break;
-                }
-            }
-            return val;
-        }
-        
-        Boolean comparerNom(String nom1,String nom2){
-            int taille1 = nom1.length();
-            int taille2 = nom2.length();
 
-             if(taille1>taille2){
-                   return nom1.contains(nom2);
-              }
-              else{
-                   return nom2.contains(nom1);
-              }
-        }
-        
-        
-        
-        
-        
     ArrayList<JSONObject> getMatchOpenDota(Match m) throws JSONException, SQLException{
             JSONArray arrayMatch = null;
             ArrayList<JSONObject> val = new ArrayList();
@@ -656,18 +288,18 @@ private RestTemplate restTemplate;
                 String url = "https://api.opendota.com/api/teams/"+m.getIdTeam1()+"/matches";
                 arrayMatch = getJSONArrayAPI(url);
                 if(m.getIdTeam2()!=0){
-                    val = getAllMatchQuiConcorde(m.getIdTeam2(),m.getDatematch(),arrayMatch);
+                    val = Match.getAllMatchQuiConcorde(m.getIdTeam2(),m.getDatematch(),arrayMatch);
                 }
                 else{
                     System.out.println("ATTOOOOO");
-                    val = getAllMatchQuiConcorde(m.getNomTeam2(),m.getDatematch(),arrayMatch);
+                    val = Match.getAllMatchQuiConcorde(m.getNomTeam2(),m.getDatematch(),arrayMatch);
                 }
             }
             else{
                 System.out.println("ATTOOOOO 2");
                 String url = "https://api.opendota.com/api/teams/"+m.getIdTeam2()+"/matches";
                 arrayMatch = getJSONArrayAPI(url);
-                val = getAllMatchQuiConcorde(m.getNomTeam1(),m.getDatematch(),arrayMatch);
+                val = Match.getAllMatchQuiConcorde(m.getNomTeam1(),m.getDatematch(),arrayMatch);
             }
             return val;
         }
@@ -686,7 +318,7 @@ private RestTemplate restTemplate;
                  System.out.println("idParis "+p.getIdParis());
                  System.out.println("desctiption "+description);
                  transaction(p.getIdUser(),type,montant,p.getIdParis(),description);
-                 setStatusParis(co,p.getIdParis());
+                Paris.setStatusParis(co,p.getIdParis());
                  co.commit();
              }
              finally{
@@ -694,35 +326,7 @@ private RestTemplate restTemplate;
              }
          }
         
-         void setStatusParis(OracleConnection co,int idParis) throws SQLException{
-             Statement statement = null;
-            try{
-                statement = co.createStatement();
-           
-                statement.executeUpdate("update PARIS set STATUT=1 where IDPARIS="+idParis);
-            }
-            finally{
-                if(statement!=null){
-                    statement.close();
-                }
-            }
-         }
-         
-         void setParisToProbleme(OracleConnection co,int idParis) throws SQLException{
-          Statement statement = null;
-            try{
-                statement = co.createStatement();
-           
-                statement.executeUpdate("update PARIS set STATUT=2 where IDPARIS="+idParis);
-            }
-            finally{
-                if(statement!=null){
-                    statement.close();
-                }
-            }
-         }
-         
-         int getWhoDoTheFB(long idMatch) throws JSONException{
+     int getWhoDoTheFB(long idMatch) throws JSONException{
               int val = 0;
               String url = "https://api.opendota.com/api/matches/"+idMatch;
               System.out.println("url get Match Open Dota "+url);
@@ -750,7 +354,7 @@ private RestTemplate restTemplate;
               return val;
           }
         
-         void finaliser() throws SQLException, JSONException, MessagingException, AddressException, IOException{
+        void finaliser() throws SQLException, JSONException, MessagingException, AddressException, IOException{
             
             OracleConnection co = Connexion.getConnection();
             Date datenow = new java.sql.Date(Calendar.getInstance().getTime().getTime());
@@ -758,10 +362,10 @@ private RestTemplate restTemplate;
             ArrayList<Match> matchProbleme = new ArrayList();
             
             try{
-                ArrayList<Paris> listeParis = getAllParisNonFinie(co);
+                ArrayList<Paris> listeParis = Paris.getAllParisNonFinie(co);
                 for(int i=0;i<listeParis.size();i++){
                     System.out.println("idParis "+listeParis.get(i).getIdParis());
-                    Match m = getMatchById(co,listeParis.get(i).getIdMatch());
+                    Match m = Match.getMatchById(co,listeParis.get(i).getIdMatch());
                     System.out.println("idMatch "+listeParis.get(i).getIdMatch());
                     //si date est passée
                     if(m.getDatematch().compareTo(datenow)<=0){
@@ -1081,7 +685,7 @@ private RestTemplate restTemplate;
                                     System.out.println("mila mihetsika fa tsy hita paris an'olona");
                                 }
                                 
-                                setParisToProbleme(co,listeParis.get(i).getIdParis());
+                                Paris.setParisToProbleme(co,listeParis.get(i).getIdParis());
 
                             } 
                         }
@@ -1107,10 +711,6 @@ private RestTemplate restTemplate;
         }
          
          
-         
-            
-         public 
-         
          @GetMapping(path="/getAllProbleme", produces = "application/json")
         @ResponseBody
          ArrayList<Probleme> getAllProbleme() throws SQLException{
@@ -1130,7 +730,7 @@ private RestTemplate restTemplate;
                         String type = resultSet.getString(4);
                         
                         
-                        Match matchtemp = getMatchById(oc,idMatch);
+                        Match matchtemp = Match.getMatchById(oc,idMatch);
                         String nomTeamNalainy = "";
                         if(idteam==matchtemp.getIdTeam1()){
                             nomTeamNalainy = matchtemp.getNomTeam1();
@@ -1157,8 +757,8 @@ private RestTemplate restTemplate;
              System.out.println("Angular vody idparis"+idParis);
              MessageAPI message = new MessageAPI();
              OracleConnection oc = Connexion.getConnection();
-             Paris p = getParisById(oc,idParis);
-             Match m = getMatchById(oc,p.getIdMatch());
+             Paris p = Paris.getParisById(oc,idParis);
+             Match m = Match.getMatchById(oc,p.getIdMatch());
              //traitement map overall
              if(p.getType().compareTo("map_overall")==0){
                   String description = "Felicitation, Votre équipe a gagner pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
@@ -1190,8 +790,8 @@ private RestTemplate restTemplate;
          MessageAPI finaliserManuelLoss(@RequestBody int idParis) throws SQLException{
              MessageAPI message = new MessageAPI();
              OracleConnection oc = Connexion.getConnection();
-             Paris p = getParisById(oc,idParis);
-             Match m = getMatchById(oc,p.getIdMatch());
+             Paris p = Paris.getParisById(oc,idParis);
+             Match m = Match.getMatchById(oc,p.getIdMatch());
              //traitement map overall
              if(p.getType().compareTo("map_overall")==0){
                    String description = "Malheuresement, Votre équipe a perdu pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
@@ -1217,10 +817,7 @@ private RestTemplate restTemplate;
              message.setMessage("Finaliser loss parie pour parie "+p.getIdParis());
              return message;
          }
-         
-         
-         
-         
+
          
          @GetMapping(path="/getAllEmailAdmin", produces = "application/json")
         @ResponseBody
@@ -1246,49 +843,6 @@ private RestTemplate restTemplate;
                  return listeMail;
              } 
          
-         public int getNbrParis(OracleConnection co) throws SQLException{
-             int val = 0;
-
-                try(Statement statement = co.createStatement()) {
-
-                ResultSet resultSet = statement.executeQuery("select count(*) from Paris");
-
-                while (resultSet.next()){
-                    val = resultSet.getInt(1);
-                }
-                }
-                
-                return val;
-         }
-         
-         
-         public int getNbrMatchProbleme(OracleConnection co) throws SQLException{
-             int val = 0;
-                try(Statement statement = co.createStatement()) {
-
-                ResultSet resultSet = statement.executeQuery("select count(distinct(idMatch)) from Paris where statut=2");
-
-                while (resultSet.next()){
-                    val = resultSet.getInt(1);
-                }
-                }
-                
-                return val;
-         }
-         
-         public int getNbrMatch(OracleConnection oc) throws SQLException{
-              int val = 0;
-                try(Statement statement = oc.createStatement()) {
-
-                ResultSet resultSet = statement.executeQuery("select count(*) from Match");
-
-                while (resultSet.next()){
-                    val = resultSet.getInt(1);
-                }
-                }
-                
-                return val;
-         }
          
           @GetMapping(path="/getGrapheJourParie", produces = "application/json")
         @ResponseBody
@@ -1343,36 +897,6 @@ private RestTemplate restTemplate;
          }
          
          
-         
-         
-           public static boolean isEmailAdress(String email){
-                 String regex = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^-]+(?:\\.[a-zA-Z0-9_!#$%&'*+/=?`{|}~^-]+)*@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$";
-                Pattern pattern = Pattern.compile(regex);
-                java.util.regex.Matcher matcher = pattern.matcher(email);
-                return matcher.matches();
-            }
-        
-          int getDoublonEmailAdmin(String email) throws SQLException{
-            int val = 0;
-            OracleConnection co = Connexion.getConnection();
-            Statement statement = null;
-            try{
-            statement = co.createStatement();
-           
-            ResultSet resultSet = statement.executeQuery("select EMAIL from EMAILADMIN where EMAIL='"+email+"' ");
-           
-            while (resultSet.next()){
-                val++;
-            }
-            }
-            finally{
-                if(statement!=null)
-                    statement.close();
-                co.close();
-            }
-            return val;
-        }
-         
           
           @PostMapping(value = "/deleteEmailAdmin", consumes = "application/json", produces = "application/json")
           @ResponseBody
@@ -1394,34 +918,12 @@ private RestTemplate restTemplate;
                return message;     
            }
            
-           @PostMapping(value = "/deleteEmailAdminAngular", consumes = "application/json", produces = "application/json")
-          @ResponseBody
-           MessageAPI deleteEmailAdminAngular(@RequestBody String email) throws SQLException{
-               System.out.println("Angular appel delete");
-               System.out.println("email a supprimer "+email);
-                MessageAPI message = new MessageAPI();
-                OracleConnection connection = Connexion.getConnection();
-                     Statement statement = null;
-                     try {
-                         statement = connection.createStatement();
-
-                         statement.executeUpdate("delete from  EMAILADMIN where EMAIL='"+email+"' ");
-                         message.setMessage("delete reussi");
-                     } finally {
-                         if (statement != null) {
-                             statement.close();
-                         }
-                         connection.close();
-                     }
-               return message;     
-           }
-           
           
           @PostMapping(value = "/insererEmailAdmin", consumes = "application/json", produces = "application/json")
           @ResponseBody
           MessageAPI insererEmailAdmin(@RequestBody MailAPI email) throws SQLException{
               MessageAPI message = new MessageAPI();
-                 if (isEmailAdress(email.getEmail()) && getDoublonEmailAdmin(email.getEmail())!=1) {
+                 if (MailAPI.isEmailAdress(email.getEmail()) && MailAPI.getDoublonEmailAdmin(email.getEmail())!=1) {
                      OracleConnection connection = Connexion.getConnection();
                      Statement statement = null;
                      try {
@@ -1443,46 +945,6 @@ private RestTemplate restTemplate;
                  return message;
              }
           
-          @PostMapping(value = "/insererEmailAdminAngular", consumes = "application/json", produces = "application/json")
-          @ResponseBody
-          MessageAPI insererEmailAdminAngular(@RequestBody String email) throws SQLException{
-              MessageAPI message = new MessageAPI();
-                 if (isEmailAdress(email) && getDoublonEmailAdmin(email)!=1) {
-                     OracleConnection connection = Connexion.getConnection();
-                     Statement statement = null;
-                     try {
-                         statement = connection.createStatement();
-
-                         statement.executeUpdate("insert into EMAILADMIN values('"+email+"')" );
-                         message.setMessage("insertion reussi");
-                     } finally {
-                         if (statement != null) {
-                             statement.close();
-                         }
-                         connection.close();
-                     }
-                 } 
-                 else{
-                     System.out.println("is not email valide");
-                     message.setMessage("is not email valide or already in base");
-                 }
-                 return message;
-             }
-        
-        
-        
-        int getDoublonMatch(OracleConnection co,MatchAPI match) throws SQLException{
-            int val = 0;
-            Statement statement = co.createStatement();
-           
-            ResultSet resultSet = statement.executeQuery("select IDMATCH from MATCH where IDTEAMRADIANT="+match.getIdTeam1()+" and IDTEAMDIRE="+match.getIdTeam2()+" and DATEMATCH=TO_DATE('"+match.getDatematch()+"','YYYY-MM-DD') and BO="+match.getNbrMap()+" ");
-           
-            while (resultSet.next()){
-                val = resultSet.getInt(1);
-            }
-            return val;
-        }
-        
         double getEarning(){
             double val =0;
             
@@ -1594,14 +1056,14 @@ private RestTemplate restTemplate;
             
             
             String nomTeam1 = arrayTeam.getJSONObject(0).getString("name");
-            Team team1 = findTeambynomV2(nomTeam1);
+            Team team1 = Team.findTeambynomV2(nomTeam1);
             int idTeam1 = team1.getIdTeam();
             String logoTeam1 = team1.getLogo();
             
             
             
             String nomTeam2 = arrayTeam.getJSONObject(1).getString("name");
-            Team team2 = findTeambynomV2(nomTeam2);
+            Team team2 = Team.findTeambynomV2(nomTeam2);
             int idTeam2 = team2.getIdTeam();
             String logoTeam2 = team2.getLogo();
             
@@ -1670,9 +1132,9 @@ private RestTemplate restTemplate;
             String nomTeam2 = data.getJSONArray("competitors").getJSONObject(1).getString("name");
             
             //ID
-            Team team1 = findTeambynomV2(nomTeam1);
+            Team team1 = Team.findTeambynomV2(nomTeam1);
             int idTeam1 = team1.getIdTeam();
-            Team team2 = findTeambynomV2(nomTeam2);
+            Team team2 = Team.findTeambynomV2(nomTeam2);
             int idTeam2 = team2.getIdTeam();
             
             //Date
@@ -1714,8 +1176,7 @@ private RestTemplate restTemplate;
             return val;
         }
         
-      
-        
+     
         @GetMapping(path="/getmatchbyIdRivalry", produces = "application/json")
         @ResponseBody
         MatchAPI getmatchbyIdRivalry(@RequestParam int idRivalry) throws SQLException{
@@ -1731,9 +1192,9 @@ private RestTemplate restTemplate;
             String nomTeam2 = data.getJSONArray("competitors").getJSONObject(1).getString("name");
             
             //ID
-            Team team1 = findTeambynomV2(nomTeam1);
+            Team team1 = Team.findTeambynomV2(nomTeam1);
             int idTeam1 = team1.getIdTeam();
-            Team team2 = findTeambynomV2(nomTeam2);
+            Team team2 = Team.findTeambynomV2(nomTeam2);
             int idTeam2 = team2.getIdTeam();
             
             //Date
@@ -1941,67 +1402,7 @@ private RestTemplate restTemplate;
               return nbrMap;
         }
         
-        String Bonjour(){
-            return "bonjour, finalise les paris des clients terminer";
-        }
-        
-        void insererNotifWeb(OracleConnection connection,String idUser,String token) throws SQLException{
-           
-            Statement statement = null;
-            try{
-                statement = connection.createStatement();
-           
-                statement.executeQuery("insert into NOTIFWEB values(SEQUENCE_NOTIFWEB.NEXTVAL,'"+idUser+"','"+token+"') ");
-            }
-            finally{
-                if(statement!=null){
-                    statement.close();
-                }
-            }
-    }
-      
-      int getDoublonNotifWeb(OracleConnection co,String idUser,String token) throws SQLException{
-            int val = 0;
-            Statement statement = co.createStatement();
-           
-            ResultSet resultSet = statement.executeQuery("select IDNOTIF from NOTIFWEB where IDUSER='"+idUser+"' and  TOKEN='"+token+"' ");
-           
-            while (resultSet.next()){
-                val = resultSet.getInt(1);
-            }
-            return val;
-        }
-      
-           ArrayList<NotifWeb> getAllNotifWeb(String idUser) throws SQLException{
-                        OracleConnection co = Connexion.getConnection();
-                   ArrayList<NotifWeb> val = new ArrayList();
-                   Statement statement = null;
-
-                   try{
-                       statement = co.createStatement();
-
-                        ResultSet resultSet = statement.executeQuery("select TOKEN from NOTIFWEB where IDUSER ='"+idUser+"' ");
-                           while (resultSet.next()){
-                               NotifWeb temp = new NotifWeb(idUser,resultSet.getString(1));
-                               //int idMatch, int idTeam1, int idTeam2, Date datematch, int nbrMap, String nomTeam1, String nomTeam2
-                               val.add(temp);
-                           }
-                   }
-                   finally{
-                       if(statement!=null){
-                           statement.close();
-                       }
-                       if(co!=null){
-                           co.close();
-                       }
-                   }
-
-
-                   return val;
-            }
-           
-           
-            int sendNotificationToWeb(String token,String idUser,String title,String message) throws JSONException{
+     int sendNotificationToWeb(String token,String idUser,String title,String message) throws JSONException{
             String url = "https://fcm.googleapis.com/fcm/send";
             HttpHeaders headers = new HttpHeaders();
             headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
@@ -2039,7 +1440,7 @@ private RestTemplate restTemplate;
             
       
       void sendNotificationWebToAllDeviceForUser(String idUser,String title,String message) throws SQLException, JSONException{
-                 ArrayList<NotifWeb> listeToken = getAllNotifWeb(idUser);
+                 ArrayList<NotifWeb> listeToken = NotifWeb.getAllNotifWeb(idUser);
                  System.out.println("listeToken :"+listeToken.size());
                  for(int i =0;i<listeToken.size();i++){
                      int val = sendNotificationToWeb(listeToken.get(i).getToken(),idUser,title,message);
@@ -2054,9 +1455,9 @@ private RestTemplate restTemplate;
             OracleConnection co = Connexion.getConnection();
             String val = "";
             try{
-                int i = getDoublonNotifWeb(co,n.getIdUser(),n.getToken());
+                int i = NotifWeb.getDoublonNotifWeb(co,n.getIdUser(),n.getToken());
                 if(i==0){
-                    insererNotifWeb(co,n.getIdUser(),n.getToken());
+                    NotifWeb.insererNotifWeb(co,n.getIdUser(),n.getToken());
                     val = "New device detected";
                 }
                 else
@@ -2096,9 +1497,9 @@ private RestTemplate restTemplate;
              OracleConnection oc = Connexion.getConnection();
              try{
                  double earning = getEarning();
-                 int nbrParis = getNbrParis(oc);
-                 int nbrMatch = getNbrMatch(oc);
-                 int nbrMatchProbleme = getNbrMatchProbleme(oc);
+                 int nbrParis = Paris.getNbrParis(oc);
+                 int nbrMatch = Match.getNbrMatch(oc);
+                 int nbrMatchProbleme = Match.getNbrMatchProbleme(oc);
                  int pourcentage = 100 - (nbrMatchProbleme*100/nbrMatch);
                  
                  //double earnings, int nbrParis, int pourcentage
@@ -2146,8 +1547,7 @@ private RestTemplate restTemplate;
                     j.cleanListeMatch();
                     j.setListeMatch(j.getAllMatch());
                     j.setlisteTeam(j.getAllTeam());
-                    System.out.println(j.Bonjour());
-                    insererTest();
+                    System.out.println("finaliser fini, a dans 30 min......");
                 } catch (SQLException | JSONException | MessagingException | IOException ex) {
                     java.util.logging.Logger.getLogger(JavaApplication.class.getName()).log(Level.SEVERE, null, ex);
                 }

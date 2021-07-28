@@ -6,6 +6,11 @@
 package classe;
 
 import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import oracle.jdbc.OracleConnection;
 
 /**
  *
@@ -79,6 +84,53 @@ public class Probleme {
         this.type_paris = type_paris;
         this.nomTeamNalainy = nomTeamNalainy;
     }
+    
+     private static int getDoublonProbleme(OracleConnection co,int idParis) throws SQLException{
+            int val = 0;
+            
+             Statement statement = null;
+            try{
+            statement = co.createStatement();
+           
+            ResultSet resultSet = statement.executeQuery("select * from PROBLEME where IDPARIS="+idParis+" ");
+           
+            while (resultSet.next()){
+                val++;
+            }
+            }
+            finally{
+                if(statement!=null){
+                    statement.close();
+                }
+                
+            }
+            return val;
+        }
+     
+      public static void insertProbleme(OracleConnection oc,int idParis) throws SQLException{
+           
+            if(getDoublonProbleme(oc,idParis)!=1){
+                PreparedStatement statement = null;
+                 try{
+                
+                String req = "insert into PROBLEME values(SEQ_PROBLEME.NEXTVAL,?,0)";
+
+                statement = oc.prepareStatement(req);
+                statement.setInt(1, idParis);
+
+                statement.executeQuery();
+            }
+            finally{
+                if(statement!=null){
+                    statement.close();
+                }
+            }
+            }
+            else{
+                System.out.println("deja dans la base");
+            }
+            
+        }
     
     
 }

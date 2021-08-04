@@ -22,10 +22,13 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatSelectModule} from '@angular/material/select';
 import {MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatCardModule } from '@angular/material/card';
+
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
 import { MatBadgeModule } from "@angular/material/badge";
 import { NgxSimpleCountdownModule } from 'ngx-simple-countdown';
+import { AgmCoreModule } from '@agm/core';
 
 import { JwPaginationModule  } from 'jw-angular-pagination';
 
@@ -40,6 +43,9 @@ import { ToastrModule } from 'ngx-toastr';
 import { BackofficeListEmailComponent } from './backoffice-list-email/backoffice-list-email.component';
 import { BackofficeListProblemComponent } from './backoffice-list-problem/backoffice-list-problem.component';
 import { SortDirective } from './directive/sort.directive';
+import { BackofficeDashboardComponent } from './backoffice-dashboard/backoffice-dashboard.component';
+import { ChartsModule } from 'ng2-charts';
+import { AboutComponent } from './about/about.component';
 
 
 const routes:Routes = [
@@ -103,6 +109,12 @@ const routes:Routes = [
   {
     // indique que http://localhost:4200 sans rien ou avec un "/" à la fin
     // doit afficher le composant AssignmentsComponent (celui qui affiche la liste)
+    path:"about",
+    component:AboutComponent
+  },
+  {
+    // indique que http://localhost:4200 sans rien ou avec un "/" à la fin
+    // doit afficher le composant AssignmentsComponent (celui qui affiche la liste)
     path:"historique",
     component:HistoriqueComponent
   },
@@ -118,6 +130,12 @@ const routes:Routes = [
     // doit afficher le composant AssignmentsComponent (celui qui affiche la liste)
     path:"problemeadmin",
     component:BackofficeListProblemComponent
+  },
+  {
+    // indique que http://localhost:4200 sans rien ou avec un "/" à la fin
+    // doit afficher le composant AssignmentsComponent (celui qui affiche la liste)
+    path:"dashboard",
+    component:BackofficeDashboardComponent
   }
  
 ]
@@ -138,6 +156,8 @@ const routes:Routes = [
     BackofficeListEmailComponent,
     BackofficeListProblemComponent,
     SortDirective,
+    BackofficeDashboardComponent,
+    AboutComponent,
 
   ],
   imports: [
@@ -155,10 +175,15 @@ const routes:Routes = [
     ReactiveFormsModule,
     MatBadgeModule,
     JwPaginationModule ,
+    MatCardModule,
     AngularFireDatabaseModule,
     NgxSimpleCountdownModule,
       AngularFireAuthModule,
+      ChartsModule,
       AngularFireMessagingModule,
+      AgmCoreModule.forRoot({
+        apiKey: 'AIzaSyBCtsMOW3jhOzTFv0YMDM8HlQL2YCOWsW4'
+      }),
       ToastrModule.forRoot(),
       AngularFireModule.initializeApp(environment.firebase),
     RouterModule.forChild(routes),

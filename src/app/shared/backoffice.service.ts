@@ -2,6 +2,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { forkJoin, Observable, of } from 'rxjs';
 import { catchError, filter, map, mergeMap, tap } from 'rxjs/operators';
+import { Dashboard } from '../backoffice-dashboard/Dashboard.model';
+import { GraphJourSemaine } from '../backoffice-dashboard/GraphJourSemaine.model';
 import { MailAPI } from '../backoffice-list-email/MailAPI.model';
 import { Probleme } from '../backoffice-list-problem/Probleme.model';
 import { Historique } from '../historique/historique.model';
@@ -33,6 +35,17 @@ export class BackOfficeService {
     //return of(this.matieres);
     return this.http.get<Probleme[]>(this.uri + "getAllProbleme");
   }
+  getDashboard():Observable<Dashboard> {
+    console.log("Dans le service de gestion des match...")
+    //return of(this.matieres);
+    return this.http.get<Dashboard>(this.uri + "getdashboard");
+  }
+  getGrapheJourParie():Observable<GraphJourSemaine> {
+    console.log("Dans le service de gestion des match...")
+    //return of(this.matieres);
+    return this.http.get<GraphJourSemaine>(this.uri + "getGrapheJourParie");
+  }
+
   deleteEmails(email:string):Observable<any> {
     return this.http.post<any>(this.uri + "deleteEmailAdmin", {email});
 

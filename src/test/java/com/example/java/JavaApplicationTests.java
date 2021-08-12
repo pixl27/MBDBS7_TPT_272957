@@ -4,6 +4,7 @@ import classe.Connexion;
 import classe.MailAPI;
 import classe.Match;
 import classe.MatchAPI;
+import classe.NotifVueAngular;
 import classe.NotifWeb;
 import classe.Paris;
 import classe.Team;
@@ -1183,7 +1184,9 @@ class JavaApplicationTests {
                     
                     System.out.println("day of "+dayOfWeek);
  */
-                  
+                   NotifVueAngular nf = new NotifVueAngular();
+                   nf.insererNotif("test","hello","votre equipe n'a pas fait");
+                   
                    
                  }
 	

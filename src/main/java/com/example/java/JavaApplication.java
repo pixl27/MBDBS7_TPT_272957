@@ -1492,6 +1492,7 @@ private RestTemplate restTemplate;
        @PostMapping(value = "/setStatueVueNotif", consumes = "application/json", produces = "application/json")
        @ResponseBody
        void setStatueVueNotif(@RequestBody int id) throws SQLException{
+           System.out.println("Angular id Notif"+id);
            OracleConnection co = Connexion.getConnection();
             Statement statement = null;
             try{

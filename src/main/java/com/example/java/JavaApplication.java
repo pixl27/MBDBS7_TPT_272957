@@ -1457,7 +1457,7 @@ private RestTemplate restTemplate;
       
        @GetMapping(path="/getNotif", produces = "application/json")
         @ResponseBody
-       ArrayList<NotifVueAngular> getNotif() throws SQLException{
+       ArrayList<NotifVueAngular> getNotif(@RequestParam int idUser) throws SQLException{
            
            ArrayList<NotifVueAngular> val = new ArrayList();
            
@@ -1469,7 +1469,7 @@ private RestTemplate restTemplate;
             try{
                 statement = connection.createStatement();
            
-           ResultSet resultSet = statement.executeQuery("select * from NOTIFVUEANGULAR");
+           ResultSet resultSet = statement.executeQuery("select * from NOTIFVUEANGULAR where IDUSER='"+idUser+"' ");
            
             while (resultSet.next()){
                 //String idUser, String titre, String description, int vue, Date dateNotif

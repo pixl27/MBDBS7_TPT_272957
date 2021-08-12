@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../shared/auth.service';
 import { MatchsService } from '../shared/matchs.service';
 import { Historique } from './historique.model';
 import { NgxSpinnerService } from "ngx-spinner";
+import { MessagingService } from '../shared/messaging.service';
+import { AppComponent } from '../app.component';
 
 @Component({
   selector: 'app-historique',
@@ -15,9 +17,23 @@ export class HistoriqueComponent implements OnInit {
   me!:any;
   pageOfItems!: Array<any>;
   myhistorique!:Historique[];
-  constructor(private authservice:AuthService,private spinner: NgxSpinnerService,private matchservice:MatchsService,private router:Router) { }
+  @ViewChild('appcomponent', { static: false }) appcomponent!: AppComponent;
+
+  constructor(private authservice:AuthService,private spinner: NgxSpinnerService,private matchservice:MatchsService,private route:ActivatedRoute,private router:Router,public messageservice:MessagingService) { }
 
   ngOnInit(): void {
+    if(+this.route.snapshot.params.id!=null){
+    
+      if(+this.route.snapshot.params.vue==0)
+      {
+        this.setnotiftovu(+this.route.snapshot.params.id);
+        this.messageservice.setnotifnumber(this.messageservice.notifnumber - 1);
+       
+      }
+    
+ 
+    
+    }
     this.spinner.show('sp6');
     let tokenuservar =  localStorage.getItem("usertoken");
     if(tokenuservar != null){
@@ -44,6 +60,14 @@ export class HistoriqueComponent implements OnInit {
   
       ).add(() => {this.spinner.hide('sp6');})
       );
+  }
+  setnotiftovu(id:number){
+    this.messageservice.setnotifvue(id).subscribe( 
+      result => {
+     
+      },
+      err => console.log("tsy nande pory")
+    )
   }
   getcurrentuser(){
   

@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
-import { ResolveEnd, Router } from '@angular/router';
+import { Component, ElementRef, Renderer2, ViewChild } from '@angular/core';
+import { ActivatedRoute, ResolveEnd, Router } from '@angular/router';
 import { AuthService } from './shared/auth.service';
 import { MessagingService } from './shared/messaging.service';
 import { ToastrService } from 'ngx-toastr';
+import { NotificationUser } from './shared/NotificationUser.model';
 
 @Component({
   selector: 'app-root',
@@ -17,13 +18,34 @@ export class AppComponent {
   me!:any;
   message!:any;
   actualroute!:string;
+notificationtrue!:boolean;
+listnotif!:NotificationUser[];
+notifnumber!:number;
+@ViewChild('togglenotif') togglenotif!: ElementRef;
+@ViewChild('menu') menu!: ElementRef;
 
-
-
-  constructor(private authservice:AuthService,public router:Router,private messagingService: MessagingService,private toastr: ToastrService) { }
+  constructor(private authservice:AuthService,public router:Router,public messagingService: MessagingService,private route:ActivatedRoute,private toastr: ToastrService,private renderer: Renderer2) { }
 
   ngOnInit(): void {
-  
+    this.notificationtrue = false;
+    console.log("idnotif" + this.route.snapshot.params.id);
+
+    this.renderer.listen('window', 'click',(e:Event)=>{
+      /**
+       * Only run when toggleButton is not clicked
+       * If we don't check this, all clicks (even on the toggle button) gets into this
+       * section which in the result we might never see the menu open!
+       * And the menu itself is checked here, and it's where we check just outside of
+       * the menu and button the condition abbove must close the menu
+       */
+       if( !this.togglenotif.nativeElement.contains(e.target)){
+         this.notificationtrue = false;
+         console.log("outside");
+       }
+      
+ });
+
+
   //this.messagingService.receiveback();
   this.router.events.subscribe((routerData) => {
     if(routerData instanceof ResolveEnd){ 
@@ -52,7 +74,54 @@ export class AppComponent {
 
    }
   }
+  getListNotif(){
 
+    console.log(
+
+      this.messagingService.getNotif(this.me._id).subscribe( 
+        result => {
+    
+          this.listnotif = result;
+       
+        },
+        err => console.log("tsy nande pory")
+  
+  
+      ).add(() => {})
+      );
+  }
+  consolelog(){
+    console.log( "this is log component " + this.notifnumber);
+  }
+   getNombreNotifNonLu(){
+    this.notifnumber=0;
+    console.log(
+
+      this.messagingService.getNotif(this.me._id).subscribe( 
+        result => {
+         
+          for(let a of result){
+            console.log("aa " + a.vue);
+            if(a.vue==0){
+          
+              this.notifnumber = this.notifnumber + 1;
+            }
+          }
+          this.messagingService.setnotifnumber(this.notifnumber);
+        },
+        err => console.log("tsy nande pory")
+  
+  
+      ).add(() => {})
+      );
+  }
+shownotification(){
+  this.notificationtrue = !this.notificationtrue;
+  if(this.notificationtrue){
+    this.getListNotif();
+  }
+
+}
   logOut(){
     localStorage.removeItem("usertoken");
     this.router.navigate(["/"]).then(() => {
@@ -71,7 +140,7 @@ export class AppComponent {
         err => console.log("tsy nande pory")
   
   
-      )
+      ).add(() => {this.getNombreNotifNonLu()})
       );
   }
 }

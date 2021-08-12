@@ -28,6 +28,7 @@
         <span class="nav-item-content"><span class="pr-2">🔥</span>Parier</span> <span class="chip chip-red-light px-4">New</span>
       </a>
       <a href="/academy" class="nav-item nav-item-academy"></a> <a href="/esports" class="nav-item nav-item-news"></a> <a href="/promos" class="nav-item nav-item-promos"></a>
+ 
       <div class="nav-item nav-dropdown-item nav-help-dropdown nav-item-help"><!----></div>
     </div>
   </div>
@@ -40,9 +41,30 @@
       </span>
       <!---->
     </div>
+    <div class="notification-wrapper">
+      <div *ngIf="notificationtrue"  class="dropdown-menu menu dropdown-menu-right show" id="navbarNotificationContent" aria-labelledby="navbarDropdownMenuLink" style="width: 250px;margin-right: 23%;" #menu>
+
+      
+        <a *ngFor="let h of listnotif" [ngStyle]="{'background':h.vue === 0 ? 'aquamarine' : 'white' }"  routerLink="/notification/{{h.id}}/{{h.vue}}" gtm-id="Notifications" class="dropdown-item text-wrap" data-notification-date="08/10/2021 10:00" href="https://mdbootstrap.com/docs/b5/angular/">
+          <p class="small text-uppercase mb-2">{{h.dateNotif}}</p>
+
+          <p class="mb-0">{{h.description}}</p>
+          <span class="pq6dq46d is6700om qu0x051f esr5mh6w e9989ue4 r7d6kgcz s45kfl79 emlxlaya bkmhp75w spb7xbtv cyypbtt7 fwizqjfa" data-visualcompletion="ignore"></span>
+        </a>
+
+    </div>
+      <a #togglenotif *ngIf="me!=null && ( actualroute!='/emailadmin' && actualroute!='/problemeadmin') "  [routerLink]="" (click)="shownotification()" class="nav-item no-hover no-active nav-button">
+        <span class="nav-item-content"><span class=""> <mat-icon matBadge="{{messagingService.notifnumber}}" matBadgeColor="warn" style=" margin-right: 15px;
+        
+      ">notifications</mat-icon></span></span>
+      </a>
+     
+    </div>
+   
     <a *ngIf="me!=null && ( actualroute!='/emailadmin' && actualroute!='/problemeadmin') "  routerLink="/historique" class="nav-item no-hover no-active nav-button">
       <span class="nav-item-content"><span class="auth-button border border-transparent hover:underline">Mon Historique</span></span>
     </a>
+    
     <a *ngIf="me!=null && ( actualroute!='/emailadmin' && actualroute!='/problemeadmin') " routerLink="/mon-profil" style="margin-right: 30px;" class="nav-item no-hover no-active nav-button">
       <span class="nav-item-content"><span class="auth-button border border-transparent hover:underline">Mon Profil</span></span>
     </a>
@@ -52,6 +74,7 @@
     <a *ngIf="me==null && ( actualroute!='/emailadmin' && actualroute!='/problemeadmin')" routerLink="/login" class="nav-item no-hover no-active nav-button register-button">
       <span class="nav-item-content"><span class="auth-button btn btn-bloodorange">Login</span></span>
     </a>
+  
     <a *ngIf="me!=null && ( actualroute!='/emailadmin' && actualroute!='/problemeadmin')" (click)="logOut()" class="nav-item no-hover no-active nav-button register-button">
       <span class="nav-item-content"><span class="auth-button btn btn-bloodorange">Deconnexion</span></span>
     </a>

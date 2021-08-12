@@ -4,13 +4,30 @@ import { AngularFireMessaging } from '@angular/fire/messaging';
 import { ToastrService } from 'ngx-toastr';
 import { BehaviorSubject, Observable } from 'rxjs'
 import { map } from 'rxjs/operators';
+import { NotificationUser } from './NotificationUser.model';
 @Injectable()
 export class MessagingService {
 currentMessage = new BehaviorSubject({});
 yourtoken !:any;
 uri ="https://backend-javaa-mbds272957.herokuapp.com/insererNotifWeb"
+urigetnotif = "https://backend-javaa-mbds272957.herokuapp.com/getNotif?idUser="
+urisetnotif = "https://backend-javaa-mbds272957.herokuapp.com/setStatueVueNotif"
 jsonany!:any;
+notifnumber = 0
 constructor(private angularFireMessaging: AngularFireMessaging,private http:HttpClient,private toastr: ToastrService) {
+
+}
+setnotifnumber(nombre:number){
+  this.notifnumber = nombre;
+}
+getNotif(iduser:string):Observable<NotificationUser[]> {
+  console.log("Dans le service de gestion des match...")
+  //return of(this.matieres);
+  return this.http.get<NotificationUser[]>(this.urigetnotif + iduser );
+}
+setnotifvue(id:number):Observable<any> {
+  return this.http.post<any>(this.urisetnotif , id).pipe(map(resultat => {
+}));
 
 }
 insertnotifweb(idUser:string, token:string):Observable<any> {

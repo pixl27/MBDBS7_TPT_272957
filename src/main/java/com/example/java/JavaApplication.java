@@ -1457,7 +1457,7 @@ private RestTemplate restTemplate;
       
        @GetMapping(path="/getNotif", produces = "application/json")
         @ResponseBody
-       ArrayList<NotifVueAngular> getNotif(@RequestParam int idUser) throws SQLException{
+       ArrayList<NotifVueAngular> getNotif(@RequestParam String idUser) throws SQLException{
            
            ArrayList<NotifVueAngular> val = new ArrayList();
            

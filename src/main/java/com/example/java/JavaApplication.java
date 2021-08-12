@@ -1491,7 +1491,7 @@ private RestTemplate restTemplate;
        
        @PostMapping(value = "/setStatueVueNotif", consumes = "application/json", produces = "application/json")
        @ResponseBody
-       String setStatueVueNotif(@RequestBody int id) throws SQLException{
+       void setStatueVueNotif(@RequestBody int id) throws SQLException{
            OracleConnection co = Connexion.getConnection();
             Statement statement = null;
             try{
@@ -1504,6 +1504,7 @@ private RestTemplate restTemplate;
                     statement.close();
                 }
                 co.close();
+                
             }
        } 
       

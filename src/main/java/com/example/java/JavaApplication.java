@@ -8,6 +8,7 @@ import classe.Match;
 
 import classe.MatchAPI;
 import classe.MessageAPI;
+import classe.NotifVueAngular;
 import classe.NotifWeb;
 import classe.Paris;
 import classe.ParisArg;
@@ -709,6 +710,8 @@ private RestTemplate restTemplate;
             } 
             
         }
+        
+        
          
          
          @GetMapping(path="/getAllProbleme", produces = "application/json")
@@ -1447,7 +1450,47 @@ private RestTemplate restTemplate;
                      if(val==1)
                          System.out.println("Notification envoyé");
                  }
-             }
+                 
+                 NotifVueAngular temp = new NotifVueAngular();
+                 temp.insererNotif(idUser,title,message);
+       }
+      
+       @GetMapping(path="/getNotif", produces = "application/json")
+        @ResponseBody
+       ArrayList<NotifVueAngular> getNotif() throws SQLException{
+           
+           ArrayList<NotifVueAngular> val = new ArrayList();
+           
+           
+           
+             OracleConnection connection = Connexion.getConnection();
+           Statement statement = null;
+           
+            try{
+                statement = connection.createStatement();
+           
+           ResultSet resultSet = statement.executeQuery("select * from NOTIFVUEANGULAR");
+           
+            while (resultSet.next()){
+                //String idUser, String titre, String description, int vue, Date dateNotif
+                NotifVueAngular temp = new NotifVueAngular(resultSet.getInt(1),resultSet.getString(2),resultSet.getString(3),resultSet.getString(4),resultSet.getInt(5),resultSet.getDate(6));
+                val.add(temp);
+            }
+            }finally{
+                if(statement!=null){
+                    statement.close();
+                }
+                if(connection!=null){
+                    connection.close();
+                }
+            }
+           
+           return val;
+       }
+      
+      
+      
+      
       
         @PostMapping(value = "/insererNotifWeb", consumes = "application/json", produces = "application/json")
         @ResponseBody

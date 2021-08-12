@@ -1487,7 +1487,25 @@ private RestTemplate restTemplate;
            
            return val;
        }
-      
+       
+       
+       @PostMapping(value = "/setStatueVueNotif", consumes = "application/json", produces = "application/json")
+       @ResponseBody
+       String setStatueVueNotif(@RequestBody int id) throws SQLException{
+           OracleConnection co = Connexion.getConnection();
+            Statement statement = null;
+            try{
+                statement = co.createStatement();
+           
+                statement.executeUpdate("update NOTIFVUEANGULAR set VUE=1 where ID="+id);
+            }
+            finally{
+                if(statement!=null){
+                    statement.close();
+                }
+                co.close();
+            }
+       } 
       
       
       

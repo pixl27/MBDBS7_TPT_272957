@@ -92,8 +92,8 @@ public class NotifVueAngular {
                 int vue = 0;
                 Date datenow = new java.sql.Date(Calendar.getInstance().getTime().getTime());
                 statement = connection.createStatement();
-           
-                statement.executeQuery("insert into NOTIFVUEANGULAR values(SEQNOTIF.NEXTVAL,'"+idUser+"','"+titre+"','"+description+"',"+vue+",TO_DATE('"+datenow+"','YYYY-MM-DD')) ");
+                String desc = description.replaceAll("'", "''");
+                statement.executeQuery("insert into NOTIFVUEANGULAR values(SEQNOTIF.NEXTVAL,'"+idUser+"','"+titre+"','"+desc+"',"+vue+",TO_DATE('"+datenow+"','YYYY-MM-DD')) ");
             }
             finally{
                 if(statement!=null){
@@ -102,5 +102,7 @@ public class NotifVueAngular {
                 connection.close();
             }
        }
+    
+    
     
 }

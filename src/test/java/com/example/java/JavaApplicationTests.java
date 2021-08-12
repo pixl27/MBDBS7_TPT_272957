@@ -4,6 +4,7 @@ import classe.Connexion;
 import classe.MailAPI;
 import classe.Match;
 import classe.MatchAPI;
+import classe.MessageAPI;
 import classe.NotifVueAngular;
 import classe.NotifWeb;
 import classe.Paris;
@@ -49,6 +50,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
 
@@ -1084,6 +1088,9 @@ class JavaApplicationTests {
                      if(val.compareTo("1")==0)
                          System.out.println("Notification envoyé");
                  }
+                 
+                 NotifVueAngular temp = new NotifVueAngular();
+                 temp.insererNotif(idUser,title,message);
              }
          
              public static boolean isEmailAdress(String email){
@@ -1136,6 +1143,41 @@ class JavaApplicationTests {
                  return listeMail;
              } 
              
+               @PostMapping(value = "/finaliserManuelWin", consumes = "application/json", produces = "application/json")
+          @ResponseBody
+         MessageAPI finaliserManuelWin(@RequestBody int idParis) throws SQLException, JSONException{
+             
+             System.out.println("Angular vody idparis"+idParis);
+             MessageAPI message = new MessageAPI();
+             OracleConnection oc = Connexion.getConnection();
+             Paris p = Paris.getParisById(oc,idParis);
+             Match m = Match.getMatchById(oc,p.getIdMatch());
+             //traitement map overall
+             if(p.getType().compareTo("map_overall")==0){
+                  String description = "Felicitation, Votre équipe a gagner pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                  traitementParis(p,"debit",description);
+                  sendNotificationWebToAllDeviceForUser(p.getIdUser(),"Felicitation",description);
+             }
+             //traitement fb
+             else if(p.getType().contains("fb")){
+                 String[] array = p.getType().split("_");
+                 int mapParier = Integer.parseInt(array[1]);
+                 String description = "Felicitation, Votre équipe a fait le first blood sur map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                 traitementParis(p,"debit",description);
+                 sendNotificationWebToAllDeviceForUser(p.getIdUser(),"Felicitation",description);
+             }
+             //traitement winer map specifique
+             else{
+                 String[] array = p.getType().split("_");
+                 int mapParier = Integer.parseInt(array[1]);
+                 String description = "Felicitation, Votre équipe a gagné sur la map "+mapParier+" pendant le match entre "+m.getNomTeam1()+" et "+m.getNomTeam2();
+                 traitementParis(p,"debit",description);
+                 sendNotificationWebToAllDeviceForUser(p.getIdUser(),"Felicitation",description);
+             }
+             message.setMessage("Finaliser win parie pour parie "+p.getIdParis());
+             return message;
+         }
+             
              
              
              
@@ -1184,8 +1226,7 @@ class JavaApplicationTests {
                     
                     System.out.println("day of "+dayOfWeek);
  */
-                   NotifVueAngular nf = new NotifVueAngular();
-                   nf.insererNotif("test","hello","votre equipe n'a pas fait");
+                   finaliserManuelWin(181);
                    
                    
                  }

@@ -1466,10 +1466,14 @@ private RestTemplate restTemplate;
              OracleConnection connection = Connexion.getConnection();
            Statement statement = null;
            
+            Calendar c = Calendar.getInstance(); 
+             c.add(Calendar.DATE, -7);
+            Date dateunesemaineavant = new java.sql.Date(c.getTimeInMillis());
+           
             try{
                 statement = connection.createStatement();
            
-           ResultSet resultSet = statement.executeQuery("select * from NOTIFVUEANGULAR where IDUSER='"+idUser+"' ");
+           ResultSet resultSet = statement.executeQuery("select * from NOTIFVUEANGULAR where IDUSER='"+idUser+"' and (DATENOTIF>TO_DATE('"+dateunesemaineavant+"','YYYY-MM-DD') or Vue=0)");
            
             while (resultSet.next()){
                 //String idUser, String titre, String description, int vue, Date dateNotif

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.example.myapplication.ui.home.HomeFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/nav_gallery"
+        android:name="com.example.myapplication.ui.team.TeamFragment"
+        android:label="Teams"
+        tools:layout="@layout/fragment_gallery" />
+
+    <fragment
+        android:id="@+id/nav_slideshow"
+        android:name="com.example.myapplication.ui.Match.MatchFragment"
+        android:label="Matchs"
+        tools:layout="@layout/fragment_slideshow" />
+    <fragment
+        android:id="@+id/nav_historique"
+        android:name="com.example.myapplication.ui.historique.HistoriqueFragment"
+        android:label="Historique"
+        tools:layout="@layout/fragment_historique" />
+    <activity
+        android:id="@+id/nav_profil"
+        android:name="com.example.myapplication.ui.profil.ProfilFragment"
+        android:label="Profil"
+        tools:layout="@layout/fragment_profil" />
+    <activity
+        android:id="@+id/nav_login"
+        android:name="com.example.myapplication.LoginActivity"
+        android:label="Login"
+        tools:layout="@layout/activity_login"
+        />
+    <activity
+        android:id="@+id/nav_qrcode"
+        android:name="com.example.myapplication.QRCodeActivity"
+        android:label="loginqr"
+        tools:layout="@layout/activity_login"
+        />
+
+</navigation>

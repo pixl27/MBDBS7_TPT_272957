@@ -42,7 +42,6 @@ export class HistoriqueComponent implements OnInit {
    }
   }
   onChangePage(pageOfItems: Array<any>) {
-    // update current page of items
     this.pageOfItems = pageOfItems;
 }
   getHistorique(){
@@ -55,7 +54,7 @@ export class HistoriqueComponent implements OnInit {
           this.myhistorique = result;
           console.log("historique " + this.myhistorique);
         },
-        err => console.log("tsy nande pory")
+        err => console.log("error")
   
   
       ).add(() => {this.spinner.hide('sp6');})
@@ -66,14 +65,13 @@ export class HistoriqueComponent implements OnInit {
       result => {
      
       },
-      err => console.log("tsy nande pory")
+      err => console.log("error")
     )
   }
   getcurrentuser(){
   
     console.log(
       this.authservice.getCurrentUser(this.tokenuser).subscribe( data => {
-    console.log(data.solde + "EZ");
           this.me = data;
         }).add(() => {
 

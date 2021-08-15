@@ -49,7 +49,7 @@ export class ListMatchComponent implements OnInit {
         data => {
           this.me = data;
         },
-        err => console.log("tsy nande pory")
+        err => console.log("error")
   
   
       )
@@ -148,7 +148,7 @@ export class ListMatchComponent implements OnInit {
     for (let i = 0; i < MatchDateNew.length; i++) {
     if(MatchDateNew[i].temp == Datetest)
     {
-     // console.log("mitovy");
+  
       return i;
     }
     }
@@ -184,7 +184,7 @@ export class ListMatchComponent implements OnInit {
     .subscribe(data => {
 
       this.Matchs = data;
-      console.log("données reçues");
+
     }).add(() => {
 
 this.MatchDate = this.sortmatchbydate(this.Matchs);

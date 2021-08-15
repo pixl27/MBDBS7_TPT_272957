@@ -30,7 +30,6 @@ pageOfItems!: Array<any>;
     .subscribe(data => {
 
       this.Teams = data;
-      console.log("données reçues");
     }).add(() => {this.spinner.hide('sp6');});
   }
 }

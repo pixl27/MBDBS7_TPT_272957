@@ -24,7 +24,7 @@ export class DetailTeamComponent implements OnInit {
     // en number en mettant un "+" devant
     const id: number = +this.route.snapshot.params.id;
 
-    console.log('Dans ngOnInit de details, id = ' + id);
+   
     this.teamsservice.getTeam(id).subscribe((team) => {
       this.teamTransmis = team;
     });

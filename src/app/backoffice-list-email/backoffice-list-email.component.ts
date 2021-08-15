@@ -31,7 +31,7 @@ export class BackofficeListEmailComponent implements OnInit {
    this.getEmails();
   }
   onChangePage(pageOfItems: Array<any>) {
-    // update current page of items
+ 
     this.pageOfItems = pageOfItems;
 }
   getEmails(){
@@ -41,9 +41,9 @@ export class BackofficeListEmailComponent implements OnInit {
       this.backofficeservice.getEmails().subscribe( 
         result => {
           this.emails = result;
-          console.log("email " + this.emails);
+         
         },
-        err => console.log("tsy nande pory")
+        err => console.log("error")
   
   
       ).add(() => {this.spinner.hide('sp6');})
@@ -52,14 +52,14 @@ export class BackofficeListEmailComponent implements OnInit {
   deleteEmail(){
 
     this.spinner.show('sp6');
-    console.log("email to delete : " + this.emailtodelete)
+   
     console.log(
 
       this.backofficeservice.deleteEmails(this.emailtodelete).subscribe( 
         result => {
          
         },
-        err => console.log("tsy nande pory")
+        err => console.log("error")
   
   
       ).add(() => {this.getEmails()})
@@ -88,7 +88,7 @@ export class BackofficeListEmailComponent implements OnInit {
         result => {
          
         },
-        err => console.log("tsy nande pory")
+        err => console.log("error")
   
   
       ).add(() => {this.getEmails()})

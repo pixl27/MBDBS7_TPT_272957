@@ -28,30 +28,23 @@ notifnumber!:number;
 
   ngOnInit(): void {
     this.notificationtrue = false;
-    console.log("idnotif" + this.route.snapshot.params.id);
 
     this.renderer.listen('window', 'click',(e:Event)=>{
-      /**
-       * Only run when toggleButton is not clicked
-       * If we don't check this, all clicks (even on the toggle button) gets into this
-       * section which in the result we might never see the menu open!
-       * And the menu itself is checked here, and it's where we check just outside of
-       * the menu and button the condition abbove must close the menu
-       */
+    
        if( !this.togglenotif.nativeElement.contains(e.target)){
          this.notificationtrue = false;
-         console.log("outside");
+    
        }
       
  });
 
 
-  //this.messagingService.receiveback();
+  
   this.router.events.subscribe((routerData) => {
     if(routerData instanceof ResolveEnd){ 
       this.actualroute = routerData.url;
       if(this.actualroute == "/emailadmin"){
-        console.log("mitovy");
+       
       }
   } 
 })
@@ -64,7 +57,7 @@ notifnumber!:number;
     this.tokenuser = tokenuservar
    this.getcurrentuser();
    setTimeout(() => {
-     console.log("myid" + this.me._id);
+    
      this.messagingService.requestPermission(this.me._id)
 
     this.messagingService.receiveMessage(this.me._id);
@@ -84,7 +77,7 @@ notifnumber!:number;
           this.listnotif = result;
        
         },
-        err => console.log("tsy nande pory")
+        err => console.log("error")
   
   
       ).add(() => {})
@@ -109,7 +102,7 @@ notifnumber!:number;
           }
           this.messagingService.setnotifnumber(this.notifnumber);
         },
-        err => console.log("tsy nande pory")
+        err => console.log("error")
   
   
       ).add(() => {})
@@ -134,10 +127,9 @@ shownotification(){
     console.log(
       this.authservice.getCurrentUser(this.tokenuser).subscribe( 
         data => {
-    console.log(data.solde + "EZ");
           this.me = data;
         },
-        err => console.log("tsy nande pory")
+        err => console.log("error")
   
   
       ).add(() => {this.getNombreNotifNonLu()})

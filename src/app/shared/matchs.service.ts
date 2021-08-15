@@ -21,25 +21,18 @@ export class MatchsService {
     })
   }
 
-  //uri = "http://localhost:8010/api/assignments";
-  uri = "https://backend-javaa-mbds272957.herokuapp.com/getallmatchtest"
-  uri2 = "https://backend-javaa-mbds272957.herokuapp.com/getmatchbyIdRivalry"
-  uribet ="https://backend-javaa-mbds272957.herokuapp.com/parier"
+  uri = "https://backend-javaa-mbds272957.herokuapp.com/"
   urihistorique ="https://backend-node-mbds272957.herokuapp.com/api/historiques"
 
   getMatchs():Observable<Match[]> {
-    console.log("Dans le service de gestion des match...")
-    //return of(this.matieres);
-    return this.http.get<Match[]>(this.uri);
+    return this.http.get<Match[]>(this.uri + "getallmatchtest");
   }
 
 
   getMatch(id:number):Observable<MatchDetail> {
-    //let assignementCherche = this.assignments.find(a => a.id === id);
-
-    //return of(assignementCherche);
+   
   
-        return this.http.get<MatchDetail>(this.uri2 + "?idRivalry=" + id).pipe(
+        return this.http.get<MatchDetail>(this.uri + "getmatchbyIdRivalry?idRivalry=" + id).pipe(
           timeout(10000)
       );
       
@@ -50,7 +43,7 @@ export class MatchsService {
   }
 
   bet(idUser:number, idMatch:number,type:string,idTeamParier:number,montant:number,odds:number):Observable<any> {
-    return this.http.post<any>(this.uribet , { idUser, idMatch,type,idTeamParier,montant,odds }).pipe(map(resultat => {
+    return this.http.post<any>(this.uri + "parier" , { idUser, idMatch,type,idTeamParier,montant,odds }).pipe(map(resultat => {
   
       return resultat;
   }));

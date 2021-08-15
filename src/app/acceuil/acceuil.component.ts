@@ -16,7 +16,7 @@ tokenuser!:string
     let tokenuservar =  localStorage.getItem("usertoken");
     if(tokenuservar != null){
     this.tokenuser = tokenuservar
-   // this.getcurrentuser();
+  
    }
   }
   
@@ -25,10 +25,10 @@ tokenuser!:string
     console.log(
       this.authservice.getCurrentUser(this.tokenuser).subscribe( 
         data => {
-    console.log(data.solde + "EZ");
+
   
         },
-        err => console.log("tsy nande pory")
+        err => console.log("erreur")
   
   
       )

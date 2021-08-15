@@ -44,7 +44,7 @@ getProblemes(){
         result => {
           this.problemes = result;
         },
-        err => console.log("tsy nande pory")
+        err => console.log("error")
   
   
       ).add(() => {this.spinner.hide('sp6');})
@@ -56,14 +56,14 @@ getProblemes(){
   }
   fairegagner(idParis:string){
     this.spinner.show('sp6');
-console.log("idparis " + idParis);
+
     console.log(
 
       this.backofficeservice.fairegagner(Number(idParis)).subscribe(
         result => {
 this.showSuccess("Paris",result.message)        
 },
-        err => console.log("tsy nande pory")
+        err => console.log("Error")
       ).add(() => {this.getProblemes()})
       );
   }
@@ -75,7 +75,7 @@ this.showSuccess("Paris",result.message)
       this.backofficeservice.faireperdre(Number(idParis)).subscribe( result => {
         this.showSuccess("Paris",result.message)   
        },
-       err => console.log("tsy nande pory")).add(() => {this.getProblemes()})
+       err => console.log("error")).add(() => {this.getProblemes()})
       );
   }
 }

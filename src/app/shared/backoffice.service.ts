@@ -26,23 +26,19 @@ export class BackOfficeService {
   uri = "https://backend-javaa-mbds272957.herokuapp.com/"
 
   getEmails():Observable<MailAPI[]> {
-    console.log("Dans le service de gestion des match...")
-    //return of(this.matieres);
+  
     return this.http.get<MailAPI[]>(this.uri + "getAllEmailAdmin");
   }
   getProblemes():Observable<Probleme[]> {
-    console.log("Dans le service de gestion des match...")
-    //return of(this.matieres);
+  
     return this.http.get<Probleme[]>(this.uri + "getAllProbleme");
   }
   getDashboard():Observable<Dashboard> {
-    console.log("Dans le service de gestion des match...")
-    //return of(this.matieres);
+  
     return this.http.get<Dashboard>(this.uri + "getdashboard");
   }
   getGrapheJourParie():Observable<GraphJourSemaine> {
-    console.log("Dans le service de gestion des match...")
-    //return of(this.matieres);
+
     return this.http.get<GraphJourSemaine>(this.uri + "getGrapheJourParie");
   }
 
@@ -55,7 +51,6 @@ export class BackOfficeService {
 
   }
   fairegagner(idParis:Number):Observable<any>{
-console.log("enfoiré " + idParis);
     return this.http.post<any>(this.uri + "finaliserManuelWin", idParis);
 
   }

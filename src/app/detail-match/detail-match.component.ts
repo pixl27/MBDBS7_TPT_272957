@@ -84,7 +84,7 @@ export class DetailMatchComponent implements OnInit {
     }); 
     
       this.spinner.hide('sp6');
-      //this.date = this.matchtransmis.datematch;
+    
 
        });
   }
@@ -95,7 +95,7 @@ export class DetailMatchComponent implements OnInit {
         data => {
           this.me = data;
         },
-        err => console.log("tsy nande pory")
+        err => console.log("error")
   
   
       )
@@ -104,7 +104,7 @@ export class DetailMatchComponent implements OnInit {
 
   open(content:any, idMatch:number,type:string,idTeamParier:number,odds:number) {
     this.setdefaultattribute(idMatch,type,idTeamParier,odds);
-    console.log("Match Id Rivalry " + this.idMatch);
+  
     this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {

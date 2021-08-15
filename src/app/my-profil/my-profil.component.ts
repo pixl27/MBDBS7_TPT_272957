@@ -32,10 +32,10 @@ value !: string ;
     console.log(
       this.authservice.getCurrentUser(this.tokenuser).subscribe( 
         data => {
-    console.log(data.solde + "EZ");
+   
           this.me = data;
         },
-        err => console.log("tsy nande pory")
+        err => console.log("error")
   
   
       ).add(() => {    this.spinner.hide('sp6');

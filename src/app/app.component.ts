@@ -94,7 +94,6 @@ notifnumber!:number;
         result => {
          
           for(let a of result){
-            console.log("aa " + a.vue);
             if(a.vue==0){
           
               this.notifnumber = this.notifnumber + 1;

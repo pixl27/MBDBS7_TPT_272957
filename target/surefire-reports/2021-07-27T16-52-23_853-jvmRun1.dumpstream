@@ -1,0 +1,30 @@
+# Created at 2021-07-27T16:52:24.363
+Corrupted STDOUT by directly writing to native stream in forked JVM 1. Stream '[0.010s][warning][gc] Failed to reserve memory for new overflow mark stack with 4096 chunks and size 33554432B.'.
+java.lang.IllegalArgumentException: Stream stdin corrupted. Expected comma after third character in command '[0.010s][warning][gc] Failed to reserve memory for new overflow mark stack with 4096 chunks and size 33554432B.'.
+	at org.apache.maven.plugin.surefire.booterclient.output.ForkClient$OperationalData.<init>(ForkClient.java:507)
+	at org.apache.maven.plugin.surefire.booterclient.output.ForkClient.processLine(ForkClient.java:210)
+	at org.apache.maven.plugin.surefire.booterclient.output.ForkClient.consumeLine(ForkClient.java:177)
+	at org.apache.maven.plugin.surefire.booterclient.output.ThreadedStreamConsumer$Pumper.run(ThreadedStreamConsumer.java:88)
+	at java.base/java.lang.Thread.run(Thread.java:832)
+
+
+# Created at 2021-07-27T16:52:24.365
+Corrupted STDOUT by directly writing to native stream in forked JVM 1. Stream 'Error occurred during initialization of VM'.
+java.lang.IllegalArgumentException: Stream stdin corrupted. Expected comma after third character in command 'Error occurred during initialization of VM'.
+	at org.apache.maven.plugin.surefire.booterclient.output.ForkClient$OperationalData.<init>(ForkClient.java:507)
+	at org.apache.maven.plugin.surefire.booterclient.output.ForkClient.processLine(ForkClient.java:210)
+	at org.apache.maven.plugin.surefire.booterclient.output.ForkClient.consumeLine(ForkClient.java:177)
+	at org.apache.maven.plugin.surefire.booterclient.output.ThreadedStreamConsumer$Pumper.run(ThreadedStreamConsumer.java:88)
+	at java.base/java.lang.Thread.run(Thread.java:832)
+
+
+# Created at 2021-07-27T16:52:24.367
+Corrupted STDOUT by directly writing to native stream in forked JVM 1. Stream 'Failed to allocate initial concurrent mark overflow mark stack.'.
+java.lang.IllegalArgumentException: Stream stdin corrupted. Expected comma after third character in command 'Failed to allocate initial concurrent mark overflow mark stack.'.
+	at org.apache.maven.plugin.surefire.booterclient.output.ForkClient$OperationalData.<init>(ForkClient.java:507)
+	at org.apache.maven.plugin.surefire.booterclient.output.ForkClient.processLine(ForkClient.java:210)
+	at org.apache.maven.plugin.surefire.booterclient.output.ForkClient.consumeLine(ForkClient.java:177)
+	at org.apache.maven.plugin.surefire.booterclient.output.ThreadedStreamConsumer$Pumper.run(ThreadedStreamConsumer.java:88)
+	at java.base/java.lang.Thread.run(Thread.java:832)
+
+
